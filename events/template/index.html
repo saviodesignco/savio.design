@@ -13,36 +13,75 @@
        ============================================================ -->
   <script>
     const EVENT = {
-      eventType:     "Dinner Party",           // Badge label
-      eventTitle:    "An Evening to Remember", // Main headline
-      eventSubtitle: "A private dinner for close friends", // Sub-headline
-      hostName:      "Hector Savio",           // Host display name
+      eventType:     "Quinceañera",            // Badge label
+      eventTitle:    "Mis Quince Años",        // Main headline
+      eventSubtitle: "Una celebración de vida, fe y amor", // Sub-headline
+      hostName:      "Sofía García",           // Honoree's name
 
-      date:          "Saturday, April 12 2025",// Full date string
-      dayOfWeek:     "Saturday",               // Used in .ics
-      time:          "7:00 PM",                // Start time
-      doorsOpen:     "6:45 PM",               // Doors / arrival time
-      duration:      "3 hours",               // Duration label
-      spotsLeft:     8,                        // Available spots
-      spotsTotal:    20,                       // Total capacity
+      // --- Language ---
+      // "en" = English labels, "es" = Spanish labels, "bilingual" = both
+      language:      "bilingual",
 
-      venueName:     "The Atelier",            // Venue name
-      venueAddress:  "123 West 57th Street",   // Street
-      venueCity:     "New York, NY 10019",     // City / zip
+      // --- Honoree ---
+      honoreeAge:    15,                       // Set to 0 to hide the age line
+      parentNames:   "Sr. y Sra. García",      // Shown as "Hija de..." — leave "" to hide
 
-      notes:         "Dress code: smart casual. This is an intimate evening — please let me know your dietary requirements when you RSVP.", // Host note block
+      // --- Opening phrase (religious / personal) ---
+      // Leave "" to hide. Shown at the very top of the card.
+      openingPhrase: "Agradeciendo a Dios por estos 15 años de vida y bendiciones",
 
-      // Slideshow images — add up to as many as you like, or leave empty for the gradient fallback
-      // Use relative paths (e.g. "photo1.jpg") or full URLs
+      // --- Date & time ---
+      date:          "Sábado, 12 de Abril 2025",
+      dayOfWeek:     "Saturday",               // English, used in .ics
+      doorsOpen:     "3:30 PM",               // Arrival / doors
+
+      // Mass — leave massVenueName "" to hide this section entirely
+      massTime:      "4:00 PM",
+      massVenueName: "Iglesia de San Patricio",
+      massVenueAddress: "5th Avenue & 50th Street",
+      massVenueCity: "New York, NY 10111",
+
+      // Reception
+      receptionTime: "7:00 PM",               // Shown separately from mass
+      duration:      "5 hours",               // Duration of reception
+      spotsLeft:     0,                        // Set to 0 to show "Waitlist Only"
+      spotsTotal:    150,
+
+      // Reception venue
+      venueName:     "El Gran Salón",
+      venueAddress:  "123 West 57th Street",
+      venueCity:     "New York, NY 10019",
+
+      // --- Host notes ---
+      notes:         "Código de vestimenta: formal. Por favor confirma tu asistencia antes del 1 de marzo.",
+
+      // --- Court of Honor (Corte de Honor) ---
+      // Array of { dama, chambelan } pairs — leave [] to hide section
+      court: [
+        { dama: "Isabella Martínez",  chambelan: "Carlos López"   },
+        { dama: "Valentina Torres",   chambelan: "Miguel Reyes"   },
+        { dama: "Camila Hernández",   chambelan: "Andrés Morales" },
+        { dama: "Luciana Ramírez",    chambelan: "Diego Castillo" },
+      ],
+
+      // --- Padrinos y Madrinas ---
+      // Array of { names, role } — leave [] to hide section
+      padrinos: [
+        { names: "Roberto & Ana González",  role: "Vestido"       },
+        { names: "Luis & Carmen Reyes",     role: "Corona & Ramo" },
+        { names: "Jorge & Patricia Lima",   role: "Música"        },
+        { names: "Marco & Silvia Torres",   role: "Pastel"        },
+      ],
+
+      // --- Slideshow images ---
+      // Relative paths (e.g. "photo1.jpg") or full URLs — leave [] for gradient
       heroImages: [],
-      rsvpEmail:     "hector@savio.design",    // Fallback mailto address (used if Formspree is not set)
 
-      // Formspree endpoint — paste the URL from your Formspree dashboard
-      // e.g. "https://formspree.io/f/abcdefgh"
-      // Leave "" to fall back to mailto behaviour
-      formspreeEndpoint: "",
+      // --- RSVP ---
+      rsvpEmail:         "hector@savio.design",
+      formspreeEndpoint: "",                   // Paste Formspree URL here
 
-      // Password gate — set to "" to disable the gate entirely
+      // --- Password gate — leave "" to disable ---
       eventPassword: "savio2025"
     };
   </script>
@@ -648,6 +687,216 @@
     }
 
     /* ============================================================
+       OPENING PHRASE
+       ============================================================ */
+    .opening-phrase {
+      text-align: center;
+      padding: 0.25rem 0.5rem;
+    }
+
+    .opening-phrase-text {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 0.95rem;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--text-soft);
+      line-height: 1.7;
+    }
+
+    /* ============================================================
+       PARENT NAMES / HONOREE AGE
+       ============================================================ */
+    .parent-line {
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-top: 0.1rem;
+    }
+
+    .parent-line span { color: var(--text-soft); }
+
+    .honoree-age {
+      display: inline-block;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 0.8rem;
+      font-weight: 300;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-top: 0.15rem;
+    }
+
+    /* ============================================================
+       MASS BLOCK
+       ============================================================ */
+    .mass-block {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .mass-icon {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(201,169,110,0.25);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mass-icon svg {
+      width: 16px;
+      height: 16px;
+      stroke: var(--gold);
+      fill: none;
+    }
+
+    .mass-text {}
+
+    .mass-label {
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.2rem;
+    }
+
+    .mass-venue {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 0.15rem;
+    }
+
+    .mass-time {
+      font-size: 0.88rem;
+      color: var(--text-soft);
+      margin-bottom: 0.1rem;
+    }
+
+    .mass-address {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ============================================================
+       COURT OF HONOR
+       ============================================================ */
+    .court-block {}
+
+    .court-header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .court-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--text);
+    }
+
+    .court-subtitle {
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .court-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    .court-pair {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .court-name {
+      font-size: 0.8rem;
+      color: var(--text-soft);
+      line-height: 1.3;
+    }
+
+    .court-role {
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .court-divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ============================================================
+       PADRINOS
+       ============================================================ */
+    .padrinos-block {}
+
+    .padrinos-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+
+    .padrinos-subtitle {
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+
+    .padrinos-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    .padrino-item {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 0.85rem;
+    }
+
+    .padrino-role {
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.2rem;
+    }
+
+    .padrino-names {
+      font-size: 0.82rem;
+      color: var(--text-soft);
+      line-height: 1.3;
+    }
+
+    /* ============================================================
        CALENDAR BUTTON
        ============================================================ */
     .calendar-section { position: relative; }
@@ -808,10 +1057,17 @@
         <!-- Badge -->
         <div class="badge" id="badge-type"></div>
 
+        <!-- Opening phrase (religious / personal) -->
+        <div class="opening-phrase" id="opening-phrase-block">
+          <p class="opening-phrase-text" id="el-opening-phrase"></p>
+        </div>
+
         <!-- Title -->
         <div class="title-block">
           <h1 class="event-title" id="el-title"></h1>
           <p class="event-subtitle" id="el-subtitle"></p>
+          <div class="honoree-age" id="el-honoree-age"></div>
+          <p class="parent-line" id="el-parent-line"></p>
           <p class="host-byline">Hosted by <span id="el-host"></span></p>
         </div>
 
@@ -820,30 +1076,51 @@
         <!-- Info Grid -->
         <div class="info-grid">
           <div class="info-item">
-            <div class="info-label">Date</div>
+            <div class="info-label" id="label-date">Date</div>
             <div class="info-value" id="el-date"></div>
           </div>
-          <div class="info-item">
-            <div class="info-label">Time</div>
-            <div class="info-value" id="el-time"></div>
+          <div class="info-item" id="el-mass-time-item">
+            <div class="info-label" id="label-mass-time">Misa</div>
+            <div class="info-value" id="el-mass-time"></div>
           </div>
-          <div class="info-item">
-            <div class="info-label">Doors Open</div>
+          <div class="info-item" id="el-reception-time-item">
+            <div class="info-label" id="label-reception-time">Recepción</div>
+            <div class="info-value" id="el-reception-time"></div>
+          </div>
+          <div class="info-item" id="el-doors-item">
+            <div class="info-label" id="label-doors">Doors Open</div>
             <div class="info-value" id="el-doors"></div>
           </div>
           <div class="info-item">
-            <div class="info-label">Duration</div>
+            <div class="info-label" id="label-duration">Duration</div>
             <div class="info-value" id="el-duration"></div>
           </div>
           <div class="info-item">
-            <div class="info-label">Spots Available</div>
+            <div class="info-label" id="label-spots">Spots Available</div>
             <div class="info-value accent" id="el-spots"></div>
           </div>
         </div>
 
         <div class="divider"></div>
 
-        <!-- Location -->
+        <!-- Mass / Church block (optional) -->
+        <div class="mass-block" id="mass-block">
+          <div class="mass-icon">
+            <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+              <path d="M12 2v4M10 4h4"/>
+              <path d="M5 8h14l1 12H4L5 8z"/>
+              <path d="M9 8v4m6-4v4"/>
+            </svg>
+          </div>
+          <div class="mass-text">
+            <div class="mass-label" id="label-mass">Misa de Acción de Gracias</div>
+            <div class="mass-venue" id="el-mass-venue"></div>
+            <div class="mass-time" id="el-mass-time-detail"></div>
+            <div class="mass-address" id="el-mass-address"></div>
+          </div>
+        </div>
+
+        <!-- Reception Location -->
         <div class="location-block">
           <div class="location-icon">
             <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -859,8 +1136,24 @@
 
         <!-- Host Notes -->
         <div class="notes-block" id="notes-block">
-          <div class="notes-label">A Note from Your Host</div>
+          <div class="notes-label" id="label-notes">A Note from Your Host</div>
           <p class="notes-text" id="el-notes"></p>
+        </div>
+
+        <!-- Court of Honor -->
+        <div class="court-block" id="court-block">
+          <div class="court-header">
+            <div class="court-title" id="label-court-title">Corte de Honor</div>
+            <div class="court-subtitle" id="label-court-sub">Court of Honor</div>
+          </div>
+          <div class="court-grid" id="court-grid"></div>
+        </div>
+
+        <!-- Padrinos y Madrinas -->
+        <div class="padrinos-block" id="padrinos-block">
+          <div class="padrinos-title" id="label-padrinos-title">Padrinos y Madrinas</div>
+          <div class="padrinos-subtitle" id="label-padrinos-sub">Sponsors</div>
+          <div class="padrinos-grid" id="padrinos-grid"></div>
         </div>
 
         <div class="divider"></div>
@@ -1000,41 +1293,147 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
 
-      // --- Text fields ---
-      document.getElementById('badge-type').textContent     = EVENT.eventType;
-      document.getElementById('el-title').textContent       = EVENT.eventTitle;
-      document.getElementById('el-subtitle').textContent    = EVENT.eventSubtitle;
-      document.getElementById('el-host').textContent        = EVENT.hostName;
-      document.getElementById('el-date').textContent        = EVENT.date;
-      document.getElementById('el-time').textContent        = EVENT.time;
-      document.getElementById('el-doors').textContent       = EVENT.doorsOpen;
-      document.getElementById('el-duration').textContent    = EVENT.duration;
-      document.getElementById('el-venue').textContent       = EVENT.venueName;
-      document.getElementById('el-address').innerHTML       = EVENT.venueAddress + '<br>' + EVENT.venueCity;
-      document.getElementById('el-notes').textContent       = EVENT.notes;
-      document.getElementById('footer-host').textContent    = EVENT.hostName;
+      const lang = EVENT.language || 'en';
+      const es   = lang === 'es' || lang === 'bilingual';
 
-      // Page title
+      // --- Helper: set bilingual label ---
+      function label(id, en, esp) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.textContent = (lang === 'bilingual') ? esp + ' / ' + en
+                       : (lang === 'es')        ? esp
+                       : en;
+      }
+
+      // --- Core fields ---
+      document.getElementById('badge-type').textContent  = EVENT.eventType;
+      document.getElementById('el-title').textContent    = EVENT.eventTitle;
+      document.getElementById('el-subtitle').textContent = EVENT.eventSubtitle;
+      document.getElementById('el-host').textContent     = EVENT.hostName;
+      document.getElementById('el-date').textContent     = EVENT.date;
+      document.getElementById('el-duration').textContent = EVENT.duration;
+      document.getElementById('el-venue').textContent    = EVENT.venueName;
+      document.getElementById('el-address').innerHTML    = EVENT.venueAddress + '<br>' + EVENT.venueCity;
+      document.getElementById('el-notes').textContent    = EVENT.notes;
+      document.getElementById('footer-host').textContent = EVENT.hostName;
       document.title = EVENT.eventTitle + ' — ' + EVENT.hostName;
 
-      // Spots
+      // --- Bilingual labels ---
+      label('label-date',          'Date',            'Fecha');
+      label('label-duration',      'Duration',        'Duración');
+      label('label-spots',         'Spots Available', 'Lugares');
+      label('label-doors',         'Doors Open',      'Puertas abren');
+      label('label-notes',         'A Note from Your Host', 'Nota del anfitrión');
+      label('label-court-sub',     'Court of Honor',  'Corte de Honor');
+      label('label-padrinos-sub',  'Sponsors',        'Padrinos y Madrinas');
+
+      // --- Opening phrase ---
+      if (EVENT.openingPhrase && EVENT.openingPhrase.trim() !== '') {
+        document.getElementById('el-opening-phrase').textContent = EVENT.openingPhrase;
+      } else {
+        document.getElementById('opening-phrase-block').style.display = 'none';
+      }
+
+      // --- Honoree age ---
+      const ageEl = document.getElementById('el-honoree-age');
+      if (EVENT.honoreeAge && EVENT.honoreeAge > 0) {
+        ageEl.textContent = es ? EVENT.honoreeAge + ' Años' : EVENT.honoreeAge + ' Years';
+      } else {
+        ageEl.style.display = 'none';
+      }
+
+      // --- Parent names ---
+      const parentEl = document.getElementById('el-parent-line');
+      if (EVENT.parentNames && EVENT.parentNames.trim() !== '') {
+        const prefix = es ? 'Hija de ' : 'Daughter of ';
+        parentEl.innerHTML = prefix + '<span>' + EVENT.parentNames + '</span>';
+      } else {
+        parentEl.style.display = 'none';
+      }
+
+      // --- Mass / church block ---
+      if (EVENT.massVenueName && EVENT.massVenueName.trim() !== '') {
+        document.getElementById('el-mass-venue').textContent       = EVENT.massVenueName;
+        document.getElementById('el-mass-time-detail').textContent = EVENT.massTime || '';
+        document.getElementById('el-mass-address').innerHTML       = EVENT.massVenueAddress + '<br>' + EVENT.massVenueCity;
+        if (es) document.getElementById('label-mass').textContent  = 'Misa de Acción de Gracias';
+
+        // Show mass + reception in info grid
+        document.getElementById('el-mass-time').textContent        = EVENT.massTime || '';
+        document.getElementById('el-reception-time').textContent   = EVENT.receptionTime || '';
+        label('label-mass-time',      'Mass',       'Misa');
+        label('label-reception-time', 'Reception',  'Recepción');
+
+        // Hide generic "doors open" row (mass block shows detail instead)
+        document.getElementById('el-doors-item').style.display     = 'none';
+      } else {
+        // No mass — show standard time + doors open, hide mass-specific rows
+        document.getElementById('mass-block').style.display        = 'none';
+        document.getElementById('el-mass-time-item').style.display = 'none';
+        // Repurpose reception-time row as the main time
+        document.getElementById('el-reception-time').textContent   = EVENT.receptionTime || EVENT.time || '';
+        label('label-reception-time', 'Time', 'Hora');
+        document.getElementById('el-doors').textContent            = EVENT.doorsOpen;
+      }
+
+      // --- Spots ---
       const spotsEl = document.getElementById('el-spots');
       if (EVENT.spotsLeft > 0) {
-        spotsEl.textContent = EVENT.spotsLeft + ' of ' + EVENT.spotsTotal;
+        spotsEl.textContent = EVENT.spotsLeft + ' / ' + EVENT.spotsTotal;
       } else {
-        spotsEl.textContent = 'Waitlist Only';
+        spotsEl.textContent = es ? 'Lista de espera' : 'Waitlist Only';
         spotsEl.style.color = '#c0392b';
       }
 
-      // Notes — hide block if empty
+      // --- Notes ---
       if (!EVENT.notes || EVENT.notes.trim() === '') {
         document.getElementById('notes-block').style.display = 'none';
       }
 
-      // Hero slideshow — build from heroImages array
+      // --- Court of Honor ---
+      const court = EVENT.court || [];
+      if (court.length > 0) {
+        label('label-court-title', 'Court of Honor', 'Corte de Honor');
+        const grid = document.getElementById('court-grid');
+        court.forEach(pair => {
+          // Dama
+          const d = document.createElement('div');
+          d.className = 'court-pair';
+          d.innerHTML = '<div class="court-role">' + (es ? 'Dama' : 'Dama') + '</div>'
+                      + '<div class="court-name">' + pair.dama + '</div>';
+          grid.appendChild(d);
+          // Chambelán
+          const c = document.createElement('div');
+          c.className = 'court-pair';
+          c.innerHTML = '<div class="court-role">' + (es ? 'Chambelán' : 'Chambelan') + '</div>'
+                      + '<div class="court-name">' + pair.chambelan + '</div>';
+          grid.appendChild(c);
+        });
+      } else {
+        document.getElementById('court-block').style.display = 'none';
+      }
+
+      // --- Padrinos ---
+      const padrinos = EVENT.padrinos || [];
+      if (padrinos.length > 0) {
+        label('label-padrinos-title', 'Sponsors',           'Padrinos y Madrinas');
+        label('label-padrinos-sub',   'Event Sponsors',     'Patrocinadores');
+        const grid = document.getElementById('padrinos-grid');
+        padrinos.forEach(p => {
+          const el = document.createElement('div');
+          el.className = 'padrino-item';
+          el.innerHTML = '<div class="padrino-role">' + p.role + '</div>'
+                       + '<div class="padrino-names">' + p.names + '</div>';
+          grid.appendChild(el);
+        });
+      } else {
+        document.getElementById('padrinos-block').style.display = 'none';
+      }
+
+      // --- Hero slideshow ---
       initSlideshow();
 
-      // Google Calendar link
+      // --- Google Calendar link ---
       buildGoogleCalLink();
     });
   </script>
