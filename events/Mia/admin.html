@@ -812,24 +812,24 @@
 
           <div class="p-grid">
             <div>
-              <div class="p-label">Date</div>
-              <div class="p-val" id="p-date">Saturday, April 12 2025</div>
+              <div class="p-label" id="pl-date">Date</div>
+              <div class="p-val" id="p-date">Sábado, 12 de Abril 2025</div>
             </div>
             <div>
-              <div class="p-label">Time</div>
-              <div class="p-val" id="p-time">7:00 PM</div>
+              <div class="p-label" id="pl-time">Misa</div>
+              <div class="p-val" id="p-time">4:00 PM</div>
             </div>
             <div>
-              <div class="p-label">Doors Open</div>
-              <div class="p-val" id="p-doors">6:45 PM</div>
+              <div class="p-label" id="pl-doors">Doors Open</div>
+              <div class="p-val" id="p-doors">3:30 PM</div>
             </div>
             <div>
-              <div class="p-label">Duration</div>
-              <div class="p-val" id="p-duration">3 hours</div>
+              <div class="p-label" id="pl-duration">Duration</div>
+              <div class="p-val" id="p-duration">5 hours</div>
             </div>
             <div>
-              <div class="p-label">Spots Available</div>
-              <div class="p-val accent" id="p-spots">8 of 20</div>
+              <div class="p-label" id="pl-spots">Spots Available</div>
+              <div class="p-val accent" id="p-spots">150</div>
             </div>
           </div>
 
@@ -843,24 +843,24 @@
               </svg>
             </div>
             <div>
-              <div class="p-venue" id="p-venue">The Atelier</div>
+              <div class="p-venue" id="p-venue">El Gran Salón</div>
               <div class="p-addr" id="p-addr">123 West 57th Street<br>New York, NY 10019</div>
             </div>
           </div>
 
           <div class="p-notes" id="p-notes-block">
-            <div class="p-notes-label">A Note from Your Host</div>
-            <div class="p-notes-text" id="p-notes">Dress code: smart casual. This is an intimate evening — please let me know your dietary requirements when you RSVP.</div>
+            <div class="p-notes-label" id="pl-notes">A Note from Your Host</div>
+            <div class="p-notes-text" id="p-notes"></div>
           </div>
 
           <div class="p-divider"></div>
 
           <div>
-            <div class="p-rsvp-label">Your Response</div>
+            <div class="p-rsvp-label" id="pl-rsvp">Your Response</div>
             <div class="p-rsvp-btns">
-              <div class="p-rsvp-btn">Accept</div>
-              <div class="p-rsvp-btn">Maybe</div>
-              <div class="p-rsvp-btn">Decline</div>
+              <div class="p-rsvp-btn" id="pl-accept">Accept</div>
+              <div class="p-rsvp-btn" id="pl-maybe">Maybe</div>
+              <div class="p-rsvp-btn" id="pl-decline">Decline</div>
             </div>
           </div>
 
@@ -887,7 +887,7 @@
   // Map: field id → preview element id (or custom handler)
   const FIELD_MAP = {
     'f-eventType':        { el: 'p-badge' },
-    'f-language':         { fn: () => {} },
+    'f-language':         { fn: updateLanguage },
     'f-hostName':         { fn: updateHost },
     'f-eventTitle':       { el: 'p-title' },
     'f-eventSubtitle':    { el: 'p-subtitle' },
@@ -966,6 +966,35 @@
       img.src = srcs[0];
       hero.appendChild(img);
     }
+  }
+
+  // --- Language labels ---
+  const LABELS = {
+    date:     { en: 'Date',             es: 'Fecha'              },
+    time:     { en: 'Mass',             es: 'Misa'               },
+    doors:    { en: 'Doors Open',       es: 'Puertas abren'      },
+    duration: { en: 'Duration',         es: 'Duración'           },
+    spots:    { en: 'Spots Available',  es: 'Lugares'            },
+    notes:    { en: 'A Note from Your Host', es: 'Nota del anfitrión' },
+    rsvp:     { en: 'Your Response',    es: 'Tu Respuesta'       },
+    accept:   { en: 'Accept',           es: 'Acepto'             },
+    maybe:    { en: 'Maybe',            es: 'Quizás'             },
+    decline:  { en: 'Decline',          es: 'No Puedo'           },
+  };
+
+  function updateLanguage() {
+    const lang = document.getElementById('f-language').value;
+    Object.entries(LABELS).forEach(([key, vals]) => {
+      const el = document.getElementById('pl-' + key);
+      if (!el) return;
+      if (lang === 'bilingual') {
+        el.textContent = vals.es + ' / ' + vals.en;
+      } else if (lang === 'es') {
+        el.textContent = vals.es;
+      } else {
+        el.textContent = vals.en;
+      }
+    });
   }
 
   // --- Dynamic rows: Court of Honor ---
