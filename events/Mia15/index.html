@@ -1113,7 +1113,7 @@
             </svg>
           </div>
           <div class="mass-text">
-            <div class="mass-label" id="label-mass">Ceremony</div>
+            <div class="mass-label" id="label-mass">Misa de Acción de Gracias</div>
             <div class="mass-venue" id="el-mass-venue"></div>
             <div class="mass-time" id="el-mass-time-detail"></div>
             <div class="mass-address" id="el-mass-address"></div>
@@ -1356,7 +1356,7 @@
         document.getElementById('el-mass-venue').textContent       = EVENT.massVenueName;
         document.getElementById('el-mass-time-detail').textContent = EVENT.massTime || '';
         document.getElementById('el-mass-address').innerHTML       = EVENT.massVenueAddress + '<br>' + EVENT.massVenueCity;
-        label('label-mass', 'Ceremony', 'Misa');
+        if (es) document.getElementById('label-mass').textContent  = 'Misa de Acción de Gracias';
 
         // Show mass + reception in info grid
         document.getElementById('el-mass-time').textContent        = EVENT.massTime || '';
