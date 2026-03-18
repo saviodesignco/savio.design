@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>savio.design</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:    #080808;
+      --gold:  #c9a96e;
+      --text:  #f0ece4;
+      --muted: #6a6560;
+      --soft:  #a09890;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-weight: 300;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ============================================================
+       CENTERED LAYOUT
+       ============================================================ */
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+      text-align: center;
+      gap: 0;
+    }
+
+    /* ============================================================
+       ORNAMENT
+       ============================================================ */
+    .ornament {
+      margin-bottom: 2.5rem;
+      opacity: 0.2;
+    }
+
+    .ornament svg {
+      width: 48px;
+      height: 48px;
+    }
+
+    /* ============================================================
+       WORDMARK
+       ============================================================ */
+    .wordmark {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2.8rem, 10vw, 4.5rem);
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 0.6rem;
+    }
+
+    .wordmark em {
+      font-style: normal;
+      color: var(--gold);
+    }
+
+    /* ============================================================
+       TAGLINE
+       ============================================================ */
+    .tagline {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(1rem, 3vw, 1.25rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--soft);
+      letter-spacing: 0.02em;
+      margin-bottom: 3rem;
+    }
+
+    /* ============================================================
+       DIVIDER LINE
+       ============================================================ */
+    .rule {
+      width: 40px;
+      height: 1px;
+      background: var(--gold);
+      opacity: 0.35;
+      margin: 0 auto 3rem;
+    }
+
+    /* ============================================================
+       COMING SOON MESSAGE
+       ============================================================ */
+    .coming-soon {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ============================================================
+       FOOTER
+       ============================================================ */
+    footer {
+      position: fixed;
+      bottom: 2rem;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0.4;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Decorative diamond ornament -->
+  <div class="ornament">
+    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="24" y="2" width="30" height="30" rx="2" transform="rotate(45 24 2)" stroke="#c9a96e" stroke-width="0.75"/>
+      <rect x="24" y="9" width="20" height="20" rx="1" transform="rotate(45 24 9)" stroke="#c9a96e" stroke-width="0.5"/>
+    </svg>
+  </div>
+
+  <!-- Wordmark -->
+  <div class="wordmark">savio<em>.</em>design</div>
+
+  <!-- Tagline -->
+  <div class="tagline">Digital Invitations by Hector</div>
+
+  <div class="rule"></div>
+
+  <!-- Status -->
+  <div class="coming-soon">Coming Soon</div>
+
+  <!-- Footer -->
+  <footer>savio.design &mdash; Hector Savio</footer>
+
+</body>
+</html>
