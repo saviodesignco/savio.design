@@ -9,6 +9,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
 
   <!-- ============================================================
+       OPEN GRAPH — link preview for iMessage, WhatsApp, etc.
+       Values are set dynamically from EVENT config below.
+       ============================================================ -->
+  <meta id="og-title"       property="og:title"              content="" />
+  <meta id="og-description" property="og:description"        content="" />
+  <meta id="og-image"       property="og:image"              content="" />
+  <meta id="og-url"         property="og:url"                content="" />
+  <meta                     property="og:type"               content="website" />
+  <meta id="tw-card"        name="twitter:card"              content="summary_large_image" />
+  <meta id="tw-title"       name="twitter:title"             content="" />
+  <meta id="tw-image"       name="twitter:image"             content="" />
+
+  <!-- ============================================================
        EVENT CONFIG — edit this object to customise the invitation
        ============================================================ -->
   <script>
@@ -86,6 +99,13 @@
       photographerName:      "720Studio",
       photographerHandle:    "@720studiophoto",
       photographerInstagram: "https://www.instagram.com/720studiophoto",
+
+      // --- Social preview (Open Graph) ---
+      // Full absolute URL to the image shown when the link is shared via
+      // iMessage, WhatsApp, Instagram DMs, etc.
+      // e.g. "https://savio.design/events/Mia/photo1.jpg"
+      // Leave "" to use no preview image.
+      ogImage: "",
 
       // --- Password gate — leave "" to disable ---
       eventPassword: "savio2025"
@@ -1388,6 +1408,17 @@
       document.getElementById('el-notes').textContent    = EVENT.notes;
       document.getElementById('footer-host').textContent = EVENT.hostName;
       document.title = EVENT.eventTitle + ' — ' + EVENT.hostName;
+
+      // --- Open Graph / social preview ---
+      const ogDesc = `You're invited to ${EVENT.eventTitle} on ${EVENT.date}. Hosted by ${EVENT.hostName}.`;
+      document.getElementById('og-title').content       = EVENT.eventTitle + ' — ' + EVENT.hostName;
+      document.getElementById('og-description').content = ogDesc;
+      document.getElementById('og-url').content         = window.location.href;
+      document.getElementById('tw-title').content       = EVENT.eventTitle + ' — ' + EVENT.hostName;
+      if (EVENT.ogImage) {
+        document.getElementById('og-image').content = EVENT.ogImage;
+        document.getElementById('tw-image').content = EVENT.ogImage;
+      }
 
       // --- Bilingual labels ---
       label('label-date',          'Date',            'Fecha');

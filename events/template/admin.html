@@ -837,6 +837,18 @@
         </div>
       </div>
 
+      <!-- SECTION: Social Preview -->
+      <div class="form-section">
+        <div class="section-title">Social Preview (iMessage / WhatsApp)</div>
+        <div class="fields">
+          <div class="field">
+            <label for="f-ogImage">Preview Image URL</label>
+            <input type="text" id="f-ogImage" placeholder="https://savio.design/events/Mia/photo1.jpg" />
+            <small style="color:#7a7570;font-size:11px;margin-top:4px;display:block;">Full URL shown when the link is shared. Use one of your hero image filenames with the full savio.design path.</small>
+          </div>
+        </div>
+      </div>
+
       <!-- SECTION: Password Gate -->
       <div class="form-section">
         <div class="section-title">Password Gate</div>
@@ -1057,6 +1069,7 @@
     'f-photographerName':      { fn: updatePhotographer },
     'f-photographerHandle':    { fn: updatePhotographer },
     'f-photographerInstagram': { fn: () => {} },
+    'f-ogImage':               { fn: () => {} },
     'f-eventPassword':         { fn: () => {} }
   };
 
@@ -1361,6 +1374,7 @@
       photographerName:      val('f-photographerName'),
       photographerHandle:    val('f-photographerHandle'),
       photographerInstagram: val('f-photographerInstagram'),
+      ogImage:               val('f-ogImage'),
       eventPassword:         val('f-eventPassword')
     };
 
