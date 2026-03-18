@@ -816,6 +816,27 @@
         </div>
       </div>
 
+      <!-- SECTION: Photographer -->
+      <div class="form-section">
+        <div class="section-title">Photographer Credit (leave name blank to hide)</div>
+        <div class="fields">
+          <div class="field-row">
+            <div class="field">
+              <label for="f-photographerName">Studio / Name</label>
+              <input type="text" id="f-photographerName" placeholder="720Studio" value="720Studio" />
+            </div>
+            <div class="field">
+              <label for="f-photographerHandle">Instagram Handle</label>
+              <input type="text" id="f-photographerHandle" placeholder="@720studiophoto" value="@720studiophoto" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="f-photographerInstagram">Instagram URL</label>
+            <input type="text" id="f-photographerInstagram" placeholder="https://www.instagram.com/720studiophoto" value="https://www.instagram.com/720studiophoto" />
+          </div>
+        </div>
+      </div>
+
       <!-- SECTION: Password Gate -->
       <div class="form-section">
         <div class="section-title">Password Gate</div>
@@ -975,8 +996,22 @@
 
         </div><!-- /.p-body -->
 
+        <!-- Photographer credit -->
+        <div id="p-photographer-bar" style="padding:0.7rem 1.25rem; border-top:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:0.5rem;">
+          <div style="width:24px;height:24px;border-radius:50%;border:1px solid rgba(201,169,110,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg viewBox="0 0 24 24" width="11" height="11" stroke="#c9a96e" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5"/>
+              <circle cx="12" cy="12" r="4"/>
+            </svg>
+          </div>
+          <div>
+            <div style="font-size:0.52rem;letter-spacing:0.15em;text-transform:uppercase;color:#6a6560;">Photography by</div>
+            <div id="p-photographer-handle" style="font-size:0.75rem;color:#a09890;">@720studiophoto</div>
+          </div>
+        </div>
+
         <div class="p-footer">
-          <div class="p-footer-host">Hosted by <strong id="p-footer-host">Hector Savio</strong></div>
+          <div class="p-footer-host">Hosted by <strong id="p-footer-host">Sofía García</strong></div>
           <div class="p-footer-brand">savio.design</div>
         </div>
 
@@ -1018,8 +1053,11 @@
     'f-heroImage1':       { fn: updateHero },
     'f-heroImage2':       { fn: updateHero },
     'f-heroImage3':       { fn: updateHero },
-    'f-formspreeEndpoint':{ fn: () => {} },
-    'f-eventPassword':    { fn: () => {} }
+    'f-formspreeEndpoint':     { fn: () => {} },
+    'f-photographerName':      { fn: updatePhotographer },
+    'f-photographerHandle':    { fn: updatePhotographer },
+    'f-photographerInstagram': { fn: () => {} },
+    'f-eventPassword':         { fn: () => {} }
   };
 
   function updateHost() {
@@ -1126,6 +1164,18 @@
       const img = document.createElement('img');
       img.src = srcs[0];
       hero.appendChild(img);
+    }
+  }
+
+  function updatePhotographer() {
+    const name   = val('f-photographerName').trim();
+    const handle = val('f-photographerHandle').trim();
+    const bar    = document.getElementById('p-photographer-bar');
+    if (name) {
+      bar.style.display = '';
+      set('p-photographer-handle', handle || name);
+    } else {
+      bar.style.display = 'none';
     }
   }
 
@@ -1305,10 +1355,13 @@
       notes:            val('f-notes'),
       court,
       padrinos,
-      heroImages:       ['f-heroImage1','f-heroImage2','f-heroImage3'].map(id => val(id).trim()).filter(s => s !== ''),
-      formspreeEndpoint:val('f-formspreeEndpoint'),
-      rsvpEmail:        val('f-rsvpEmail'),
-      eventPassword:    val('f-eventPassword')
+      heroImages:            ['f-heroImage1','f-heroImage2','f-heroImage3'].map(id => val(id).trim()).filter(s => s !== ''),
+      formspreeEndpoint:     val('f-formspreeEndpoint'),
+      rsvpEmail:             val('f-rsvpEmail'),
+      photographerName:      val('f-photographerName'),
+      photographerHandle:    val('f-photographerHandle'),
+      photographerInstagram: val('f-photographerInstagram'),
+      eventPassword:         val('f-eventPassword')
     };
 
     // Build formatted JS object string
