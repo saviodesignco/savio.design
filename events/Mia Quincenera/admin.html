@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Event Config — savio.design Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #080808;
+      --surface:    #111111;
+      --surface-2:  #181818;
+      --surface-3:  #1e1e1e;
+      --border:     rgba(255,255,255,0.08);
+      --border-2:   rgba(255,255,255,0.05);
+      --gold:       #c9a96e;
+      --gold-light: #e8c98a;
+      --text:       #f0ece4;
+      --text-muted: #6a6560;
+      --text-soft:  #a09890;
+      --accent:     rgba(201,169,110,0.12);
+      --radius:     12px;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-weight: 300;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ============================================================
+       LAYOUT — two-pane split
+       ============================================================ */
+    .admin-layout {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ============================================================
+       LEFT PANE — config form
+       ============================================================ */
+    .config-pane {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .config-header {
+      padding: 1.5rem 1.5rem 1rem;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .config-header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.15rem;
+    }
+
+    .config-header p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.03em;
+    }
+
+    .config-scroll {
+      overflow-y: auto;
+      flex: 1;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+    }
+
+    /* Scrollbar */
+    .config-scroll::-webkit-scrollbar { width: 4px; }
+    .config-scroll::-webkit-scrollbar-track { background: transparent; }
+    .config-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    /* ============================================================
+       FORM SECTIONS
+       ============================================================ */
+    .form-section {}
+
+    .section-title {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(201,169,110,0.15);
+    }
+
+    .fields { display: flex; flex-direction: column; gap: 0.65rem; }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.65rem;
+    }
+
+    .field { display: flex; flex-direction: column; gap: 0.3rem; }
+
+    label {
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    input[type="password"],
+    textarea {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 0.6rem 0.8rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+      resize: none;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="number"]:focus,
+    input[type="password"]:focus,
+    textarea:focus {
+      border-color: var(--gold);
+      background: var(--surface-3);
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+
+    /* ============================================================
+       COPY CONFIG BUTTON
+       ============================================================ */
+    .copy-btn {
+      width: 100%;
+      padding: 0.85rem;
+      background: var(--gold);
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #0a0a0a;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      flex-shrink: 0;
+    }
+
+    .copy-btn:hover   { background: var(--gold-light); }
+    .copy-btn:active  { transform: scale(0.99); }
+    .copy-btn.copied  { background: #2ecc71; color: #0a0a0a; }
+
+    .config-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .copy-hint {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+
+    /* ============================================================
+       RIGHT PANE — preview
+       ============================================================ */
+    .preview-pane {
+      background: #0a0a0a;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .preview-pane::-webkit-scrollbar { width: 4px; }
+    .preview-pane::-webkit-scrollbar-track { background: transparent; }
+    .preview-pane::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    .preview-topbar {
+      padding: 0.7rem 1.5rem;
+      border-bottom: 1px solid var(--border-2);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      background: #0a0a0a;
+      z-index: 5;
+    }
+
+    .preview-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--border);
+    }
+
+    .preview-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-left: 0.25rem;
+    }
+
+    .preview-content {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem 1rem 4rem;
+    }
+
+    /* ============================================================
+       INVITATION CARD (preview mirror)
+       — identical variables, isolated in preview scope
+       ============================================================ */
+    .preview-card {
+      width: 100%;
+      max-width: 440px;
+      background: #111111;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .p-hero {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: linear-gradient(135deg, #1a1208 0%, #2d1f0a 40%, #0a0a0a 100%);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .p-hero svg { width: 50px; height: 50px; opacity: 0.12; }
+
+    .p-hero img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .p-hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 50%, #111111 100%);
+    }
+
+    .p-body {
+      padding: 1.75rem 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .p-badge {
+      display: inline-block;
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #c9a96e;
+      border: 1px solid rgba(201,169,110,0.3);
+      border-radius: 100px;
+      padding: 0.25rem 0.75rem;
+      align-self: flex-start;
+    }
+
+    .p-title-block { display: flex; flex-direction: column; gap: 0.4rem; }
+
+    .p-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.6rem, 5vw, 2.2rem);
+      font-weight: 400;
+      line-height: 1.1;
+      color: #f0ece4;
+    }
+
+    .p-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.95rem;
+      font-style: italic;
+      font-weight: 300;
+      color: #a09890;
+    }
+
+    .p-byline {
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #6a6560;
+      margin-top: 0.1rem;
+    }
+
+    .p-byline span { color: #e8c98a; font-weight: 400; }
+
+    .p-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.08);
+      position: relative;
+    }
+
+    .p-divider::after {
+      content: '';
+      position: absolute;
+      left: 0; top: 0;
+      width: 40px; height: 1px;
+      background: #c9a96e;
+      opacity: 0.4;
+    }
+
+    .p-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem 0.75rem;
+    }
+
+    .p-label {
+      font-size: 0.58rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #6a6560;
+      margin-bottom: 0.2rem;
+    }
+
+    .p-val {
+      font-size: 0.85rem;
+      color: #f0ece4;
+      line-height: 1.4;
+    }
+
+    .p-val.accent { color: #e8c98a; }
+
+    .p-location {
+      background: #1a1a1a;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 9px;
+      padding: 1rem;
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .p-loc-icon {
+      flex-shrink: 0;
+      width: 32px; height: 32px;
+      border: 1px solid rgba(201,169,110,0.2);
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .p-loc-icon svg { width: 13px; height: 13px; stroke: #c9a96e; fill: none; }
+
+    .p-venue { font-family: 'Cormorant Garamond', serif; font-size: 0.95rem; font-weight: 500; color: #f0ece4; margin-bottom: 0.15rem; }
+
+    .p-addr { font-size: 0.75rem; color: #6a6560; line-height: 1.4; }
+
+    .p-notes {
+      border-left: 2px solid rgba(201,169,110,0.2);
+      padding-left: 0.85rem;
+    }
+
+    .p-notes-label {
+      font-size: 0.58rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #c9a96e;
+      margin-bottom: 0.4rem;
+    }
+
+    .p-notes-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.9rem;
+      font-style: italic;
+      font-weight: 300;
+      color: #a09890;
+      line-height: 1.7;
+    }
+
+    .p-rsvp-label {
+      font-size: 0.58rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #6a6560;
+      margin-bottom: 0.5rem;
+    }
+
+    .p-rsvp-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    .p-rsvp-btn {
+      padding: 0.65rem 0.4rem;
+      border-radius: 7px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #1a1a1a;
+      color: #a09890;
+      text-align: center;
+    }
+
+    .p-cal-btn {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 7px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #6a6560;
+      background: transparent;
+      text-align: center;
+    }
+
+    .p-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .p-footer-host { font-size: 0.72rem; color: #6a6560; }
+    .p-footer-host strong { color: #a09890; font-weight: 400; }
+    .p-footer-brand { font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: #6a6560; opacity: 0.5; }
+  </style>
+</head>
+<body>
+
+<div class="admin-layout">
+
+  <!-- ============================================================
+       LEFT PANE — CONFIG FORM
+       ============================================================ -->
+  <div class="config-pane">
+    <div class="config-header">
+      <h1>Event Config</h1>
+      <p>Fill in the fields — the preview updates live as you type.</p>
+    </div>
+
+    <div class="config-scroll" id="config-form">
+
+      <!-- SECTION: Event Identity -->
+      <div class="form-section">
+        <div class="section-title">Event Identity</div>
+        <div class="fields">
+          <div class="field-row">
+            <div class="field">
+              <label for="f-eventType">Event Type</label>
+              <input type="text" id="f-eventType" placeholder="Dinner Party" value="Dinner Party" />
+            </div>
+            <div class="field">
+              <label for="f-hostName">Host Name</label>
+              <input type="text" id="f-hostName" placeholder="Hector Savio" value="Hector Savio" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="f-eventTitle">Event Title</label>
+            <input type="text" id="f-eventTitle" placeholder="An Evening to Remember" value="An Evening to Remember" />
+          </div>
+          <div class="field">
+            <label for="f-eventSubtitle">Subtitle / tagline</label>
+            <input type="text" id="f-eventSubtitle" placeholder="A private dinner for close friends" value="A private dinner for close friends" />
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Date & Time -->
+      <div class="form-section">
+        <div class="section-title">Date &amp; Time</div>
+        <div class="fields">
+          <div class="field">
+            <label for="f-date">Date (display string)</label>
+            <input type="text" id="f-date" placeholder="Saturday, April 12 2025" value="Saturday, April 12 2025" />
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="f-time">Start Time</label>
+              <input type="text" id="f-time" placeholder="7:00 PM" value="7:00 PM" />
+            </div>
+            <div class="field">
+              <label for="f-doorsOpen">Doors Open</label>
+              <input type="text" id="f-doorsOpen" placeholder="6:45 PM" value="6:45 PM" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="f-duration">Duration</label>
+            <input type="text" id="f-duration" placeholder="3 hours" value="3 hours" />
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Capacity -->
+      <div class="form-section">
+        <div class="section-title">Capacity</div>
+        <div class="fields">
+          <div class="field-row">
+            <div class="field">
+              <label for="f-spotsLeft">Spots Available</label>
+              <input type="number" id="f-spotsLeft" placeholder="8" value="8" />
+            </div>
+            <div class="field">
+              <label for="f-spotsTotal">Total Capacity</label>
+              <input type="number" id="f-spotsTotal" placeholder="20" value="20" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Venue -->
+      <div class="form-section">
+        <div class="section-title">Venue</div>
+        <div class="fields">
+          <div class="field">
+            <label for="f-venueName">Venue Name</label>
+            <input type="text" id="f-venueName" placeholder="The Atelier" value="The Atelier" />
+          </div>
+          <div class="field">
+            <label for="f-venueAddress">Street Address</label>
+            <input type="text" id="f-venueAddress" placeholder="123 West 57th Street" value="123 West 57th Street" />
+          </div>
+          <div class="field">
+            <label for="f-venueCity">City / Zip</label>
+            <input type="text" id="f-venueCity" placeholder="New York, NY 10019" value="New York, NY 10019" />
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Host Notes -->
+      <div class="form-section">
+        <div class="section-title">Host Notes</div>
+        <div class="fields">
+          <div class="field">
+            <label for="f-notes">Note to Guests</label>
+            <textarea id="f-notes" rows="3" placeholder="Dress code, dietary notes, arrival instructions…">Dress code: smart casual. This is an intimate evening — please let me know your dietary requirements when you RSVP.</textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Media & RSVP -->
+      <div class="form-section">
+        <div class="section-title">Media &amp; RSVP</div>
+        <div class="fields">
+          <div class="field">
+            <label for="f-heroImagePath">Hero Image URL (leave blank for gradient)</label>
+            <input type="text" id="f-heroImagePath" placeholder="https://… or relative path" />
+          </div>
+          <div class="field">
+            <label for="f-rsvpEmail">RSVP Email</label>
+            <input type="email" id="f-rsvpEmail" placeholder="you@example.com" value="hector@savio.design" />
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Password Gate -->
+      <div class="form-section">
+        <div class="section-title">Password Gate</div>
+        <div class="fields">
+          <div class="field">
+            <label for="f-eventPassword">Password (leave blank to disable gate)</label>
+            <input type="text" id="f-eventPassword" placeholder="e.g. savio2025" value="savio2025" />
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.config-scroll -->
+
+    <!-- Copy Config Button -->
+    <div class="config-footer">
+      <button class="copy-btn" id="copy-btn" onclick="copyConfig()">Copy Config Object</button>
+      <p class="copy-hint">Paste this into the &lt;script&gt; block at the top of index.html</p>
+    </div>
+  </div><!-- /.config-pane -->
+
+
+  <!-- ============================================================
+       RIGHT PANE — LIVE PREVIEW
+       ============================================================ -->
+  <div class="preview-pane">
+    <div class="preview-topbar">
+      <div class="preview-dot"></div>
+      <div class="preview-dot"></div>
+      <div class="preview-dot"></div>
+      <span class="preview-label">Live Preview</span>
+    </div>
+
+    <div class="preview-content">
+      <div class="preview-card" id="preview-card">
+
+        <!-- Hero -->
+        <div class="p-hero" id="p-hero">
+          <svg viewBox="0 0 60 60" fill="none">
+            <rect x="30" y="4" width="37" height="37" rx="2" transform="rotate(45 30 4)" stroke="#c9a96e" stroke-width="0.5"/>
+            <rect x="30" y="12" width="26" height="26" rx="1" transform="rotate(45 30 12)" stroke="#c9a96e" stroke-width="0.5"/>
+          </svg>
+        </div>
+
+        <div class="p-body">
+
+          <div class="p-badge" id="p-badge">Dinner Party</div>
+
+          <div class="p-title-block">
+            <div class="p-title" id="p-title">An Evening to Remember</div>
+            <div class="p-subtitle" id="p-subtitle">A private dinner for close friends</div>
+            <div class="p-byline">Hosted by <span id="p-host">Hector Savio</span></div>
+          </div>
+
+          <div class="p-divider"></div>
+
+          <div class="p-grid">
+            <div>
+              <div class="p-label">Date</div>
+              <div class="p-val" id="p-date">Saturday, April 12 2025</div>
+            </div>
+            <div>
+              <div class="p-label">Time</div>
+              <div class="p-val" id="p-time">7:00 PM</div>
+            </div>
+            <div>
+              <div class="p-label">Doors Open</div>
+              <div class="p-val" id="p-doors">6:45 PM</div>
+            </div>
+            <div>
+              <div class="p-label">Duration</div>
+              <div class="p-val" id="p-duration">3 hours</div>
+            </div>
+            <div>
+              <div class="p-label">Spots Available</div>
+              <div class="p-val accent" id="p-spots">8 of 20</div>
+            </div>
+          </div>
+
+          <div class="p-divider"></div>
+
+          <div class="p-location">
+            <div class="p-loc-icon">
+              <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 21c-4-4-7-7.5-7-11a7 7 0 0114 0c0 3.5-3 7-7 11z"/>
+                <circle cx="12" cy="10" r="2"/>
+              </svg>
+            </div>
+            <div>
+              <div class="p-venue" id="p-venue">The Atelier</div>
+              <div class="p-addr" id="p-addr">123 West 57th Street<br>New York, NY 10019</div>
+            </div>
+          </div>
+
+          <div class="p-notes" id="p-notes-block">
+            <div class="p-notes-label">A Note from Your Host</div>
+            <div class="p-notes-text" id="p-notes">Dress code: smart casual. This is an intimate evening — please let me know your dietary requirements when you RSVP.</div>
+          </div>
+
+          <div class="p-divider"></div>
+
+          <div>
+            <div class="p-rsvp-label">Your Response</div>
+            <div class="p-rsvp-btns">
+              <div class="p-rsvp-btn">Accept</div>
+              <div class="p-rsvp-btn">Maybe</div>
+              <div class="p-rsvp-btn">Decline</div>
+            </div>
+          </div>
+
+          <div class="p-cal-btn">+ Add to Calendar</div>
+
+        </div><!-- /.p-body -->
+
+        <div class="p-footer">
+          <div class="p-footer-host">Hosted by <strong id="p-footer-host">Hector Savio</strong></div>
+          <div class="p-footer-brand">savio.design</div>
+        </div>
+
+      </div><!-- /.preview-card -->
+    </div>
+  </div><!-- /.preview-pane -->
+
+</div><!-- /.admin-layout -->
+
+
+<!-- ============================================================
+     JAVASCRIPT — LIVE PREVIEW ENGINE
+     ============================================================ -->
+<script>
+  // Map: field id → preview element id (or custom handler)
+  const FIELD_MAP = {
+    'f-eventType':    { el: 'p-badge' },
+    'f-hostName':     { fn: updateHost },
+    'f-eventTitle':   { el: 'p-title' },
+    'f-eventSubtitle':{ el: 'p-subtitle' },
+    'f-date':         { el: 'p-date' },
+    'f-time':         { el: 'p-time' },
+    'f-doorsOpen':    { el: 'p-doors' },
+    'f-duration':     { el: 'p-duration' },
+    'f-spotsLeft':    { fn: updateSpots },
+    'f-spotsTotal':   { fn: updateSpots },
+    'f-venueName':    { el: 'p-venue' },
+    'f-venueAddress': { fn: updateAddress },
+    'f-venueCity':    { fn: updateAddress },
+    'f-notes':        { fn: updateNotes },
+    'f-heroImagePath':{ fn: updateHero },
+    'f-eventPassword':{ fn: () => {} } // no visual change in preview
+  };
+
+  function updateHost() {
+    const v = val('f-hostName');
+    set('p-host', v);
+    set('p-footer-host', v);
+  }
+
+  function updateSpots() {
+    const left  = parseInt(val('f-spotsLeft'))  || 0;
+    const total = parseInt(val('f-spotsTotal')) || 0;
+    const el = document.getElementById('p-spots');
+    if (left > 0) {
+      el.textContent = left + ' of ' + total;
+      el.style.color = '';
+    } else {
+      el.textContent = 'Waitlist Only';
+      el.style.color = '#c0392b';
+    }
+  }
+
+  function updateAddress() {
+    const addr = val('f-venueAddress');
+    const city = val('f-venueCity');
+    document.getElementById('p-addr').innerHTML = addr + '<br>' + city;
+  }
+
+  function updateNotes() {
+    const v = val('f-notes');
+    const block = document.getElementById('p-notes-block');
+    if (!v.trim()) {
+      block.style.display = 'none';
+    } else {
+      block.style.display = '';
+      set('p-notes', v);
+    }
+  }
+
+  function updateHero() {
+    const src = val('f-heroImagePath').trim();
+    const hero = document.getElementById('p-hero');
+    const existing = hero.querySelector('img');
+
+    if (src) {
+      if (!existing) {
+        const img = document.createElement('img');
+        img.src = src;
+        hero.appendChild(img);
+      } else {
+        existing.src = src;
+      }
+    } else {
+      if (existing) existing.remove();
+    }
+  }
+
+  // Helpers
+  function val(id) { return document.getElementById(id).value; }
+  function set(id, text) { document.getElementById(id).textContent = text; }
+
+  // Wire up all inputs
+  document.addEventListener('DOMContentLoaded', () => {
+    Object.keys(FIELD_MAP).forEach(fieldId => {
+      const field = document.getElementById(fieldId);
+      if (!field) return;
+      const mapping = FIELD_MAP[fieldId];
+
+      const handler = () => {
+        if (mapping.fn) {
+          mapping.fn();
+        } else {
+          set(mapping.el, field.value);
+        }
+      };
+
+      field.addEventListener('input', handler);
+    });
+  });
+</script>
+
+
+<!-- ============================================================
+     JAVASCRIPT — COPY CONFIG
+     ============================================================ -->
+<script>
+  function copyConfig() {
+    const cfg = {
+      eventType:     val('f-eventType'),
+      eventTitle:    val('f-eventTitle'),
+      eventSubtitle: val('f-eventSubtitle'),
+      hostName:      val('f-hostName'),
+      date:          val('f-date'),
+      dayOfWeek:     val('f-date').split(',')[0].trim(),
+      time:          val('f-time'),
+      doorsOpen:     val('f-doorsOpen'),
+      duration:      val('f-duration'),
+      spotsLeft:     parseInt(val('f-spotsLeft')) || 0,
+      spotsTotal:    parseInt(val('f-spotsTotal')) || 0,
+      venueName:     val('f-venueName'),
+      venueAddress:  val('f-venueAddress'),
+      venueCity:     val('f-venueCity'),
+      notes:         val('f-notes'),
+      heroImagePath: val('f-heroImagePath'),
+      rsvpEmail:     val('f-rsvpEmail'),
+      eventPassword: val('f-eventPassword')
+    };
+
+    // Build formatted JS object string
+    const lines = Object.entries(cfg).map(([k, v]) => {
+      const isNum = typeof v === 'number';
+      const value = isNum ? v : JSON.stringify(v);
+      return `      ${k.padEnd(18)}: ${value},`;
+    });
+
+    const output = `    const EVENT = {\n${lines.join('\n')}\n    };`;
+
+    navigator.clipboard.writeText(output).then(() => {
+      const btn = document.getElementById('copy-btn');
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy Config Object';
+        btn.classList.remove('copied');
+      }, 2000);
+    }).catch(() => {
+      // Fallback for non-https
+      const ta = document.createElement('textarea');
+      ta.value = output;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      const btn = document.getElementById('copy-btn');
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy Config Object';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
+
+</body>
+</html>
