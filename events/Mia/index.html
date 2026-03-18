@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>You're Invited</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <!-- ============================================================
+       EVENT CONFIG — edit this object to customise the invitation
+       ============================================================ -->
+  <script>
+    const EVENT = {
+      eventType:     "Quinceañera",            // Badge label
+      eventTitle:    "Mis Quince Años",        // Main headline
+      eventSubtitle: "Una celebración de vida, fe y amor", // Sub-headline
+      hostName:      "Sofía García",           // Honoree's name
+
+      // --- Language ---
+      // "en" = English labels, "es" = Spanish labels, "bilingual" = both
+      language:      "bilingual",
+
+      // --- Honoree ---
+      honoreeAge:    15,                       // Set to 0 to hide the age line
+      parentNames:   "Sr. y Sra. García",      // Shown as "Hija de..." — leave "" to hide
+
+      // --- Opening phrase (religious / personal) ---
+      // Leave "" to hide. Shown at the very top of the card.
+      openingPhrase: "Agradeciendo a Dios por estos 15 años de vida y bendiciones",
+
+      // --- Date & time ---
+      date:          "Sábado, 12 de Abril 2025",
+      dayOfWeek:     "Saturday",               // English, used in .ics
+      doorsOpen:     "3:30 PM",               // Arrival / doors
+
+      // Mass — leave massVenueName "" to hide this section entirely
+      massTime:      "4:00 PM",
+      massVenueName: "Iglesia de San Patricio",
+      massVenueAddress: "5th Avenue & 50th Street",
+      massVenueCity: "New York, NY 10111",
+
+      // Reception
+      receptionTime: "7:00 PM",               // Shown separately from mass
+      duration:      "5 hours",               // Duration of reception
+      spotsLeft:     0,                        // Set to 0 to show "Waitlist Only"
+      spotsTotal:    150,
+
+      // Reception venue
+      venueName:     "El Gran Salón",
+      venueAddress:  "123 West 57th Street",
+      venueCity:     "New York, NY 10019",
+
+      // --- Host notes ---
+      notes:         "Código de vestimenta: formal. Por favor confirma tu asistencia antes del 1 de marzo.",
+
+      // --- Court of Honor (Corte de Honor) ---
+      // Array of { dama, chambelan } pairs — leave [] to hide section
+      court: [
+        { dama: "Isabella Martínez",  chambelan: "Carlos López"   },
+        { dama: "Valentina Torres",   chambelan: "Miguel Reyes"   },
+        { dama: "Camila Hernández",   chambelan: "Andrés Morales" },
+        { dama: "Luciana Ramírez",    chambelan: "Diego Castillo" },
+      ],
+
+      // --- Padrinos y Madrinas ---
+      // Array of { names, role } — leave [] to hide section
+      padrinos: [
+        { names: "Roberto & Ana González",  role: "Vestido"       },
+        { names: "Luis & Carmen Reyes",     role: "Corona & Ramo" },
+        { names: "Jorge & Patricia Lima",   role: "Música"        },
+        { names: "Marco & Silvia Torres",   role: "Pastel"        },
+      ],
+
+      // --- Slideshow images ---
+      // Relative paths (e.g. "photo1.jpg") or full URLs — leave [] for gradient
+      heroImages: [],
+
+      // --- RSVP ---
+      rsvpEmail:         "hector@savio.design",
+      formspreeEndpoint: "",                   // Paste Formspree URL here
+
+      // --- Password gate — leave "" to disable ---
+      eventPassword: "savio2025"
+    };
+  </script>
+
+  <style>
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #0a0a0a;
+      --surface:      #111111;
+      --surface-2:    #1a1a1a;
+      --border:       rgba(255,255,255,0.08);
+      --gold:         #c9a96e;
+      --gold-light:   #e8c98a;
+      --text:         #f0ece4;
+      --text-muted:   #7a7570;
+      --text-soft:    #b0a99f;
+      --radius:       16px;
+      --card-width:   440px;
+    }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-weight: 300;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ============================================================
+       PASSWORD GATE
+       ============================================================ */
+    #gate {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      padding: 2rem;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+
+    #gate.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    #gate-host {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(1.1rem, 4vw, 1.3rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text-soft);
+      letter-spacing: 0.05em;
+    }
+
+    #gate-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(1.8rem, 6vw, 2.4rem);
+      font-weight: 400;
+      color: var(--text);
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+
+    #gate-divider {
+      width: 40px;
+      height: 1px;
+      background: var(--gold);
+      opacity: 0.5;
+    }
+
+    #gate-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    #gate-form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      width: 100%;
+      max-width: 280px;
+    }
+
+    #gate-input {
+      width: 100%;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.85rem 1.1rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--text);
+      text-align: center;
+      letter-spacing: 0.15em;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    #gate-input:focus {
+      border-color: var(--gold);
+    }
+
+    #gate-input.shake {
+      animation: shake 0.4s ease;
+      border-color: #c0392b;
+    }
+
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%      { transform: translateX(-8px); }
+      40%      { transform: translateX(8px); }
+      60%      { transform: translateX(-6px); }
+      80%      { transform: translateX(6px); }
+    }
+
+    #gate-btn {
+      width: 100%;
+      padding: 0.85rem;
+      background: transparent;
+      border: 1px solid var(--gold);
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    #gate-btn:hover {
+      background: var(--gold);
+      color: var(--bg);
+    }
+
+    #gate-error {
+      font-size: 0.78rem;
+      color: #c0392b;
+      letter-spacing: 0.05em;
+      min-height: 1.2em;
+    }
+
+    /* ============================================================
+       INVITATION CARD WRAPPER
+       ============================================================ */
+    #invitation {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem 4rem;
+      opacity: 0;
+      transition: opacity 0.7s ease 0.1s;
+    }
+
+    #invitation.visible { opacity: 1; }
+
+    .card {
+      width: 100%;
+      max-width: var(--card-width);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    /* ============================================================
+       HERO / SLIDESHOW
+       ============================================================ */
+    .hero {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      background: linear-gradient(135deg, #1a1208 0%, #2d1f0a 40%, #0a0a0a 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Each slide — stacked absolutely, crossfade via opacity */
+    .slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.9s ease;
+    }
+
+    .slide.active { opacity: 1; }
+
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Bottom gradient overlay (sits above slides, below controls) */
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 50%, var(--surface) 100%);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Decorative ornament for gradient fallback */
+    .hero-ornament {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+
+    .hero-ornament svg {
+      width: 60px;
+      height: 60px;
+      opacity: 0.15;
+    }
+
+    /* Dot navigation */
+    .slide-dots {
+      position: absolute;
+      bottom: 12px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      z-index: 3;
+    }
+
+    .slide-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    .slide-dot.active {
+      background: var(--gold);
+      transform: scale(1.3);
+    }
+
+    /* Prev / Next arrows */
+    .slide-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 3;
+      width: 32px;
+      height: 32px;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .hero:hover .slide-arrow { opacity: 1; }
+
+    .slide-arrow svg {
+      width: 14px;
+      height: 14px;
+      stroke: #fff;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .slide-arrow-prev { left: 10px; }
+    .slide-arrow-next { right: 10px; }
+
+    /* ============================================================
+       CARD BODY
+       ============================================================ */
+    .card-body {
+      padding: 2rem 1.75rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+    }
+
+    /* ============================================================
+       BADGE
+       ============================================================ */
+    .badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid rgba(201,169,110,0.3);
+      border-radius: 100px;
+      padding: 0.3rem 0.85rem;
+      align-self: flex-start;
+    }
+
+    /* ============================================================
+       TITLE BLOCK
+       ============================================================ */
+    .title-block { display: flex; flex-direction: column; gap: 0.5rem; }
+
+    .event-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 8vw, 2.8rem);
+      font-weight: 400;
+      line-height: 1.1;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .event-subtitle {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.05rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text-soft);
+      line-height: 1.5;
+    }
+
+    .host-byline {
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .host-byline span {
+      color: var(--gold-light);
+      font-weight: 400;
+    }
+
+    /* ============================================================
+       DIVIDER
+       ============================================================ */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      position: relative;
+    }
+
+    .divider::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 40px;
+      height: 1px;
+      background: var(--gold);
+      opacity: 0.4;
+    }
+
+    /* ============================================================
+       INFO GRID
+       ============================================================ */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem 1rem;
+    }
+
+    .info-item {}
+
+    .info-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.3rem;
+    }
+
+    .info-value {
+      font-size: 0.95rem;
+      color: var(--text);
+      font-weight: 400;
+      line-height: 1.4;
+    }
+
+    .info-value.accent { color: var(--gold-light); }
+
+    /* ============================================================
+       LOCATION BLOCK
+       ============================================================ */
+    .location-block {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .location-icon {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(201,169,110,0.25);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .location-icon svg {
+      width: 16px;
+      height: 16px;
+      stroke: var(--gold);
+      fill: none;
+    }
+
+    .location-text {}
+
+    .venue-name {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 0.2rem;
+    }
+
+    .venue-address {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ============================================================
+       HOST NOTES
+       ============================================================ */
+    .notes-block {
+      border-left: 2px solid rgba(201,169,110,0.25);
+      padding-left: 1rem;
+    }
+
+    .notes-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+    }
+
+    .notes-text {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1rem;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--text-soft);
+      line-height: 1.7;
+    }
+
+    /* ============================================================
+       RSVP BUTTONS
+       ============================================================ */
+    .rsvp-section { display: flex; flex-direction: column; gap: 0.85rem; }
+
+    .rsvp-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .rsvp-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.6rem;
+    }
+
+    .rsvp-btn {
+      padding: 0.75rem 0.5rem;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text-soft);
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+    }
+
+    .rsvp-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    .rsvp-btn.selected-accept  { background: rgba(201,169,110,0.12); border-color: var(--gold); color: var(--gold-light); }
+    .rsvp-btn.selected-maybe   { background: rgba(180,160,110,0.08); border-color: rgba(201,169,110,0.5); color: var(--text-soft); }
+    .rsvp-btn.selected-decline { background: rgba(180,60,50,0.1); border-color: rgba(180,60,50,0.4); color: #c0392b; }
+
+    /* ============================================================
+       RSVP NAME INPUT
+       ============================================================ */
+    .rsvp-name-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .rsvp-name-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .rsvp-name-input {
+      width: 100%;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 0.9rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 300;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .rsvp-name-input:focus { border-color: var(--gold); }
+    .rsvp-name-input::placeholder { color: var(--text-muted); opacity: 0.5; }
+
+    .rsvp-name-input.error { border-color: #c0392b; }
+
+    /* ============================================================
+       RSVP CONFIRMATION STATE
+       ============================================================ */
+    .rsvp-confirmation {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 1.5rem 1rem;
+      text-align: center;
+    }
+
+    .rsvp-confirmation.visible { display: flex; }
+
+    .confirm-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(201,169,110,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 0.25rem;
+    }
+
+    .confirm-icon svg {
+      width: 18px;
+      height: 18px;
+      stroke: var(--gold);
+      fill: none;
+    }
+
+    .confirm-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: var(--text);
+    }
+
+    .confirm-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ============================================================
+       OPENING PHRASE
+       ============================================================ */
+    .opening-phrase {
+      text-align: center;
+      padding: 0.25rem 0.5rem;
+    }
+
+    .opening-phrase-text {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 0.95rem;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--text-soft);
+      line-height: 1.7;
+    }
+
+    /* ============================================================
+       PARENT NAMES / HONOREE AGE
+       ============================================================ */
+    .parent-line {
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-top: 0.1rem;
+    }
+
+    .parent-line span { color: var(--text-soft); }
+
+    .honoree-age {
+      display: inline-block;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 0.8rem;
+      font-weight: 300;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-top: 0.15rem;
+    }
+
+    /* ============================================================
+       MASS BLOCK
+       ============================================================ */
+    .mass-block {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .mass-icon {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(201,169,110,0.25);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mass-icon svg {
+      width: 16px;
+      height: 16px;
+      stroke: var(--gold);
+      fill: none;
+    }
+
+    .mass-text {}
+
+    .mass-label {
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.2rem;
+    }
+
+    .mass-venue {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 0.15rem;
+    }
+
+    .mass-time {
+      font-size: 0.88rem;
+      color: var(--text-soft);
+      margin-bottom: 0.1rem;
+    }
+
+    .mass-address {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ============================================================
+       COURT OF HONOR
+       ============================================================ */
+    .court-block {}
+
+    .court-header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .court-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--text);
+    }
+
+    .court-subtitle {
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .court-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    .court-pair {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .court-name {
+      font-size: 0.8rem;
+      color: var(--text-soft);
+      line-height: 1.3;
+    }
+
+    .court-role {
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .court-divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ============================================================
+       PADRINOS
+       ============================================================ */
+    .padrinos-block {}
+
+    .padrinos-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+    }
+
+    .padrinos-subtitle {
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+
+    .padrinos-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    .padrino-item {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 0.85rem;
+    }
+
+    .padrino-role {
+      font-size: 0.58rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.2rem;
+    }
+
+    .padrino-names {
+      font-size: 0.82rem;
+      color: var(--text-soft);
+      line-height: 1.3;
+    }
+
+    /* ============================================================
+       CALENDAR BUTTON
+       ============================================================ */
+    .calendar-section { position: relative; }
+
+    .cal-btn {
+      width: 100%;
+      padding: 0.85rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .cal-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    .cal-btn svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    .cal-dropdown {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 0;
+      right: 0;
+      background: #1c1c1c;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      display: none;
+      z-index: 10;
+    }
+
+    .cal-dropdown.open { display: block; }
+
+    .cal-option {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.9rem 1.1rem;
+      font-size: 0.82rem;
+      color: var(--text-soft);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      text-decoration: none;
+    }
+
+    .cal-option:hover { background: var(--surface-2); color: var(--text); }
+    .cal-option + .cal-option { border-top: 1px solid var(--border); }
+
+    .cal-option svg {
+      width: 15px;
+      height: 15px;
+      stroke: var(--gold);
+      fill: none;
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       FOOTER
+       ============================================================ */
+    .card-footer {
+      padding: 1.25rem 1.75rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-host {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .footer-host strong {
+      color: var(--text-soft);
+      font-weight: 400;
+    }
+
+    .footer-brand {
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      opacity: 0.5;
+      text-decoration: none;
+    }
+
+    .footer-brand:hover { opacity: 1; color: var(--gold); }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       PASSWORD GATE
+       ============================================================ -->
+  <div id="gate">
+    <div id="gate-host"></div>
+    <div id="gate-title">You're Invited</div>
+    <div id="gate-divider"></div>
+    <div id="gate-label">Enter Password to Continue</div>
+    <form id="gate-form" onsubmit="checkPassword(event)">
+      <input
+        id="gate-input"
+        type="password"
+        placeholder="••••••••"
+        autocomplete="off"
+        autofocus
+      />
+      <div id="gate-error"></div>
+      <button id="gate-btn" type="submit">Enter</button>
+    </form>
+  </div>
+
+  <!-- ============================================================
+       INVITATION CARD
+       ============================================================ -->
+  <div id="invitation">
+    <div class="card">
+
+      <!-- Hero slideshow / gradient fallback — populated by JS -->
+      <div class="hero" id="hero-slot">
+        <!-- Gradient fallback ornament (hidden when images are provided) -->
+        <div class="hero-ornament" id="hero-ornament">
+          <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="30" y="4" width="37" height="37" rx="2" transform="rotate(45 30 4)" stroke="#c9a96e" stroke-width="0.5"/>
+            <rect x="30" y="12" width="26" height="26" rx="1" transform="rotate(45 30 12)" stroke="#c9a96e" stroke-width="0.5"/>
+          </svg>
+        </div>
+        <!-- Slides injected here by JS -->
+        <!-- Arrows (hidden for single image) -->
+        <button class="slide-arrow slide-arrow-prev" id="slide-prev" aria-label="Previous" onclick="slideStep(-1)">
+          <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="slide-arrow slide-arrow-next" id="slide-next" aria-label="Next" onclick="slideStep(1)">
+          <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+        </button>
+        <!-- Dots injected here by JS -->
+        <div class="slide-dots" id="slide-dots"></div>
+      </div>
+
+      <div class="card-body">
+
+        <!-- Badge -->
+        <div class="badge" id="badge-type"></div>
+
+        <!-- Opening phrase (religious / personal) -->
+        <div class="opening-phrase" id="opening-phrase-block">
+          <p class="opening-phrase-text" id="el-opening-phrase"></p>
+        </div>
+
+        <!-- Title -->
+        <div class="title-block">
+          <h1 class="event-title" id="el-title"></h1>
+          <p class="event-subtitle" id="el-subtitle"></p>
+          <div class="honoree-age" id="el-honoree-age"></div>
+          <p class="parent-line" id="el-parent-line"></p>
+          <p class="host-byline">Hosted by <span id="el-host"></span></p>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Info Grid -->
+        <div class="info-grid">
+          <div class="info-item">
+            <div class="info-label" id="label-date">Date</div>
+            <div class="info-value" id="el-date"></div>
+          </div>
+          <div class="info-item" id="el-mass-time-item">
+            <div class="info-label" id="label-mass-time">Misa</div>
+            <div class="info-value" id="el-mass-time"></div>
+          </div>
+          <div class="info-item" id="el-reception-time-item">
+            <div class="info-label" id="label-reception-time">Recepción</div>
+            <div class="info-value" id="el-reception-time"></div>
+          </div>
+          <div class="info-item" id="el-doors-item">
+            <div class="info-label" id="label-doors">Doors Open</div>
+            <div class="info-value" id="el-doors"></div>
+          </div>
+          <div class="info-item">
+            <div class="info-label" id="label-duration">Duration</div>
+            <div class="info-value" id="el-duration"></div>
+          </div>
+          <div class="info-item">
+            <div class="info-label" id="label-spots">Spots Available</div>
+            <div class="info-value accent" id="el-spots"></div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Mass / Church block (optional) -->
+        <div class="mass-block" id="mass-block">
+          <div class="mass-icon">
+            <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+              <path d="M12 2v4M10 4h4"/>
+              <path d="M5 8h14l1 12H4L5 8z"/>
+              <path d="M9 8v4m6-4v4"/>
+            </svg>
+          </div>
+          <div class="mass-text">
+            <div class="mass-label" id="label-mass">Misa de Acción de Gracias</div>
+            <div class="mass-venue" id="el-mass-venue"></div>
+            <div class="mass-time" id="el-mass-time-detail"></div>
+            <div class="mass-address" id="el-mass-address"></div>
+          </div>
+        </div>
+
+        <!-- Reception Location -->
+        <div class="location-block">
+          <div class="location-icon">
+            <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 21c-4-4-7-7.5-7-11a7 7 0 0114 0c0 3.5-3 7-7 11z"/>
+              <circle cx="12" cy="10" r="2"/>
+            </svg>
+          </div>
+          <div class="location-text">
+            <div class="venue-name" id="el-venue"></div>
+            <div class="venue-address" id="el-address"></div>
+          </div>
+        </div>
+
+        <!-- Host Notes -->
+        <div class="notes-block" id="notes-block">
+          <div class="notes-label" id="label-notes">A Note from Your Host</div>
+          <p class="notes-text" id="el-notes"></p>
+        </div>
+
+        <!-- Court of Honor -->
+        <div class="court-block" id="court-block">
+          <div class="court-header">
+            <div class="court-title" id="label-court-title">Corte de Honor</div>
+            <div class="court-subtitle" id="label-court-sub">Court of Honor</div>
+          </div>
+          <div class="court-grid" id="court-grid"></div>
+        </div>
+
+        <!-- Padrinos y Madrinas -->
+        <div class="padrinos-block" id="padrinos-block">
+          <div class="padrinos-title" id="label-padrinos-title">Padrinos y Madrinas</div>
+          <div class="padrinos-subtitle" id="label-padrinos-sub">Sponsors</div>
+          <div class="padrinos-grid" id="padrinos-grid"></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- RSVP Buttons -->
+        <div class="rsvp-section" id="rsvp-section">
+
+          <!-- Name field — shown when Formspree is configured -->
+          <div class="rsvp-name-field" id="rsvp-name-field">
+            <div class="rsvp-name-label">Your Name</div>
+            <input
+              class="rsvp-name-input"
+              id="rsvp-name-input"
+              type="text"
+              placeholder="Enter your name"
+              autocomplete="name"
+            />
+          </div>
+
+          <div class="rsvp-label">Your Response</div>
+          <div class="rsvp-buttons">
+            <a class="rsvp-btn" id="btn-accept"  href="#" onclick="handleRsvp(event,'accept')">
+              <span>Accept</span>
+            </a>
+            <a class="rsvp-btn" id="btn-maybe"   href="#" onclick="handleRsvp(event,'maybe')">
+              <span>Maybe</span>
+            </a>
+            <a class="rsvp-btn" id="btn-decline" href="#" onclick="handleRsvp(event,'decline')">
+              <span>Decline</span>
+            </a>
+          </div>
+
+          <!-- Confirmation — shown after successful Formspree submit -->
+          <div class="rsvp-confirmation" id="rsvp-confirmation">
+            <div class="confirm-icon">
+              <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+            <div class="confirm-title" id="confirm-title">Thank you!</div>
+            <div class="confirm-sub" id="confirm-sub"></div>
+          </div>
+
+        </div>
+
+        <!-- Add to Calendar -->
+        <div class="calendar-section" id="cal-section">
+          <button class="cal-btn" onclick="toggleCalDropdown(event)">
+            <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <path d="M16 2v4M8 2v4M3 10h18"/>
+            </svg>
+            Add to Calendar
+          </button>
+          <div class="cal-dropdown" id="cal-dropdown">
+            <a class="cal-option" href="#" onclick="downloadICS(event)">
+              <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/>
+              </svg>
+              Apple Calendar (.ics)
+            </a>
+            <a class="cal-option" href="#" id="gcal-link" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M12 8v4l3 3"/>
+              </svg>
+              Google Calendar
+            </a>
+          </div>
+        </div>
+
+      </div><!-- /.card-body -->
+
+      <!-- Footer -->
+      <div class="card-footer">
+        <div class="footer-host">Hosted by <strong id="footer-host"></strong></div>
+        <a class="footer-brand" href="https://savio.design" target="_blank" rel="noopener">savio.design</a>
+      </div>
+
+    </div><!-- /.card -->
+  </div><!-- /#invitation -->
+
+
+  <!-- ============================================================
+       JAVASCRIPT — PASSWORD GATE
+       ============================================================ -->
+  <script>
+    // Session key used to remember unlocked state across refreshes
+    const SESSION_KEY = 'savio_event_unlocked';
+
+    function revealInvitation() {
+      document.getElementById('gate').classList.add('hidden');
+      const inv = document.getElementById('invitation');
+      inv.classList.add('visible');
+    }
+
+    function checkPassword(e) {
+      e.preventDefault();
+      const input = document.getElementById('gate-input');
+      const error = document.getElementById('gate-error');
+      const val   = input.value.trim();
+
+      // If no password is set, always pass
+      if (!EVENT.eventPassword || EVENT.eventPassword === '') {
+        revealInvitation();
+        return;
+      }
+
+      if (val === EVENT.eventPassword) {
+        sessionStorage.setItem(SESSION_KEY, '1');
+        revealInvitation();
+      } else {
+        error.textContent = 'Incorrect password — please try again.';
+        input.classList.add('shake');
+        input.value = '';
+        setTimeout(() => {
+          input.classList.remove('shake');
+          error.textContent = '';
+        }, 1000);
+      }
+    }
+
+    // On load: skip gate if no password set, or already unlocked this session
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!EVENT.eventPassword || EVENT.eventPassword === '' || sessionStorage.getItem(SESSION_KEY) === '1') {
+        document.getElementById('gate').style.display = 'none';
+        document.getElementById('invitation').classList.add('visible');
+      } else {
+        document.getElementById('gate-host').textContent = 'An invitation from ' + EVENT.hostName;
+      }
+    });
+  </script>
+
+  <!-- ============================================================
+       JAVASCRIPT — POPULATE INVITATION FROM CONFIG
+       ============================================================ -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+      const lang = EVENT.language || 'en';
+      const es   = lang === 'es' || lang === 'bilingual';
+
+      // --- Helper: set bilingual label ---
+      function label(id, en, esp) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.textContent = (lang === 'bilingual') ? esp + ' / ' + en
+                       : (lang === 'es')        ? esp
+                       : en;
+      }
+
+      // --- Core fields ---
+      document.getElementById('badge-type').textContent  = EVENT.eventType;
+      document.getElementById('el-title').textContent    = EVENT.eventTitle;
+      document.getElementById('el-subtitle').textContent = EVENT.eventSubtitle;
+      document.getElementById('el-host').textContent     = EVENT.hostName;
+      document.getElementById('el-date').textContent     = EVENT.date;
+      document.getElementById('el-duration').textContent = EVENT.duration;
+      document.getElementById('el-venue').textContent    = EVENT.venueName;
+      document.getElementById('el-address').innerHTML    = EVENT.venueAddress + '<br>' + EVENT.venueCity;
+      document.getElementById('el-notes').textContent    = EVENT.notes;
+      document.getElementById('footer-host').textContent = EVENT.hostName;
+      document.title = EVENT.eventTitle + ' — ' + EVENT.hostName;
+
+      // --- Bilingual labels ---
+      label('label-date',          'Date',            'Fecha');
+      label('label-duration',      'Duration',        'Duración');
+      label('label-spots',         'Spots Available', 'Lugares');
+      label('label-doors',         'Doors Open',      'Puertas abren');
+      label('label-notes',         'A Note from Your Host', 'Nota del anfitrión');
+      label('label-court-sub',     'Court of Honor',  'Corte de Honor');
+      label('label-padrinos-sub',  'Sponsors',        'Padrinos y Madrinas');
+
+      // --- Opening phrase ---
+      if (EVENT.openingPhrase && EVENT.openingPhrase.trim() !== '') {
+        document.getElementById('el-opening-phrase').textContent = EVENT.openingPhrase;
+      } else {
+        document.getElementById('opening-phrase-block').style.display = 'none';
+      }
+
+      // --- Honoree age ---
+      const ageEl = document.getElementById('el-honoree-age');
+      if (EVENT.honoreeAge && EVENT.honoreeAge > 0) {
+        ageEl.textContent = es ? EVENT.honoreeAge + ' Años' : EVENT.honoreeAge + ' Years';
+      } else {
+        ageEl.style.display = 'none';
+      }
+
+      // --- Parent names ---
+      const parentEl = document.getElementById('el-parent-line');
+      if (EVENT.parentNames && EVENT.parentNames.trim() !== '') {
+        const prefix = es ? 'Hija de ' : 'Daughter of ';
+        parentEl.innerHTML = prefix + '<span>' + EVENT.parentNames + '</span>';
+      } else {
+        parentEl.style.display = 'none';
+      }
+
+      // --- Mass / church block ---
+      if (EVENT.massVenueName && EVENT.massVenueName.trim() !== '') {
+        document.getElementById('el-mass-venue').textContent       = EVENT.massVenueName;
+        document.getElementById('el-mass-time-detail').textContent = EVENT.massTime || '';
+        document.getElementById('el-mass-address').innerHTML       = EVENT.massVenueAddress + '<br>' + EVENT.massVenueCity;
+        if (es) document.getElementById('label-mass').textContent  = 'Misa de Acción de Gracias';
+
+        // Show mass + reception in info grid
+        document.getElementById('el-mass-time').textContent        = EVENT.massTime || '';
+        document.getElementById('el-reception-time').textContent   = EVENT.receptionTime || '';
+        label('label-mass-time',      'Mass',       'Misa');
+        label('label-reception-time', 'Reception',  'Recepción');
+
+        // Hide generic "doors open" row (mass block shows detail instead)
+        document.getElementById('el-doors-item').style.display     = 'none';
+      } else {
+        // No mass — show standard time + doors open, hide mass-specific rows
+        document.getElementById('mass-block').style.display        = 'none';
+        document.getElementById('el-mass-time-item').style.display = 'none';
+        // Repurpose reception-time row as the main time
+        document.getElementById('el-reception-time').textContent   = EVENT.receptionTime || EVENT.time || '';
+        label('label-reception-time', 'Time', 'Hora');
+        document.getElementById('el-doors').textContent            = EVENT.doorsOpen;
+      }
+
+      // --- Spots ---
+      const spotsEl = document.getElementById('el-spots');
+      if (EVENT.spotsLeft > 0) {
+        spotsEl.textContent = EVENT.spotsLeft + ' / ' + EVENT.spotsTotal;
+      } else {
+        spotsEl.textContent = es ? 'Lista de espera' : 'Waitlist Only';
+        spotsEl.style.color = '#c0392b';
+      }
+
+      // --- Notes ---
+      if (!EVENT.notes || EVENT.notes.trim() === '') {
+        document.getElementById('notes-block').style.display = 'none';
+      }
+
+      // --- Court of Honor ---
+      const court = EVENT.court || [];
+      if (court.length > 0) {
+        label('label-court-title', 'Court of Honor', 'Corte de Honor');
+        const grid = document.getElementById('court-grid');
+        court.forEach(pair => {
+          // Dama
+          const d = document.createElement('div');
+          d.className = 'court-pair';
+          d.innerHTML = '<div class="court-role">' + (es ? 'Dama' : 'Dama') + '</div>'
+                      + '<div class="court-name">' + pair.dama + '</div>';
+          grid.appendChild(d);
+          // Chambelán
+          const c = document.createElement('div');
+          c.className = 'court-pair';
+          c.innerHTML = '<div class="court-role">' + (es ? 'Chambelán' : 'Chambelan') + '</div>'
+                      + '<div class="court-name">' + pair.chambelan + '</div>';
+          grid.appendChild(c);
+        });
+      } else {
+        document.getElementById('court-block').style.display = 'none';
+      }
+
+      // --- Padrinos ---
+      const padrinos = EVENT.padrinos || [];
+      if (padrinos.length > 0) {
+        label('label-padrinos-title', 'Sponsors',           'Padrinos y Madrinas');
+        label('label-padrinos-sub',   'Event Sponsors',     'Patrocinadores');
+        const grid = document.getElementById('padrinos-grid');
+        padrinos.forEach(p => {
+          const el = document.createElement('div');
+          el.className = 'padrino-item';
+          el.innerHTML = '<div class="padrino-role">' + p.role + '</div>'
+                       + '<div class="padrino-names">' + p.names + '</div>';
+          grid.appendChild(el);
+        });
+      } else {
+        document.getElementById('padrinos-block').style.display = 'none';
+      }
+
+      // --- Hero slideshow ---
+      initSlideshow();
+
+      // --- Google Calendar link ---
+      buildGoogleCalLink();
+    });
+  </script>
+
+  <!-- ============================================================
+       JAVASCRIPT — RSVP
+       ============================================================ -->
+  <script>
+    // Hide the name field if Formspree is not configured (mailto fallback needs no name)
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!EVENT.formspreeEndpoint || EVENT.formspreeEndpoint.trim() === '') {
+        document.getElementById('rsvp-name-field').style.display = 'none';
+      }
+    });
+
+    function handleRsvp(e, type) {
+      e.preventDefault();
+
+      // Highlight the selected button immediately
+      ['accept','maybe','decline'].forEach(t => {
+        document.getElementById('btn-' + t).classList.remove(
+          'selected-accept', 'selected-maybe', 'selected-decline'
+        );
+      });
+      document.getElementById('btn-' + type).classList.add('selected-' + type);
+
+      // --- Formspree path ---
+      if (EVENT.formspreeEndpoint && EVENT.formspreeEndpoint.trim() !== '') {
+        const nameInput = document.getElementById('rsvp-name-input');
+        const name = nameInput.value.trim();
+
+        // Require a name before submitting
+        if (!name) {
+          nameInput.classList.add('error');
+          nameInput.placeholder = 'Please enter your name first';
+          nameInput.focus();
+          setTimeout(() => {
+            nameInput.classList.remove('error');
+            nameInput.placeholder = 'Enter your name';
+          }, 2000);
+          // Un-highlight the button since we didn't submit
+          document.getElementById('btn-' + type).classList.remove('selected-' + type);
+          return;
+        }
+
+        const labels = { accept: 'Attending', maybe: 'Maybe', decline: 'Unable to Attend' };
+
+        // Disable buttons while submitting
+        document.querySelectorAll('.rsvp-btn').forEach(b => b.style.pointerEvents = 'none');
+
+        fetch(EVENT.formspreeEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            name:     name,
+            response: labels[type],
+            event:    EVENT.eventTitle,
+            date:     EVENT.date,
+            // _subject sets the notification email subject in Formspree
+            _subject: name + ' responded ' + labels[type] + ' — ' + EVENT.eventTitle
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.ok) {
+            // Hide buttons and name field, show confirmation
+            document.getElementById('rsvp-name-field').style.display = 'none';
+            document.querySelectorAll('.rsvp-btn').forEach(b => b.style.display = 'none');
+            document.querySelector('.rsvp-label').style.display = 'none';
+
+            const confirmTitles = {
+              accept:  'See you there, ' + name.split(' ')[0] + '!',
+              maybe:   'Got it, ' + name.split(' ')[0] + '.',
+              decline: 'Thanks for letting us know.'
+            };
+            const confirmSubs = {
+              accept:  'Your RSVP has been received. ' + EVENT.hostName + ' will be in touch.',
+              maybe:   'Your response has been sent. No pressure — let ' + EVENT.hostName + ' know when you can.',
+              decline: 'We\'ll miss you. Hope to see you at the next one.'
+            };
+
+            document.getElementById('confirm-title').textContent = confirmTitles[type];
+            document.getElementById('confirm-sub').textContent   = confirmSubs[type];
+            document.getElementById('rsvp-confirmation').classList.add('visible');
+          } else {
+            // Formspree returned an error — fall back to mailto
+            fallbackMailto(type);
+          }
+        })
+        .catch(() => fallbackMailto(type));
+
+        return;
+      }
+
+      // --- Mailto fallback (no Formspree configured) ---
+      fallbackMailto(type);
+    }
+
+    function fallbackMailto(type) {
+      const subjects = {
+        accept:  'RSVP — Attending: '        + EVENT.eventTitle,
+        maybe:   'RSVP — Maybe: '            + EVENT.eventTitle,
+        decline: 'RSVP — Unable to Attend: ' + EVENT.eventTitle
+      };
+      const bodies = {
+        accept:  'Hi ' + EVENT.hostName + ',\n\nI\'m happy to confirm I\'ll be attending ' + EVENT.eventTitle + ' on ' + EVENT.date + '.\n\nSee you there!',
+        maybe:   'Hi ' + EVENT.hostName + ',\n\nThank you for the invitation to ' + EVENT.eventTitle + '. I\'m not sure yet but will confirm as soon as possible.',
+        decline: 'Hi ' + EVENT.hostName + ',\n\nThank you so much for the invitation. Unfortunately I won\'t be able to attend ' + EVENT.eventTitle + '.\n\nHope it\'s a wonderful evening!'
+      };
+      window.location.href =
+        'mailto:' + encodeURIComponent(EVENT.rsvpEmail) +
+        '?subject=' + encodeURIComponent(subjects[type]) +
+        '&body='    + encodeURIComponent(bodies[type]);
+    }
+  </script>
+
+  <!-- ============================================================
+       JAVASCRIPT — SLIDESHOW
+       ============================================================ -->
+  <script>
+    let slideIndex   = 0;
+    let slideTimer   = null;
+    const SLIDE_INTERVAL = 4000; // ms between auto-advances
+
+    function initSlideshow() {
+      const images = (EVENT.heroImages || []).filter(s => s && s.trim() !== '');
+      const hero   = document.getElementById('hero-slot');
+      const dots   = document.getElementById('slide-dots');
+
+      // No images — keep gradient ornament, hide controls
+      if (images.length === 0) {
+        document.getElementById('slide-prev').style.display = 'none';
+        document.getElementById('slide-next').style.display = 'none';
+        return;
+      }
+
+      // Has images — hide ornament
+      document.getElementById('hero-ornament').style.display = 'none';
+
+      // Build a slide div for each image
+      images.forEach((src, i) => {
+        const slide = document.createElement('div');
+        slide.className = 'slide' + (i === 0 ? ' active' : '');
+        slide.dataset.index = i;
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = EVENT.eventTitle + ' photo ' + (i + 1);
+        img.loading = i === 0 ? 'eager' : 'lazy';
+        slide.appendChild(img);
+        // Insert before arrows (arrows are last children before dots)
+        hero.insertBefore(slide, document.getElementById('slide-prev'));
+      });
+
+      // Build dots
+      images.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.className = 'slide-dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+        dot.addEventListener('click', () => goToSlide(i));
+        dots.appendChild(dot);
+      });
+
+      // Hide arrows if only one image
+      if (images.length === 1) {
+        document.getElementById('slide-prev').style.display = 'none';
+        document.getElementById('slide-next').style.display = 'none';
+        dots.style.display = 'none';
+      }
+
+      // Start auto-advance
+      if (images.length > 1) startTimer();
+
+      // Pause on hover
+      hero.addEventListener('mouseenter', stopTimer);
+      hero.addEventListener('mouseleave', startTimer);
+      // Pause on touch (mobile tap)
+      hero.addEventListener('touchstart', stopTimer, { passive: true });
+      hero.addEventListener('touchend',   () => setTimeout(startTimer, 3000), { passive: true });
+    }
+
+    function goToSlide(n) {
+      const slides = document.querySelectorAll('.slide');
+      const dotEls = document.querySelectorAll('.slide-dot');
+      if (!slides.length) return;
+
+      slides[slideIndex].classList.remove('active');
+      if (dotEls[slideIndex]) dotEls[slideIndex].classList.remove('active');
+
+      slideIndex = (n + slides.length) % slides.length;
+
+      slides[slideIndex].classList.add('active');
+      if (dotEls[slideIndex]) dotEls[slideIndex].classList.add('active');
+    }
+
+    function slideStep(dir) {
+      goToSlide(slideIndex + dir);
+      // Reset timer so auto-advance doesn't fire immediately after manual nav
+      stopTimer();
+      startTimer();
+    }
+
+    function startTimer() {
+      stopTimer();
+      const slides = document.querySelectorAll('.slide');
+      if (slides.length > 1) {
+        slideTimer = setInterval(() => goToSlide(slideIndex + 1), SLIDE_INTERVAL);
+      }
+    }
+
+    function stopTimer() {
+      clearInterval(slideTimer);
+      slideTimer = null;
+    }
+  </script>
+
+  <!-- ============================================================
+       JAVASCRIPT — ADD TO CALENDAR
+       ============================================================ -->
+  <script>
+    // Toggle calendar dropdown
+    function toggleCalDropdown(e) {
+      e.stopPropagation();
+      document.getElementById('cal-dropdown').classList.toggle('open');
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', () => {
+      document.getElementById('cal-dropdown').classList.remove('open');
+    });
+
+    // --- Parse event date/time into Date objects ---
+    // Expects EVENT.date like "Saturday, April 12 2025" and EVENT.time like "7:00 PM"
+    function parseEventDate() {
+      try {
+        const combined = EVENT.date.replace(/^[A-Za-z]+,\s*/, '') + ' ' + EVENT.time;
+        return new Date(combined);
+      } catch (_) {
+        return null;
+      }
+    }
+
+    // Format for .ics: YYYYMMDDTHHMMSS (local time, no Z)
+    function toICSDate(d) {
+      const pad = n => String(n).padStart(2,'0');
+      return (
+        d.getFullYear() +
+        pad(d.getMonth() + 1) +
+        pad(d.getDate()) +
+        'T' +
+        pad(d.getHours()) +
+        pad(d.getMinutes()) +
+        '00'
+      );
+    }
+
+    // --- .ics download ---
+    function downloadICS(e) {
+      e.preventDefault();
+      document.getElementById('cal-dropdown').classList.remove('open');
+
+      const start = parseEventDate();
+      if (!start) { alert('Could not parse event date — please check the config.'); return; }
+
+      // Parse duration string like "3 hours" → milliseconds
+      let durationMs = 2 * 60 * 60 * 1000; // default 2h
+      const dMatch = (EVENT.duration || '').match(/(\d+(?:\.\d+)?)\s*(hour|hr|h|minute|min|m)/i);
+      if (dMatch) {
+        const val  = parseFloat(dMatch[1]);
+        const unit = dMatch[2].toLowerCase();
+        durationMs = unit.startsWith('h') ? val * 3600000 : val * 60000;
+      }
+      const end = new Date(start.getTime() + durationMs);
+
+      const uid = 'savio-event-' + Date.now() + '@savio.design';
+      const now  = toICSDate(new Date());
+
+      const ics = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//savio.design//Event Invitation//EN',
+        'CALSCALE:GREGORIAN',
+        'METHOD:PUBLISH',
+        'BEGIN:VEVENT',
+        'UID:' + uid,
+        'DTSTAMP:' + now,
+        'DTSTART:' + toICSDate(start),
+        'DTEND:'   + toICSDate(end),
+        'SUMMARY:' + EVENT.eventTitle,
+        'DESCRIPTION:' + (EVENT.eventSubtitle + '\\n\\nHosted by ' + EVENT.hostName).replace(/\n/g,'\\n'),
+        'LOCATION:' + [EVENT.venueName, EVENT.venueAddress, EVENT.venueCity].filter(Boolean).join(', '),
+        'END:VEVENT',
+        'END:VCALENDAR'
+      ].join('\r\n');
+
+      const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href     = url;
+      a.download = EVENT.eventTitle.replace(/\s+/g,'-').toLowerCase() + '.ics';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // --- Google Calendar URL ---
+    function buildGoogleCalLink() {
+      const start = parseEventDate();
+      if (!start) return;
+
+      let durationMs = 2 * 60 * 60 * 1000;
+      const dMatch = (EVENT.duration || '').match(/(\d+(?:\.\d+)?)\s*(hour|hr|h|minute|min|m)/i);
+      if (dMatch) {
+        const val  = parseFloat(dMatch[1]);
+        const unit = dMatch[2].toLowerCase();
+        durationMs = unit.startsWith('h') ? val * 3600000 : val * 60000;
+      }
+      const end = new Date(start.getTime() + durationMs);
+
+      const fmt = d => toICSDate(d); // YYYYMMDDTHHMMSS
+
+      const gcalUrl = 'https://www.google.com/calendar/render?action=TEMPLATE' +
+        '&text='     + encodeURIComponent(EVENT.eventTitle) +
+        '&dates='    + fmt(start) + '/' + fmt(end) +
+        '&details='  + encodeURIComponent(EVENT.eventSubtitle + '\n\nHosted by ' + EVENT.hostName) +
+        '&location=' + encodeURIComponent([EVENT.venueName, EVENT.venueAddress, EVENT.venueCity].filter(Boolean).join(', ')) +
+        '&sf=true&output=xml';
+
+      document.getElementById('gcal-link').href = gcalUrl;
+    }
+  </script>
+
+</body>
+</html>
