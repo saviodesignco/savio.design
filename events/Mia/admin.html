@@ -535,6 +535,67 @@
     .p-footer-host { font-size: 0.72rem; color: #6a6560; }
     .p-footer-host strong { color: #a09890; font-weight: 400; }
     .p-footer-brand { font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: #6a6560; opacity: 0.5; }
+
+    /* Opening phrase */
+    .p-opening-phrase {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.88rem;
+      font-style: italic;
+      font-weight: 300;
+      color: #a09890;
+      text-align: center;
+      line-height: 1.6;
+      padding: 0 0.25rem;
+    }
+
+    /* Honoree age + parent names */
+    .p-age { font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: #c9a96e; margin-top: 0.2rem; }
+    .p-parent { font-size: 0.72rem; color: #6a6560; margin-top: 0.1rem; }
+    .p-parent span { color: #a09890; }
+
+    /* Mass block */
+    .p-mass {
+      background: #1a1a1a;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 9px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      gap: 0.65rem;
+    }
+
+    .p-mass-icon {
+      flex-shrink: 0;
+      width: 28px; height: 28px;
+      border: 1px solid rgba(201,169,110,0.2);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .p-mass-icon svg { width: 12px; height: 12px; stroke: #c9a96e; fill: none; }
+    .p-mass-tag { font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase; color: #c9a96e; margin-bottom: 0.15rem; }
+    .p-mass-name { font-family: 'Cormorant Garamond', serif; font-size: 0.9rem; font-weight: 500; color: #f0ece4; }
+    .p-mass-time-val { font-size: 0.75rem; color: #a09890; margin-top: 0.1rem; }
+    .p-mass-addr { font-size: 0.7rem; color: #6a6560; margin-top: 0.1rem; line-height: 1.4; }
+
+    /* Court of Honor */
+    .p-court { display: flex; flex-direction: column; gap: 0.6rem; }
+    .p-court-title { font-family: 'Cormorant Garamond', serif; font-size: 0.95rem; font-weight: 400; color: #f0ece4; }
+    .p-court-sub { font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase; color: #c9a96e; margin-top: 0.1rem; margin-bottom: 0.4rem; }
+    .p-court-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+    .p-court-pair { background: #1a1a1a; border: 1px solid rgba(255,255,255,0.08); border-radius: 7px; padding: 0.6rem 0.7rem; }
+    .p-court-role { font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; color: #6a6560; margin-bottom: 0.15rem; }
+    .p-court-name { font-size: 0.75rem; color: #a09890; }
+
+    /* Padrinos */
+    .p-padrinos { display: flex; flex-direction: column; gap: 0.6rem; }
+    .p-padrinos-title { font-family: 'Cormorant Garamond', serif; font-size: 0.95rem; font-weight: 400; color: #f0ece4; }
+    .p-padrinos-sub { font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase; color: #c9a96e; margin-top: 0.1rem; margin-bottom: 0.4rem; }
+    .p-padrinos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+    .p-padrino { background: #1a1a1a; border: 1px solid rgba(255,255,255,0.08); border-radius: 7px; padding: 0.6rem 0.7rem; }
+    .p-padrino-role { font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; color: #c9a96e; margin-bottom: 0.15rem; }
+    .p-padrino-names { font-size: 0.75rem; color: #a09890; }
   </style>
 </head>
 <body>
@@ -800,12 +861,19 @@
 
         <div class="p-body">
 
-          <div class="p-badge" id="p-badge">Dinner Party</div>
+          <div class="p-badge" id="p-badge">Quinceañera</div>
+
+          <!-- Opening phrase -->
+          <div class="p-opening-phrase" id="p-opening-phrase-block">
+            <div id="p-opening-phrase"></div>
+          </div>
 
           <div class="p-title-block">
-            <div class="p-title" id="p-title">An Evening to Remember</div>
-            <div class="p-subtitle" id="p-subtitle">A private dinner for close friends</div>
-            <div class="p-byline">Hosted by <span id="p-host">Hector Savio</span></div>
+            <div class="p-title" id="p-title">Mis Quince Años</div>
+            <div class="p-subtitle" id="p-subtitle">Una celebración de vida, fe y amor</div>
+            <div class="p-age" id="p-honoree-age">15 Años</div>
+            <div class="p-parent" id="p-parent-line"></div>
+            <div class="p-byline">Hosted by <span id="p-host">Sofía García</span></div>
           </div>
 
           <div class="p-divider"></div>
@@ -815,26 +883,46 @@
               <div class="p-label" id="pl-date">Date</div>
               <div class="p-val" id="p-date">Sábado, 12 de Abril 2025</div>
             </div>
-            <div>
+            <div id="p-mass-time-cell">
               <div class="p-label" id="pl-time">Misa</div>
-              <div class="p-val" id="p-time">4:00 PM</div>
+              <div class="p-val" id="p-time"></div>
+            </div>
+            <div id="p-reception-time-cell">
+              <div class="p-label" id="pl-reception">Recepción</div>
+              <div class="p-val" id="p-reception-time"></div>
             </div>
             <div>
               <div class="p-label" id="pl-doors">Doors Open</div>
-              <div class="p-val" id="p-doors">3:30 PM</div>
+              <div class="p-val" id="p-doors"></div>
             </div>
             <div>
               <div class="p-label" id="pl-duration">Duration</div>
-              <div class="p-val" id="p-duration">5 hours</div>
+              <div class="p-val" id="p-duration"></div>
             </div>
             <div>
               <div class="p-label" id="pl-spots">Spots Available</div>
-              <div class="p-val accent" id="p-spots">150</div>
+              <div class="p-val accent" id="p-spots"></div>
             </div>
           </div>
 
           <div class="p-divider"></div>
 
+          <!-- Mass block -->
+          <div class="p-mass" id="p-mass-block">
+            <div class="p-mass-icon">
+              <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+                <path d="M12 2v4M10 4h4M5 8h14l1 12H4L5 8z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="p-mass-tag" id="pl-mass">Misa de Acción de Gracias</div>
+              <div class="p-mass-name" id="p-mass-venue"></div>
+              <div class="p-mass-time-val" id="p-mass-time-detail"></div>
+              <div class="p-mass-addr" id="p-mass-addr"></div>
+            </div>
+          </div>
+
+          <!-- Reception venue -->
           <div class="p-location">
             <div class="p-loc-icon">
               <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -848,9 +936,28 @@
             </div>
           </div>
 
+          <!-- Notes -->
           <div class="p-notes" id="p-notes-block">
             <div class="p-notes-label" id="pl-notes">A Note from Your Host</div>
             <div class="p-notes-text" id="p-notes"></div>
+          </div>
+
+          <!-- Court of Honor -->
+          <div class="p-court" id="p-court-block">
+            <div>
+              <div class="p-court-title">Corte de Honor</div>
+              <div class="p-court-sub">Court of Honor</div>
+            </div>
+            <div class="p-court-grid" id="p-court-grid"></div>
+          </div>
+
+          <!-- Padrinos -->
+          <div class="p-padrinos" id="p-padrinos-block">
+            <div>
+              <div class="p-padrinos-title">Padrinos y Madrinas</div>
+              <div class="p-padrinos-sub">Sponsors</div>
+            </div>
+            <div class="p-padrinos-grid" id="p-padrinos-grid"></div>
           </div>
 
           <div class="p-divider"></div>
@@ -891,19 +998,19 @@
     'f-hostName':         { fn: updateHost },
     'f-eventTitle':       { el: 'p-title' },
     'f-eventSubtitle':    { el: 'p-subtitle' },
-    'f-openingPhrase':    { el: 'p-subtitle' }, // preview shows in subtitle area
-    'f-honoreeAge':       { fn: () => {} },
-    'f-parentNames':      { fn: () => {} },
+    'f-openingPhrase':    { fn: updateOpeningPhrase },
+    'f-honoreeAge':       { fn: updateHonoreeAge },
+    'f-parentNames':      { fn: updateParentNames },
     'f-date':             { el: 'p-date' },
-    'f-massTime':         { el: 'p-time' },
-    'f-receptionTime':    { fn: () => {} },
+    'f-massTime':         { fn: updateMass },
+    'f-receptionTime':    { el: 'p-reception-time' },
     'f-doorsOpen':        { el: 'p-doors' },
     'f-duration':         { el: 'p-duration' },
     'f-spotsLeft':        { fn: updateSpots },
     'f-spotsTotal':       { fn: updateSpots },
-    'f-massVenueName':    { fn: () => {} },
-    'f-massVenueAddress': { fn: () => {} },
-    'f-massVenueCity':    { fn: () => {} },
+    'f-massVenueName':    { fn: updateMass },
+    'f-massVenueAddress': { fn: updateMass },
+    'f-massVenueCity':    { fn: updateMass },
     'f-venueName':        { el: 'p-venue' },
     'f-venueAddress':     { fn: updateAddress },
     'f-venueCity':        { fn: updateAddress },
@@ -919,6 +1026,60 @@
     const v = val('f-hostName');
     set('p-host', v);
     set('p-footer-host', v);
+  }
+
+  function updateOpeningPhrase() {
+    const v = val('f-openingPhrase').trim();
+    const block = document.getElementById('p-opening-phrase-block');
+    if (v) {
+      block.style.display = '';
+      set('p-opening-phrase', v);
+    } else {
+      block.style.display = 'none';
+    }
+  }
+
+  function updateHonoreeAge() {
+    const age = parseInt(val('f-honoreeAge')) || 0;
+    const el  = document.getElementById('p-honoree-age');
+    if (age > 0) {
+      el.style.display = '';
+      el.textContent = age + ' Años';
+    } else {
+      el.style.display = 'none';
+    }
+  }
+
+  function updateParentNames() {
+    const v  = val('f-parentNames').trim();
+    const el = document.getElementById('p-parent-line');
+    if (v) {
+      el.style.display = '';
+      el.innerHTML = 'Hija de <span>' + v + '</span>';
+    } else {
+      el.style.display = 'none';
+    }
+  }
+
+  function updateMass() {
+    const name = val('f-massVenueName').trim();
+    const time = val('f-massTime').trim();
+    const addr = val('f-massVenueAddress').trim();
+    const city = val('f-massVenueCity').trim();
+    const block = document.getElementById('p-mass-block');
+
+    if (name) {
+      block.style.display = '';
+      set('p-mass-venue', name);
+      set('p-mass-time-detail', time);
+      document.getElementById('p-mass-addr').innerHTML = addr + (city ? '<br>' + city : '');
+      // also update grid cell
+      set('p-time', time);
+      document.getElementById('p-mass-time-cell').style.display = '';
+    } else {
+      block.style.display = 'none';
+      document.getElementById('p-mass-time-cell').style.display = 'none';
+    }
   }
 
   function updateSpots() {
@@ -1005,8 +1166,31 @@
     row.innerHTML =
       '<div class="field"><label>Dama</label><input type="text" class="court-dama" placeholder="Dama name" value="' + (dama||'') + '" /></div>' +
       '<div class="field"><label>Chambelán</label><input type="text" class="court-chambelan" placeholder="Chambelán name" value="' + (chambelan||'') + '" /></div>' +
-      '<button class="remove-btn" onclick="this.parentElement.remove()" title="Remove">×</button>';
+      '<button class="remove-btn" onclick="this.parentElement.remove(); updateCourtPreview();" title="Remove">×</button>';
+    row.querySelectorAll('input').forEach(i => i.addEventListener('input', updateCourtPreview));
     container.appendChild(row);
+    updateCourtPreview();
+  }
+
+  function updateCourtPreview() {
+    const grid  = document.getElementById('p-court-grid');
+    const block = document.getElementById('p-court-block');
+    const pairs = Array.from(document.querySelectorAll('#court-rows .dynamic-row'))
+      .map(r => ({ dama: r.querySelector('.court-dama').value.trim(), chambelan: r.querySelector('.court-chambelan').value.trim() }))
+      .filter(p => p.dama || p.chambelan);
+
+    grid.innerHTML = '';
+    if (pairs.length === 0) { block.style.display = 'none'; return; }
+    block.style.display = '';
+    pairs.forEach(p => {
+      ['dama','chambelan'].forEach(role => {
+        const el = document.createElement('div');
+        el.className = 'p-court-pair';
+        el.innerHTML = '<div class="p-court-role">' + (role === 'dama' ? 'Dama' : 'Chambelán') + '</div>'
+                     + '<div class="p-court-name">' + (role === 'dama' ? p.dama : p.chambelan) + '</div>';
+        grid.appendChild(el);
+      });
+    });
   }
 
   // --- Dynamic rows: Padrinos ---
@@ -1017,8 +1201,29 @@
     row.innerHTML =
       '<div class="field"><label>Names</label><input type="text" class="padrino-names" placeholder="Roberto & Ana González" value="' + (names||'') + '" /></div>' +
       '<div class="field"><label>Role / Sponsor of</label><input type="text" class="padrino-role" placeholder="Vestido" value="' + (role||'') + '" /></div>' +
-      '<button class="remove-btn" onclick="this.parentElement.remove()" title="Remove">×</button>';
+      '<button class="remove-btn" onclick="this.parentElement.remove(); updatePadrinosPreview();" title="Remove">×</button>';
+    row.querySelectorAll('input').forEach(i => i.addEventListener('input', updatePadrinosPreview));
     container.appendChild(row);
+    updatePadrinosPreview();
+  }
+
+  function updatePadrinosPreview() {
+    const grid  = document.getElementById('p-padrinos-grid');
+    const block = document.getElementById('p-padrinos-block');
+    const items = Array.from(document.querySelectorAll('#padrino-rows .dynamic-row'))
+      .map(r => ({ names: r.querySelector('.padrino-names').value.trim(), role: r.querySelector('.padrino-role').value.trim() }))
+      .filter(p => p.names || p.role);
+
+    grid.innerHTML = '';
+    if (items.length === 0) { block.style.display = 'none'; return; }
+    block.style.display = '';
+    items.forEach(p => {
+      const el = document.createElement('div');
+      el.className = 'p-padrino';
+      el.innerHTML = '<div class="p-padrino-role">' + p.role + '</div>'
+                   + '<div class="p-padrino-names">' + p.names + '</div>';
+      grid.appendChild(el);
+    });
   }
 
   // Helpers
@@ -1027,6 +1232,13 @@
 
   // Wire up all inputs
   document.addEventListener('DOMContentLoaded', () => {
+    // Hide optional blocks until filled in
+    document.getElementById('p-opening-phrase-block').style.display = 'none';
+    document.getElementById('p-mass-block').style.display = 'none';
+    document.getElementById('p-mass-time-cell').style.display = 'none';
+    document.getElementById('p-court-block').style.display = 'none';
+    document.getElementById('p-padrinos-block').style.display = 'none';
+
     Object.keys(FIELD_MAP).forEach(fieldId => {
       const field = document.getElementById(fieldId);
       if (!field) return;
