@@ -1404,7 +1404,8 @@
       document.getElementById('el-date').textContent     = EVENT.date;
       document.getElementById('el-duration').textContent = EVENT.duration;
       document.getElementById('el-venue').textContent    = EVENT.venueName;
-      document.getElementById('el-address').innerHTML    = EVENT.venueAddress + '<br>' + EVENT.venueCity;
+      const venueMapUrl = 'https://maps.google.com/?q=' + encodeURIComponent([EVENT.venueName, EVENT.venueAddress, EVENT.venueCity].filter(Boolean).join(', '));
+      document.getElementById('el-address').innerHTML = '<a href="' + venueMapUrl + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">' + EVENT.venueAddress + '<br>' + EVENT.venueCity + '</a>';
       document.getElementById('el-notes').textContent    = EVENT.notes;
       document.getElementById('footer-host').textContent = EVENT.hostName;
       document.title = EVENT.eventTitle + ' — ' + EVENT.hostName;
@@ -1457,7 +1458,8 @@
       if (EVENT.massVenueName && EVENT.massVenueName.trim() !== '') {
         document.getElementById('el-mass-venue').textContent       = EVENT.massVenueName;
         document.getElementById('el-mass-time-detail').textContent = EVENT.massTime || '';
-        document.getElementById('el-mass-address').innerHTML       = EVENT.massVenueAddress + '<br>' + EVENT.massVenueCity;
+        const massMapUrl = 'https://maps.google.com/?q=' + encodeURIComponent([EVENT.massVenueName, EVENT.massVenueAddress, EVENT.massVenueCity].filter(Boolean).join(', '));
+        document.getElementById('el-mass-address').innerHTML = '<a href="' + massMapUrl + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">' + EVENT.massVenueAddress + '<br>' + EVENT.massVenueCity + '</a>';
         label('label-mass', 'Ceremony', 'Ceremonia');
 
         // Show mass + reception in info grid
