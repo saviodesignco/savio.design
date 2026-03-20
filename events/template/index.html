@@ -56,9 +56,6 @@
 
       // Reception
       receptionTime: "7:00 PM",               // Shown separately from mass
-      duration:      "5 hours",               // Duration of reception
-      spotsLeft:     0,                        // Set to 0 to show "Waitlist Only"
-      spotsTotal:    150,
 
       // Reception venue
       venueName:     "El Gran Salón",
@@ -1166,14 +1163,6 @@
             <div class="info-label" id="label-doors">Doors Open</div>
             <div class="info-value" id="el-doors"></div>
           </div>
-          <div class="info-item">
-            <div class="info-label" id="label-duration">Duration</div>
-            <div class="info-value" id="el-duration"></div>
-          </div>
-          <div class="info-item">
-            <div class="info-label" id="label-spots">Spots Available</div>
-            <div class="info-value accent" id="el-spots"></div>
-          </div>
         </div>
 
         <div class="divider"></div>
@@ -1402,7 +1391,6 @@
       document.getElementById('el-subtitle').textContent = EVENT.eventSubtitle;
       document.getElementById('el-host').textContent     = EVENT.hostName;
       document.getElementById('el-date').textContent     = EVENT.date;
-      document.getElementById('el-duration').textContent = EVENT.duration;
       document.getElementById('el-venue').textContent    = EVENT.venueName;
       const venueMapUrl = 'https://maps.google.com/?q=' + encodeURIComponent([EVENT.venueName, EVENT.venueAddress, EVENT.venueCity].filter(Boolean).join(', '));
       document.getElementById('el-address').innerHTML = '<a href="' + venueMapUrl + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">' + EVENT.venueAddress + '<br>' + EVENT.venueCity + '</a>';
@@ -1423,8 +1411,6 @@
 
       // --- Bilingual labels ---
       label('label-date',          'Date',            'Fecha');
-      label('label-duration',      'Duration',        'Duración');
-      label('label-spots',         'Spots Available', 'Lugares');
       label('label-doors',         'Doors Open',      'Puertas abren');
       label('label-notes',         'A Note from Your Host', 'Nota del anfitrión');
       label('label-court-sub',     'Court of Honor',  'Corte de Honor');
@@ -1480,14 +1466,6 @@
         document.getElementById('el-doors').textContent            = EVENT.doorsOpen;
       }
 
-      // --- Spots ---
-      const spotsEl = document.getElementById('el-spots');
-      if (EVENT.spotsLeft > 0) {
-        spotsEl.textContent = EVENT.spotsLeft + ' / ' + EVENT.spotsTotal;
-      } else {
-        spotsEl.textContent = es ? 'Lista de espera' : 'Waitlist Only';
-        spotsEl.style.color = '#c0392b';
-      }
 
       // --- Notes ---
       if (!EVENT.notes || EVENT.notes.trim() === '') {
