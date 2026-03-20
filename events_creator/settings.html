@@ -257,6 +257,10 @@
         <input type="text" id="default-photographer-handle" placeholder="@720studiophoto" />
       </div>
       <div class="field">
+        <label>Facebook URL</label>
+        <input type="text" id="default-photographer-facebook" placeholder="https://www.facebook.com/nuekjuarez" />
+      </div>
+      <div class="field">
         <label>Instagram URL</label>
         <input type="text" id="default-photographer-instagram" placeholder="https://www.instagram.com/720studiophoto" />
       </div>
@@ -294,9 +298,11 @@
 
       const name = localStorage.getItem('defaultPhotographerName') || '720Studio';
       const handle = localStorage.getItem('defaultPhotographerHandle') || '@720studiophoto';
+      const fb = localStorage.getItem('defaultPhotographerFacebook') || 'https://www.facebook.com/nuekjuarez';
       const ig = localStorage.getItem('defaultPhotographerInstagram') || 'https://www.instagram.com/720studiophoto';
       document.getElementById('default-photographer-name').value = name;
       document.getElementById('default-photographer-handle').value = handle;
+      document.getElementById('default-photographer-facebook').value = fb;
       document.getElementById('default-photographer-instagram').value = ig;
     });
 
@@ -362,6 +368,7 @@
     function saveDefaults() {
       localStorage.setItem('defaultPhotographerName',      document.getElementById('default-photographer-name').value.trim());
       localStorage.setItem('defaultPhotographerHandle',    document.getElementById('default-photographer-handle').value.trim());
+      localStorage.setItem('defaultPhotographerFacebook',  document.getElementById('default-photographer-facebook').value.trim());
       localStorage.setItem('defaultPhotographerInstagram', document.getElementById('default-photographer-instagram').value.trim());
       showToast('Defaults saved');
     }

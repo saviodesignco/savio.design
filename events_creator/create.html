@@ -491,6 +491,10 @@
             </div>
           </div>
           <div class="field">
+            <label>Facebook URL</label>
+            <input type="text" id="f-photographerFacebook" placeholder="https://www.facebook.com/nuekjuarez" oninput="updatePreview()" />
+          </div>
+          <div class="field">
             <label>Instagram URL</label>
             <input type="text" id="f-photographerInstagram" placeholder="https://www.instagram.com/720studiophoto" oninput="updatePreview()" />
           </div>
@@ -635,6 +639,7 @@
       set('f-formspreeEndpoint',   cfg.formspreeEndpoint);
       set('f-photographerName',    cfg.photographerName);
       set('f-photographerHandle',  cfg.photographerHandle);
+      set('f-photographerFacebook',  cfg.photographerFacebook);
       set('f-photographerInstagram', cfg.photographerInstagram);
       set('f-ogImage',             cfg.ogImage);
       set('f-eventPassword',       cfg.eventPassword);
@@ -707,6 +712,7 @@
         formspreeEndpoint:     getVal('f-formspreeEndpoint'),
         photographerName:      getVal('f-photographerName'),
         photographerHandle:    getVal('f-photographerHandle'),
+        photographerFacebook:  getVal('f-photographerFacebook'),
         photographerInstagram: getVal('f-photographerInstagram'),
         ogImage:               getVal('f-ogImage'),
         eventPassword:         getVal('f-eventPassword'),
