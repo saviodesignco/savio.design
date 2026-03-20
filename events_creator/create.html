@@ -435,9 +435,11 @@
       <!-- COURT OF HONOR -->
       <div>
         <div class="section-title">Court of Honor</div>
-        <div class="field-hint" style="margin-bottom:.75rem">Each row is one pair. Leave empty to hide section.</div>
-        <div class="dynamic-list" id="court-list"></div>
-        <button class="btn-add" onclick="addCourtRow()">+ Add Pair</button>
+        <div class="field">
+          <label>Names (one per line)</label>
+          <textarea id="f-court" rows="6" placeholder="Isabella Martínez&#10;Valentina Torres&#10;Camila Hernández&#10;Carlos López&#10;Miguel Reyes" oninput="updatePreview()"></textarea>
+          <div class="field-hint">Leave blank to hide the section.</div>
+        </div>
       </div>
 
       <!-- PADRINOS -->
@@ -645,8 +647,9 @@
       set('f-eventPassword',       cfg.eventPassword);
 
       // Court
-      if (Array.isArray(cfg.court)) {
-        cfg.court.forEach(row => addCourtRow(row.dama, row.chambelan));
+      if (Array.isArray(cfg.court) && cfg.court.length) {
+        const names = cfg.court.map(r => typeof r === 'string' ? r : [r.dama, r.chambelan].filter(Boolean).join(' & '));
+        document.getElementById('f-court').value = names.join('\n');
       }
 
       // Padrinos
@@ -667,11 +670,9 @@
     function getNum(id) { return parseInt(document.getElementById(id)?.value) || 0; }
 
     function buildConfig() {
-      // Court rows
-      const courtRows = [...document.querySelectorAll('.court-row')].map(row => ({
-        dama:      row.querySelector('.court-dama')?.value.trim()     || '',
-        chambelan: row.querySelector('.court-chambelan')?.value.trim() || '',
-      })).filter(r => r.dama || r.chambelan);
+      // Court — one name per line → array of strings
+      const courtRows = (document.getElementById('f-court').value || '')
+        .split('\n').map(s => s.trim()).filter(Boolean);
 
       // Padrino rows
       const padrinoRows = [...document.querySelectorAll('.padrino-row')].map(row => ({
@@ -783,16 +784,6 @@
     /* ============================================================
        DYNAMIC LISTS
        ============================================================ */
-    function addCourtRow(dama = '', chambelan = '') {
-      const list = document.getElementById('court-list');
-      const div  = document.createElement('div');
-      div.className = 'dynamic-item court-row';
-      div.innerHTML = `
-        <input class="court-dama"     placeholder="Dama"      value="${dama}"      oninput="updatePreview()" />
-        <input class="court-chambelan" placeholder="Chambelán" value="${chambelan}" oninput="updatePreview()" />
-        <button class="btn-remove" onclick="this.parentElement.remove(); updatePreview()">✕</button>`;
-      list.appendChild(div);
-    }
 
     function addPadrinoRow(names = '', role = '') {
       const list = document.getElementById('padrinos-list');
