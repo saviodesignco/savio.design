@@ -407,20 +407,6 @@
               <label>Reception Time</label>
               <input type="text" id="f-receptionTime" placeholder="7:00 PM" oninput="updatePreview()" />
             </div>
-            <div class="field">
-              <label>Duration</label>
-              <input type="text" id="f-duration" placeholder="5 hours" oninput="updatePreview()" />
-            </div>
-          </div>
-          <div class="row-2">
-            <div class="field">
-              <label>Spots Available</label>
-              <input type="number" id="f-spotsLeft" placeholder="150" oninput="updatePreview()" />
-            </div>
-            <div class="field">
-              <label>Total Spots</label>
-              <input type="number" id="f-spotsTotal" placeholder="150" oninput="updatePreview()" />
-            </div>
           </div>
           <div class="field">
             <label>Venue Name</label>
@@ -641,9 +627,6 @@
       set('f-massVenueAddress',    cfg.massVenueAddress);
       set('f-massVenueCity',       cfg.massVenueCity);
       set('f-receptionTime',       cfg.receptionTime);
-      set('f-duration',            cfg.duration);
-      set('f-spotsLeft',           cfg.spotsLeft);
-      set('f-spotsTotal',          cfg.spotsTotal);
       set('f-venueName',           cfg.venueName);
       set('f-venueAddress',        cfg.venueAddress);
       set('f-venueCity',           cfg.venueCity);
@@ -713,9 +696,6 @@
         massVenueAddress:      getVal('f-massVenueAddress'),
         massVenueCity:         getVal('f-massVenueCity'),
         receptionTime:         getVal('f-receptionTime'),
-        duration:              getVal('f-duration'),
-        spotsLeft:             getNum('f-spotsLeft'),
-        spotsTotal:            getNum('f-spotsTotal'),
         venueName:             getVal('f-venueName'),
         venueAddress:          getVal('f-venueAddress'),
         venueCity:             getVal('f-venueCity'),
