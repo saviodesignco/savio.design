@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Event — Savio Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================================
+       BASE
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold:     #c9a96e;
+      --gold-dim: #8a6f3f;
+      --bg:       #0a0a0a;
+      --surface:  #111111;
+      --surface2: #1a1a1a;
+      --border:   #2a2a2a;
+      --text:     #f0ebe3;
+      --muted:    #7a7268;
+      --success:  #5a9e6f;
+      --danger:   #e05555;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ============================================================
+       NAV
+       ============================================================ */
+    nav {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      position: sticky; top: 0; z-index: 50;
+    }
+    .nav-left { display: flex; align-items: center; gap: 1.5rem; }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      color: var(--gold);
+      letter-spacing: .12em;
+      text-decoration: none;
+    }
+    .nav-title { font-size: .8rem; color: var(--muted); letter-spacing: .05em; }
+
+    .nav-actions { display: flex; gap: .75rem; }
+    .btn-sm {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .75rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: .5rem .9rem;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color .2s, color .2s;
+    }
+    .btn-sm:hover { border-color: var(--gold-dim); color: var(--text); }
+    .btn-publish {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #0a0a0a;
+      font-weight: 500;
+    }
+    .btn-publish:hover { opacity: .85; color: #0a0a0a; }
+    .btn-publish:disabled { opacity: .4; cursor: not-allowed; }
+
+    /* ============================================================
+       LAYOUT — two columns
+       ============================================================ */
+    .layout {
+      display: grid;
+      grid-template-columns: 480px 1fr;
+      height: calc(100vh - 65px);
+    }
+
+    /* ---- FORM PANEL ---- */
+    .form-panel {
+      overflow-y: auto;
+      border-right: 1px solid var(--border);
+      padding: 2rem;
+      display: flex; flex-direction: column; gap: 2rem;
+    }
+
+    .section-title {
+      font-size: .65rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+      padding-bottom: .5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .field-group { display: flex; flex-direction: column; gap: 1rem; }
+
+    .field { display: flex; flex-direction: column; gap: .4rem; }
+    .field label {
+      font-size: .72rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .field input,
+    .field select,
+    .field textarea {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .88rem;
+      padding: .7rem .9rem;
+      border-radius: 6px;
+      outline: none;
+      transition: border-color .2s;
+      width: 100%;
+    }
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus { border-color: var(--gold-dim); }
+    .field textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+    .field select option { background: var(--surface2); }
+
+    .field-hint {
+      font-size: .7rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+
+    /* Dynamic list (court, padrinos, images) */
+    .dynamic-list { display: flex; flex-direction: column; gap: .5rem; }
+    .dynamic-item {
+      display: flex; gap: .5rem; align-items: flex-start;
+    }
+    .dynamic-item input {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .85rem;
+      padding: .6rem .8rem;
+      border-radius: 6px;
+      outline: none;
+      flex: 1;
+      transition: border-color .2s;
+    }
+    .dynamic-item input:focus { border-color: var(--gold-dim); }
+    .btn-remove {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: .7rem;
+      padding: .6rem .7rem;
+      border-radius: 5px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: border-color .2s, color .2s;
+    }
+    .btn-remove:hover { border-color: var(--danger); color: var(--danger); }
+    .btn-add {
+      background: transparent;
+      border: 1px dashed var(--border);
+      color: var(--muted);
+      font-size: .75rem;
+      letter-spacing: .08em;
+      padding: .6rem .9rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: border-color .2s, color .2s;
+      margin-top: .25rem;
+    }
+    .btn-add:hover { border-color: var(--gold-dim); color: var(--text); }
+
+    /* ---- PREVIEW PANEL ---- */
+    .preview-panel {
+      display: flex; flex-direction: column;
+      background: #050505;
+      overflow: hidden;
+    }
+    .preview-toolbar {
+      padding: .75rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 1rem;
+      background: var(--surface);
+    }
+    .preview-toolbar span {
+      font-size: .7rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .preview-wrap {
+      flex: 1; overflow-y: auto;
+      display: flex; align-items: flex-start;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    #preview-frame {
+      width: 390px;
+      height: 844px;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 0 60px rgba(0,0,0,.6);
+      background: #0a0a0a;
+    }
+
+    /* ---- LOADING ---- */
+    .loading-bar {
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      width: 100%; position: fixed; top: 0; left: 0;
+      animation: slide 1.2s linear infinite;
+      display: none;
+    }
+    .loading-bar.active { display: block; }
+    @keyframes slide {
+      from { transform: translateX(-100%); }
+      to   { transform: translateX(100%); }
+    }
+
+    /* ---- TOAST ---- */
+    #toast {
+      position: fixed; bottom: 2rem; left: 50%;
+      transform: translateX(-50%) translateY(1rem);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: .8rem;
+      padding: .7rem 1.4rem;
+      border-radius: 6px;
+      opacity: 0;
+      transition: opacity .3s, transform .3s;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 999;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    #toast.success { border-color: var(--success); color: var(--success); }
+    #toast.error   { border-color: var(--danger);  color: var(--danger); }
+
+    /* ---- FOLDER NAME PREVIEW ---- */
+    .slug-preview {
+      font-size: .72rem;
+      color: var(--gold-dim);
+      font-family: 'DM Sans', sans-serif;
+      margin-top: .25rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="loading-bar" id="loading"></div>
+  <div id="toast"></div>
+
+  <!-- ============================================================
+       NAV
+       ============================================================ -->
+  <nav>
+    <div class="nav-left">
+      <a class="nav-logo" href="index.html">Savio</a>
+      <span class="nav-title" id="nav-title">New Event</span>
+    </div>
+    <div class="nav-actions">
+      <a class="btn-sm" href="index.html">← Back</a>
+      <button class="btn-sm btn-publish" id="publish-btn" onclick="publishEvent()">Publish to GitHub</button>
+    </div>
+  </nav>
+
+  <!-- ============================================================
+       LAYOUT
+       ============================================================ -->
+  <div class="layout">
+
+    <!-- ---- FORM PANEL ---- -->
+    <div class="form-panel">
+
+      <!-- EVENT IDENTITY -->
+      <div>
+        <div class="section-title">Event Identity</div>
+        <div class="field-group">
+          <div class="field">
+            <label>Event Folder Name</label>
+            <input type="text" id="f-folder" placeholder="e.g. Mia2026" oninput="updateSlug()" />
+            <div class="slug-preview" id="slug-preview">savio.design/events/</div>
+            <div class="field-hint">No spaces or special characters. This becomes the URL.</div>
+          </div>
+          <div class="row-2">
+            <div class="field">
+              <label>Event Type (Badge)</label>
+              <input type="text" id="f-eventType" placeholder="Quinceañera" oninput="updatePreview()" />
+            </div>
+            <div class="field">
+              <label>Language</label>
+              <select id="f-language" onchange="updatePreview()">
+                <option value="bilingual">Bilingual</option>
+                <option value="es">Español</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label>Event Title</label>
+            <input type="text" id="f-eventTitle" placeholder="Mis Quince Años" oninput="updatePreview()" />
+          </div>
+          <div class="field">
+            <label>Subtitle</label>
+            <input type="text" id="f-eventSubtitle" placeholder="Una celebración de vida, fe y amor" oninput="updatePreview()" />
+          </div>
+          <div class="field">
+            <label>Opening Phrase</label>
+            <input type="text" id="f-openingPhrase" placeholder="Leave blank to hide" oninput="updatePreview()" />
+          </div>
+        </div>
+      </div>
+
+      <!-- HONOREE -->
+      <div>
+        <div class="section-title">Honoree</div>
+        <div class="field-group">
+          <div class="field">
+            <label>Host / Honoree Name</label>
+            <input type="text" id="f-hostName" placeholder="Sofía García" oninput="updatePreview()" />
+          </div>
+          <div class="row-2">
+            <div class="field">
+              <label>Age</label>
+              <input type="number" id="f-honoreeAge" placeholder="15" oninput="updatePreview()" />
+            </div>
+            <div class="field">
+              <label>Parents' Names</label>
+              <input type="text" id="f-parentNames" placeholder="Sr. y Sra. García" oninput="updatePreview()" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DATE & TIME -->
+      <div>
+        <div class="section-title">Date & Time</div>
+        <div class="field-group">
+          <div class="field">
+            <label>Date (display text)</label>
+            <input type="text" id="f-date" placeholder="Sábado, 12 de Abril 2026" oninput="updatePreview()" />
+          </div>
+          <div class="row-2">
+            <div class="field">
+              <label>Day of Week (English)</label>
+              <input type="text" id="f-dayOfWeek" placeholder="Saturday" oninput="updatePreview()" />
+              <div class="field-hint">Used in .ics calendar file</div>
+            </div>
+            <div class="field">
+              <label>Doors Open</label>
+              <input type="text" id="f-doorsOpen" placeholder="3:30 PM" oninput="updatePreview()" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CEREMONY -->
+      <div>
+        <div class="section-title">Ceremony (leave blank to hide)</div>
+        <div class="field-group">
+          <div class="row-2">
+            <div class="field">
+              <label>Ceremony Time</label>
+              <input type="text" id="f-massTime" placeholder="4:00 PM" oninput="updatePreview()" />
+            </div>
+            <div class="field">
+              <label>Ceremony Venue</label>
+              <input type="text" id="f-massVenueName" placeholder="St. Patrick's Cathedral" oninput="updatePreview()" />
+            </div>
+          </div>
+          <div class="field">
+            <label>Address</label>
+            <input type="text" id="f-massVenueAddress" placeholder="5th Avenue & 50th Street" oninput="updatePreview()" />
+          </div>
+          <div class="field">
+            <label>City / State / ZIP</label>
+            <input type="text" id="f-massVenueCity" placeholder="New York, NY 10111" oninput="updatePreview()" />
+          </div>
+        </div>
+      </div>
+
+      <!-- RECEPTION -->
+      <div>
+        <div class="section-title">Reception</div>
+        <div class="field-group">
+          <div class="row-2">
+            <div class="field">
+              <label>Reception Time</label>
+              <input type="text" id="f-receptionTime" placeholder="7:00 PM" oninput="updatePreview()" />
+            </div>
+            <div class="field">
+              <label>Duration</label>
+              <input type="text" id="f-duration" placeholder="5 hours" oninput="updatePreview()" />
+            </div>
+          </div>
+          <div class="row-2">
+            <div class="field">
+              <label>Spots Available</label>
+              <input type="number" id="f-spotsLeft" placeholder="150" oninput="updatePreview()" />
+            </div>
+            <div class="field">
+              <label>Total Spots</label>
+              <input type="number" id="f-spotsTotal" placeholder="150" oninput="updatePreview()" />
+            </div>
+          </div>
+          <div class="field">
+            <label>Venue Name</label>
+            <input type="text" id="f-venueName" placeholder="El Gran Salón" oninput="updatePreview()" />
+          </div>
+          <div class="field">
+            <label>Venue Address</label>
+            <input type="text" id="f-venueAddress" placeholder="123 West 57th Street" oninput="updatePreview()" />
+          </div>
+          <div class="field">
+            <label>Venue City / State / ZIP</label>
+            <input type="text" id="f-venueCity" placeholder="New York, NY 10019" oninput="updatePreview()" />
+          </div>
+        </div>
+      </div>
+
+      <!-- HOST NOTES -->
+      <div>
+        <div class="section-title">Host Notes</div>
+        <div class="field">
+          <label>Notes (dress code, RSVP deadline, etc.)</label>
+          <textarea id="f-notes" placeholder="Dress code: formal. Please RSVP by March 1st." oninput="updatePreview()"></textarea>
+        </div>
+      </div>
+
+      <!-- COURT OF HONOR -->
+      <div>
+        <div class="section-title">Court of Honor</div>
+        <div class="field-hint" style="margin-bottom:.75rem">Each row is one pair. Leave empty to hide section.</div>
+        <div class="dynamic-list" id="court-list"></div>
+        <button class="btn-add" onclick="addCourtRow()">+ Add Pair</button>
+      </div>
+
+      <!-- PADRINOS -->
+      <div>
+        <div class="section-title">Padrinos y Madrinas</div>
+        <div class="field-hint" style="margin-bottom:.75rem">Each row is one sponsor + their contribution.</div>
+        <div class="dynamic-list" id="padrinos-list"></div>
+        <button class="btn-add" onclick="addPadrinoRow()">+ Add Padrino</button>
+      </div>
+
+      <!-- SLIDESHOW IMAGES -->
+      <div>
+        <div class="section-title">Slideshow Images</div>
+        <div class="field-hint" style="margin-bottom:.75rem">
+          Add image filenames (e.g. <code style="color:var(--gold-dim)">photo1.jpg</code>) or full URLs.
+          Upload photos to the event folder in your repo.
+        </div>
+        <div class="dynamic-list" id="images-list"></div>
+        <button class="btn-add" onclick="addImageRow()">+ Add Image</button>
+      </div>
+
+      <!-- RSVP -->
+      <div>
+        <div class="section-title">RSVP</div>
+        <div class="field-group">
+          <div class="field">
+            <label>Host Notification Email</label>
+            <input type="email" id="f-rsvpEmail" placeholder="client@email.com" oninput="updatePreview()" />
+            <div class="field-hint">The event host receives RSVP notifications here.</div>
+          </div>
+          <div class="field">
+            <label>Formspree Endpoint</label>
+            <input type="text" id="f-formspreeEndpoint" placeholder="https://formspree.io/f/xxxxxxxx" oninput="updatePreview()" />
+            <div class="field-hint">Leave blank to use mailto fallback.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PHOTOGRAPHER -->
+      <div>
+        <div class="section-title">Photographer Credit</div>
+        <div class="field-group">
+          <div class="row-2">
+            <div class="field">
+              <label>Studio Name</label>
+              <input type="text" id="f-photographerName" placeholder="720Studio" oninput="updatePreview()" />
+            </div>
+            <div class="field">
+              <label>Instagram Handle</label>
+              <input type="text" id="f-photographerHandle" placeholder="@720studiophoto" oninput="updatePreview()" />
+            </div>
+          </div>
+          <div class="field">
+            <label>Instagram URL</label>
+            <input type="text" id="f-photographerInstagram" placeholder="https://www.instagram.com/720studiophoto" oninput="updatePreview()" />
+          </div>
+        </div>
+      </div>
+
+      <!-- SOCIAL & SECURITY -->
+      <div>
+        <div class="section-title">Social Preview & Security</div>
+        <div class="field-group">
+          <div class="field">
+            <label>OG Image URL (iMessage / WhatsApp preview)</label>
+            <input type="text" id="f-ogImage" placeholder="https://savio.design/assets/images/event/preview.jpg" oninput="updatePreview()" />
+            <div class="field-hint">Must be a full URL. Recommended size: 1200 × 630 px.</div>
+          </div>
+          <div class="field">
+            <label>Password Gate</label>
+            <input type="text" id="f-eventPassword" placeholder="Leave blank to disable" oninput="updatePreview()" />
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /form-panel -->
+
+    <!-- ---- PREVIEW PANEL ---- -->
+    <div class="preview-panel">
+      <div class="preview-toolbar">
+        <span>Live Preview — iPhone 14 Pro</span>
+      </div>
+      <div class="preview-wrap">
+        <iframe id="preview-frame" sandbox="allow-scripts allow-same-origin"></iframe>
+      </div>
+    </div>
+
+  </div><!-- /layout -->
+
+  <script>
+    /* ============================================================
+       GITHUB CONFIG — must match index.html
+       ============================================================ */
+    const ADMIN_CONFIG = {
+      githubOwner:  'saviodesignco',
+      githubRepo:   'savio.design',
+      eventsPath:   'events',
+      templatePath: 'events_creator/template',
+    };
+
+    /* ============================================================
+       AUTH CHECK
+       ============================================================ */
+    if (!sessionStorage.getItem('adminUnlocked')) {
+      window.location.href = 'index.html';
+    }
+
+    /* ============================================================
+       URL PARAMS — editing an existing event?
+       ============================================================ */
+    const params     = new URLSearchParams(location.search);
+    const editingEvent = params.get('event');
+
+    if (editingEvent) {
+      document.getElementById('nav-title').textContent = `Editing: ${editingEvent}`;
+      document.getElementById('publish-btn').textContent = 'Update on GitHub';
+      document.getElementById('f-folder').value = editingEvent;
+      document.getElementById('f-folder').disabled = true;
+      loadExistingEvent(editingEvent);
+    }
+
+    /* ============================================================
+       TEMPLATE HTML
+       Fetched once from GitHub, stored in memory
+       ============================================================ */
+    let templateHTML = '';
+
+    async function fetchTemplate() {
+      if (templateHTML) return templateHTML;
+      const token = localStorage.getItem('githubToken') || '';
+      const res = await fetch(
+        `https://api.github.com/repos/${ADMIN_CONFIG.githubOwner}/${ADMIN_CONFIG.githubRepo}/contents/${ADMIN_CONFIG.templatePath}/index.html`,
+        { headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' } }
+      );
+      const data = await res.json();
+      templateHTML = atob(data.content.replace(/\n/g, ''));
+      return templateHTML;
+    }
+
+    /* ============================================================
+       LOAD EXISTING EVENT (edit mode)
+       ============================================================ */
+    async function loadExistingEvent(name) {
+      setLoading(true);
+      try {
+        const token = localStorage.getItem('githubToken') || '';
+        const res   = await fetch(
+          `https://api.github.com/repos/${ADMIN_CONFIG.githubOwner}/${ADMIN_CONFIG.githubRepo}/contents/${ADMIN_CONFIG.eventsPath}/${name}/index.html`,
+          { headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' } }
+        );
+        const data = await res.json();
+        const html = atob(data.content.replace(/\n/g, ''));
+
+        // Extract the EVENT object from the HTML
+        const match = html.match(/const EVENT\s*=\s*(\{[\s\S]*?\});/);
+        if (!match) throw new Error('Could not find EVENT config in file');
+
+        // eslint-disable-next-line no-eval
+        const cfg = eval('(' + match[1] + ')');
+        populateForm(cfg);
+        updatePreview();
+      } catch (err) {
+        showToast('Error loading event: ' + err.message, 'error');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    function populateForm(cfg) {
+      const set = (id, val) => {
+        const el = document.getElementById(id);
+        if (el && val !== undefined && val !== null) el.value = val;
+      };
+      set('f-eventType',           cfg.eventType);
+      set('f-language',            cfg.language);
+      set('f-eventTitle',          cfg.eventTitle);
+      set('f-eventSubtitle',       cfg.eventSubtitle);
+      set('f-openingPhrase',       cfg.openingPhrase);
+      set('f-hostName',            cfg.hostName);
+      set('f-honoreeAge',          cfg.honoreeAge);
+      set('f-parentNames',         cfg.parentNames);
+      set('f-date',                cfg.date);
+      set('f-dayOfWeek',           cfg.dayOfWeek);
+      set('f-doorsOpen',           cfg.doorsOpen);
+      set('f-massTime',            cfg.massTime);
+      set('f-massVenueName',       cfg.massVenueName);
+      set('f-massVenueAddress',    cfg.massVenueAddress);
+      set('f-massVenueCity',       cfg.massVenueCity);
+      set('f-receptionTime',       cfg.receptionTime);
+      set('f-duration',            cfg.duration);
+      set('f-spotsLeft',           cfg.spotsLeft);
+      set('f-spotsTotal',          cfg.spotsTotal);
+      set('f-venueName',           cfg.venueName);
+      set('f-venueAddress',        cfg.venueAddress);
+      set('f-venueCity',           cfg.venueCity);
+      set('f-notes',               cfg.notes);
+      set('f-rsvpEmail',           cfg.rsvpEmail);
+      set('f-formspreeEndpoint',   cfg.formspreeEndpoint);
+      set('f-photographerName',    cfg.photographerName);
+      set('f-photographerHandle',  cfg.photographerHandle);
+      set('f-photographerInstagram', cfg.photographerInstagram);
+      set('f-ogImage',             cfg.ogImage);
+      set('f-eventPassword',       cfg.eventPassword);
+
+      // Court
+      if (Array.isArray(cfg.court)) {
+        cfg.court.forEach(row => addCourtRow(row.dama, row.chambelan));
+      }
+
+      // Padrinos
+      if (Array.isArray(cfg.padrinos)) {
+        cfg.padrinos.forEach(row => addPadrinoRow(row.names, row.role));
+      }
+
+      // Images
+      if (Array.isArray(cfg.heroImages)) {
+        cfg.heroImages.forEach(src => addImageRow(src));
+      }
+    }
+
+    /* ============================================================
+       BUILD CONFIG OBJECT FROM FORM
+       ============================================================ */
+    function getVal(id) { return document.getElementById(id)?.value.trim() || ''; }
+    function getNum(id) { return parseInt(document.getElementById(id)?.value) || 0; }
+
+    function buildConfig() {
+      // Court rows
+      const courtRows = [...document.querySelectorAll('.court-row')].map(row => ({
+        dama:      row.querySelector('.court-dama')?.value.trim()     || '',
+        chambelan: row.querySelector('.court-chambelan')?.value.trim() || '',
+      })).filter(r => r.dama || r.chambelan);
+
+      // Padrino rows
+      const padrinoRows = [...document.querySelectorAll('.padrino-row')].map(row => ({
+        names: row.querySelector('.padrino-names')?.value.trim() || '',
+        role:  row.querySelector('.padrino-role')?.value.trim()  || '',
+      })).filter(r => r.names);
+
+      // Image rows
+      const imageRows = [...document.querySelectorAll('.image-input')]
+        .map(el => el.value.trim())
+        .filter(Boolean);
+
+      return {
+        eventType:             getVal('f-eventType'),
+        eventTitle:            getVal('f-eventTitle'),
+        eventSubtitle:         getVal('f-eventSubtitle'),
+        hostName:              getVal('f-hostName'),
+        language:              getVal('f-language'),
+        honoreeAge:            getNum('f-honoreeAge'),
+        parentNames:           getVal('f-parentNames'),
+        openingPhrase:         getVal('f-openingPhrase'),
+        date:                  getVal('f-date'),
+        dayOfWeek:             getVal('f-dayOfWeek'),
+        doorsOpen:             getVal('f-doorsOpen'),
+        massTime:              getVal('f-massTime'),
+        massVenueName:         getVal('f-massVenueName'),
+        massVenueAddress:      getVal('f-massVenueAddress'),
+        massVenueCity:         getVal('f-massVenueCity'),
+        receptionTime:         getVal('f-receptionTime'),
+        duration:              getVal('f-duration'),
+        spotsLeft:             getNum('f-spotsLeft'),
+        spotsTotal:            getNum('f-spotsTotal'),
+        venueName:             getVal('f-venueName'),
+        venueAddress:          getVal('f-venueAddress'),
+        venueCity:             getVal('f-venueCity'),
+        notes:                 getVal('f-notes'),
+        court:                 courtRows,
+        padrinos:              padrinoRows,
+        heroImages:            imageRows,
+        rsvpEmail:             getVal('f-rsvpEmail'),
+        formspreeEndpoint:     getVal('f-formspreeEndpoint'),
+        photographerName:      getVal('f-photographerName'),
+        photographerHandle:    getVal('f-photographerHandle'),
+        photographerInstagram: getVal('f-photographerInstagram'),
+        ogImage:               getVal('f-ogImage'),
+        eventPassword:         getVal('f-eventPassword'),
+      };
+    }
+
+    /* ============================================================
+       INJECT CONFIG INTO TEMPLATE HTML
+       ============================================================ */
+    function injectConfig(html, cfg, folder) {
+      // Replace EVENT config block
+      const configStr = JSON.stringify(cfg, null, 6)
+        .replace(/"([^"]+)":/g, '$1:'); // unquote keys for readability
+
+      const newHtml = html.replace(
+        /const EVENT\s*=\s*\{[\s\S]*?\};/,
+        `const EVENT = ${configStr};`
+      );
+
+      // Replace static OG meta tags
+      const title       = cfg.eventTitle || "You're Invited";
+      const description = `You're invited! ${cfg.hostName ? 'Join us to celebrate ' + cfg.hostName + '.' : ''}`;
+      const ogImage     = cfg.ogImage || '';
+      const ogUrl       = `https://savio.design/events/${encodeURIComponent(folder)}/`;
+
+      return newHtml
+        .replace(/(<meta id="og-title"[^>]*content=")[^"]*(")/,   `$1${title}$2`)
+        .replace(/(<meta id="og-description"[^>]*content=")[^"]*(")/,`$1${description}$2`)
+        .replace(/(<meta id="og-image"[^>]*content=")[^"]*(")/,   `$1${ogImage}$2`)
+        .replace(/(<meta id="og-url"[^>]*content=")[^"]*(")/,     `$1${ogUrl}$2`)
+        .replace(/(<meta id="tw-title"[^>]*content=")[^"]*(")/,   `$1${title}$2`)
+        .replace(/(<meta id="tw-image"[^>]*content=")[^"]*(")/,   `$1${ogImage}$2`);
+    }
+
+    /* ============================================================
+       LIVE PREVIEW
+       ============================================================ */
+    let previewDebounce = null;
+
+    async function updatePreview() {
+      clearTimeout(previewDebounce);
+      previewDebounce = setTimeout(async () => {
+        try {
+          const html   = await fetchTemplate();
+          const cfg    = buildConfig();
+          const folder = getVal('f-folder') || 'preview';
+          const result = injectConfig(html, cfg, folder);
+
+          const frame = document.getElementById('preview-frame');
+          frame.srcdoc = result;
+        } catch (_) { /* template not yet loaded */ }
+      }, 400);
+    }
+
+    // Trigger initial preview
+    updatePreview();
+
+    /* ============================================================
+       SLUG PREVIEW
+       ============================================================ */
+    function updateSlug() {
+      const folder = getVal('f-folder');
+      document.getElementById('slug-preview').textContent =
+        folder ? `savio.design/events/${folder}/` : 'savio.design/events/';
+      updatePreview();
+    }
+
+    /* ============================================================
+       DYNAMIC LISTS
+       ============================================================ */
+    function addCourtRow(dama = '', chambelan = '') {
+      const list = document.getElementById('court-list');
+      const div  = document.createElement('div');
+      div.className = 'dynamic-item court-row';
+      div.innerHTML = `
+        <input class="court-dama"     placeholder="Dama"      value="${dama}"      oninput="updatePreview()" />
+        <input class="court-chambelan" placeholder="Chambelán" value="${chambelan}" oninput="updatePreview()" />
+        <button class="btn-remove" onclick="this.parentElement.remove(); updatePreview()">✕</button>`;
+      list.appendChild(div);
+    }
+
+    function addPadrinoRow(names = '', role = '') {
+      const list = document.getElementById('padrinos-list');
+      const div  = document.createElement('div');
+      div.className = 'dynamic-item padrino-row';
+      div.innerHTML = `
+        <input class="padrino-names" placeholder="Names"        value="${names}" oninput="updatePreview()" />
+        <input class="padrino-role"  placeholder="Contribution" value="${role}"  oninput="updatePreview()" />
+        <button class="btn-remove" onclick="this.parentElement.remove(); updatePreview()">✕</button>`;
+      list.appendChild(div);
+    }
+
+    function addImageRow(src = '') {
+      const list = document.getElementById('images-list');
+      const div  = document.createElement('div');
+      div.className = 'dynamic-item';
+      div.innerHTML = `
+        <input class="image-input" placeholder="photo1.jpg or full URL" value="${src}" oninput="updatePreview()" />
+        <button class="btn-remove" onclick="this.parentElement.remove(); updatePreview()">✕</button>`;
+      list.appendChild(div);
+    }
+
+    /* ============================================================
+       PUBLISH TO GITHUB
+       ============================================================ */
+    async function publishEvent() {
+      const folder = getVal('f-folder');
+      if (!folder) { showToast('Enter a folder name first', 'error'); return; }
+
+      const token = localStorage.getItem('githubToken') || '';
+      if (!token) { showToast('No GitHub token — go to Settings', 'error'); return; }
+
+      setLoading(true);
+      document.getElementById('publish-btn').disabled = true;
+
+      try {
+        const html       = await fetchTemplate();
+        const cfg        = buildConfig();
+        const finalHtml  = injectConfig(html, cfg, folder);
+
+        // Also get admin.html from template
+        const adminRes   = await fetch(
+          `https://api.github.com/repos/${ADMIN_CONFIG.githubOwner}/${ADMIN_CONFIG.githubRepo}/contents/${ADMIN_CONFIG.templatePath}/admin.html`,
+          { headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' } }
+        );
+        const adminData  = await adminRes.json();
+        const adminHtml  = atob(adminData.content.replace(/\n/g, ''));
+
+        // Check if files already exist (needed for SHA when updating)
+        const indexPath  = `${ADMIN_CONFIG.eventsPath}/${folder}/index.html`;
+        const adminPath  = `${ADMIN_CONFIG.eventsPath}/${folder}/admin.html`;
+
+        const existingIndex = await getFileSha(indexPath, token);
+        const existingAdmin = await getFileSha(adminPath, token);
+
+        // Commit index.html
+        await commitFile(indexPath, finalHtml, `${editingEvent ? 'Update' : 'Add'} event: ${folder}`, token, existingIndex);
+
+        // Commit admin.html (only if creating new)
+        if (!existingAdmin) {
+          await commitFile(adminPath, adminHtml, `Add admin for event: ${folder}`, token, null);
+        }
+
+        showToast(`✓ "${folder}" published! Live in ~60 seconds.`, 'success');
+
+        // Redirect to dashboard after a moment
+        setTimeout(() => window.location.href = 'index.html', 2000);
+
+      } catch (err) {
+        showToast('Publish failed: ' + err.message, 'error');
+        document.getElementById('publish-btn').disabled = false;
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    async function getFileSha(path, token) {
+      const res = await fetch(
+        `https://api.github.com/repos/${ADMIN_CONFIG.githubOwner}/${ADMIN_CONFIG.githubRepo}/contents/${path}`,
+        { headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' } }
+      );
+      if (!res.ok) return null;
+      const data = await res.json();
+      return data.sha || null;
+    }
+
+    async function commitFile(path, content, message, token, sha) {
+      const body = {
+        message,
+        content: btoa(unescape(encodeURIComponent(content))),
+      };
+      if (sha) body.sha = sha;
+
+      const res = await fetch(
+        `https://api.github.com/repos/${ADMIN_CONFIG.githubOwner}/${ADMIN_CONFIG.githubRepo}/contents/${path}`,
+        {
+          method: 'PUT',
+          headers: {
+            Authorization: `token ${token}`,
+            Accept: 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(body),
+        }
+      );
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || 'GitHub API error');
+      }
+    }
+
+    /* ============================================================
+       UI HELPERS
+       ============================================================ */
+    function setLoading(on) {
+      document.getElementById('loading').classList.toggle('active', on);
+    }
+
+    function showToast(msg, type = '') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className   = type ? `show ${type}` : 'show';
+      setTimeout(() => t.className = '', 3500);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings — Savio Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold:     #c9a96e;
+      --gold-dim: #8a6f3f;
+      --bg:       #0a0a0a;
+      --surface:  #111111;
+      --surface2: #1a1a1a;
+      --border:   #2a2a2a;
+      --text:     #f0ebe3;
+      --muted:    #7a7268;
+      --success:  #5a9e6f;
+      --danger:   #e05555;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      color: var(--gold);
+      letter-spacing: .12em;
+      text-decoration: none;
+    }
+    .btn-sm {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .75rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: .5rem .9rem;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color .2s, color .2s;
+    }
+    .btn-sm:hover { border-color: var(--gold-dim); color: var(--text); }
+
+    /* MAIN */
+    main {
+      max-width: 600px;
+      margin: 3rem auto;
+      padding: 0 1.5rem;
+      display: flex; flex-direction: column; gap: 2.5rem;
+    }
+
+    .page-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem; font-weight: 400;
+    }
+
+    .settings-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.75rem;
+      display: flex; flex-direction: column; gap: 1.25rem;
+    }
+
+    .settings-card-title {
+      font-size: .65rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      padding-bottom: .75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .field { display: flex; flex-direction: column; gap: .4rem; }
+    .field label {
+      font-size: .72rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .field input {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .88rem;
+      padding: .7rem .9rem;
+      border-radius: 6px;
+      outline: none;
+      transition: border-color .2s;
+      width: 100%;
+    }
+    .field input:focus { border-color: var(--gold-dim); }
+    .field-hint {
+      font-size: .7rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .field-hint a { color: var(--gold-dim); }
+
+    .btn-save {
+      background: var(--gold);
+      border: none;
+      color: #0a0a0a;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .8rem;
+      font-weight: 500;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: .8rem 1.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      align-self: flex-start;
+      transition: opacity .2s;
+    }
+    .btn-save:hover { opacity: .85; }
+
+    .token-status {
+      font-size: .78rem;
+      padding: .6rem .9rem;
+      border-radius: 5px;
+      display: none;
+    }
+    .token-status.ok    { background: rgba(90,158,111,.1); color: var(--success); border: 1px solid rgba(90,158,111,.3); }
+    .token-status.error { background: rgba(224,85,85,.1);  color: var(--danger);  border: 1px solid rgba(224,85,85,.3); }
+
+    #toast {
+      position: fixed; bottom: 2rem; left: 50%;
+      transform: translateX(-50%) translateY(1rem);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: .8rem;
+      padding: .7rem 1.4rem;
+      border-radius: 6px;
+      opacity: 0;
+      transition: opacity .3s, transform .3s;
+      pointer-events: none;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    .divider {
+      height: 1px; background: var(--border);
+    }
+
+    .danger-zone-title {
+      font-size: .65rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--danger);
+      padding-bottom: .75rem;
+      border-bottom: 1px solid rgba(224,85,85,.2);
+    }
+    .btn-danger {
+      background: transparent;
+      border: 1px solid rgba(224,85,85,.4);
+      color: var(--danger);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .75rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: .6rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+      align-self: flex-start;
+    }
+    .btn-danger:hover { border-color: var(--danger); background: rgba(224,85,85,.08); }
+  </style>
+</head>
+<body>
+
+  <div id="toast"></div>
+
+  <nav>
+    <a class="nav-logo" href="index.html">Savio.design</a>
+    <a class="btn-sm" href="index.html">← Back</a>
+  </nav>
+
+  <main>
+    <div class="page-title">Settings</div>
+
+    <!-- GITHUB TOKEN -->
+    <div class="settings-card">
+      <div class="settings-card-title">GitHub Personal Access Token</div>
+
+      <div class="field">
+        <label>Token</label>
+        <input type="password" id="github-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
+        <div class="field-hint">
+          Required to publish and manage events directly from this admin.<br/>
+          <a href="https://github.com/settings/tokens/new?scopes=repo&description=Savio+Admin" target="_blank">
+            Generate a token on GitHub ↗
+          </a> — enable the <strong>repo</strong> scope only.
+          Your token is stored in your browser's localStorage and never sent anywhere except GitHub's API.
+        </div>
+      </div>
+
+      <div class="token-status" id="token-status"></div>
+
+      <div style="display:flex; gap:.75rem; align-items:center; flex-wrap:wrap;">
+        <button class="btn-save" onclick="saveToken()">Save Token</button>
+        <button class="btn-sm" onclick="testToken()">Test Connection</button>
+      </div>
+    </div>
+
+    <!-- ADMIN PASSWORD -->
+    <div class="settings-card">
+      <div class="settings-card-title">Admin Password</div>
+      <div class="field">
+        <label>Current Password</label>
+        <input type="password" id="current-pw" placeholder="Enter current password" />
+      </div>
+      <div class="field">
+        <label>New Password</label>
+        <input type="password" id="new-pw" placeholder="Enter new password" />
+      </div>
+      <div class="field">
+        <label>Confirm New Password</label>
+        <input type="password" id="confirm-pw" placeholder="Repeat new password" />
+      </div>
+      <button class="btn-save" onclick="changePassword()">Update Password</button>
+    </div>
+
+    <!-- DEFAULT PHOTOGRAPHER -->
+    <div class="settings-card">
+      <div class="settings-card-title">Default Photographer Credit</div>
+      <div class="field-hint" style="margin-bottom:.25rem">
+        Pre-filled on every new event. You can override per-event in the creator.
+      </div>
+      <div class="field">
+        <label>Studio Name</label>
+        <input type="text" id="default-photographer-name" placeholder="720Studio" />
+      </div>
+      <div class="field">
+        <label>Instagram Handle</label>
+        <input type="text" id="default-photographer-handle" placeholder="@720studiophoto" />
+      </div>
+      <div class="field">
+        <label>Instagram URL</label>
+        <input type="text" id="default-photographer-instagram" placeholder="https://www.instagram.com/720studiophoto" />
+      </div>
+      <button class="btn-save" onclick="saveDefaults()">Save Defaults</button>
+    </div>
+
+    <!-- DANGER ZONE -->
+    <div class="settings-card">
+      <div class="danger-zone-title">Danger Zone</div>
+      <div class="field-hint">This will clear your GitHub token and admin password from this browser. You will be logged out.</div>
+      <button class="btn-danger" onclick="clearAllData()">Clear All Saved Data</button>
+    </div>
+
+  </main>
+
+  <script>
+    /* ============================================================
+       DEFAULT ADMIN PASSWORD (matches index.html)
+       ============================================================ */
+    const DEFAULT_PASSWORD = 'savio2025';
+
+    /* ============================================================
+       AUTH CHECK
+       ============================================================ */
+    if (!sessionStorage.getItem('adminUnlocked')) {
+      window.location.href = 'index.html';
+    }
+
+    /* ============================================================
+       LOAD SAVED VALUES ON PAGE LOAD
+       ============================================================ */
+    window.addEventListener('DOMContentLoaded', () => {
+      const token = localStorage.getItem('githubToken') || '';
+      if (token) document.getElementById('github-token').value = token;
+
+      const name = localStorage.getItem('defaultPhotographerName') || '720Studio';
+      const handle = localStorage.getItem('defaultPhotographerHandle') || '@720studiophoto';
+      const ig = localStorage.getItem('defaultPhotographerInstagram') || 'https://www.instagram.com/720studiophoto';
+      document.getElementById('default-photographer-name').value = name;
+      document.getElementById('default-photographer-handle').value = handle;
+      document.getElementById('default-photographer-instagram').value = ig;
+    });
+
+    /* ============================================================
+       GITHUB TOKEN
+       ============================================================ */
+    function saveToken() {
+      const token = document.getElementById('github-token').value.trim();
+      if (!token) { showToast('Enter a token first'); return; }
+      localStorage.setItem('githubToken', token);
+      showToast('Token saved');
+    }
+
+    async function testToken() {
+      const token  = document.getElementById('github-token').value.trim()
+                  || localStorage.getItem('githubToken') || '';
+      const status = document.getElementById('token-status');
+      status.style.display = 'block';
+      status.className     = 'token-status';
+      status.textContent   = 'Testing…';
+
+      try {
+        const res  = await fetch('https://api.github.com/repos/saviodesignco/savio.design', {
+          headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
+        });
+        const data = await res.json();
+        if (res.ok) {
+          status.className   = 'token-status ok';
+          status.textContent = `✓ Connected to ${data.full_name}`;
+        } else {
+          status.className   = 'token-status error';
+          status.textContent = `✗ ${data.message || 'Auth failed'}`;
+        }
+      } catch (err) {
+        status.className   = 'token-status error';
+        status.textContent = `✗ Network error: ${err.message}`;
+      }
+    }
+
+    /* ============================================================
+       ADMIN PASSWORD
+       ============================================================ */
+    function changePassword() {
+      const current  = document.getElementById('current-pw').value;
+      const newPw    = document.getElementById('new-pw').value;
+      const confirm  = document.getElementById('confirm-pw').value;
+      const stored   = localStorage.getItem('adminPassword') || DEFAULT_PASSWORD;
+
+      if (current !== stored) { showToast('Current password is incorrect'); return; }
+      if (!newPw)             { showToast('Enter a new password'); return; }
+      if (newPw !== confirm)  { showToast('Passwords do not match'); return; }
+
+      localStorage.setItem('adminPassword', newPw);
+      document.getElementById('current-pw').value = '';
+      document.getElementById('new-pw').value = '';
+      document.getElementById('confirm-pw').value = '';
+      showToast('Password updated');
+    }
+
+    /* ============================================================
+       DEFAULT PHOTOGRAPHER
+       ============================================================ */
+    function saveDefaults() {
+      localStorage.setItem('defaultPhotographerName',      document.getElementById('default-photographer-name').value.trim());
+      localStorage.setItem('defaultPhotographerHandle',    document.getElementById('default-photographer-handle').value.trim());
+      localStorage.setItem('defaultPhotographerInstagram', document.getElementById('default-photographer-instagram').value.trim());
+      showToast('Defaults saved');
+    }
+
+    /* ============================================================
+       DANGER ZONE
+       ============================================================ */
+    function clearAllData() {
+      if (!confirm('Clear all saved data and log out?')) return;
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.href = 'index.html';
+    }
+
+    /* ============================================================
+       TOAST
+       ============================================================ */
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+  </script>
+</body>
+</html>
