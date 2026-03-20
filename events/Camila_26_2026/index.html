@@ -9,6 +9,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
 
   <!-- ============================================================
+       OPEN GRAPH — link preview for iMessage, WhatsApp, etc.
+       Values are set dynamically from EVENT config below.
+       ============================================================ -->
+  <meta id="og-title"       property="og:title"              content="" />
+  <meta id="og-description" property="og:description"        content="" />
+  <meta id="og-image"       property="og:image"              content="" />
+  <meta id="og-url"         property="og:url"                content="" />
+  <meta                     property="og:type"               content="website" />
+  <meta id="tw-card"        name="twitter:card"              content="summary_large_image" />
+  <meta id="tw-title"       name="twitter:title"             content="" />
+  <meta id="tw-image"       name="twitter:image"             content="" />
+
+  <!-- ============================================================
        EVENT CONFIG — edit this object to customise the invitation
        ============================================================ -->
   <script>
@@ -16,7 +29,7 @@
       eventType:     "Quinceañera",            // Badge label
       eventTitle:    "Mis Quince Años",        // Main headline
       eventSubtitle: "Una celebración de vida, fe y amor", // Sub-headline
-      hostName:      "Sofía  García",           // Honoree's name
+      hostName:      "Sofía García",           // Honoree's name
 
       // --- Language ---
       // "en" = English labels, "es" = Spanish labels, "bilingual" = both
@@ -39,18 +52,15 @@
       massTime:      "4:00 PM",
       massVenueName: "Iglesia de San Patricio",
       massVenueAddress: "5th Avenue & 50th Street",
-      massVenueCity: "Aurora, CO 80011",
+      massVenueCity: "New York, NY 10111",
 
       // Reception
       receptionTime: "7:00 PM",               // Shown separately from mass
-      duration:      "5 hours",               // Duration of reception
-      spotsLeft:     150,                        // Set to 0 to show "Waitlist Only"
-      spotsTotal:    150,
 
       // Reception venue
       venueName:     "El Gran Salón",
       venueAddress:  "123 West 57th Street",
-      venueCity:     "Denver, CO 80202",
+      venueCity:     "New York, NY 10019",
 
       // --- Host notes ---
       notes:         "Código de vestimenta: formal. Por favor confirma tu asistencia antes del 1 de marzo.",
@@ -75,20 +85,24 @@
 
       // --- Slideshow images ---
       // Relative paths (e.g. "photo1.jpg") or full URLs — leave [] for gradient
-      heroImages: ["https://dy9ihb9itgy3g.cloudfront.net/products/12598/rq3155/rq3155__d_f.740.webp",
-        "https://dy9ihb9itgy3g.cloudfront.net/products/12598/rq3155/rq3155__b_1.740.webp",
-          "https://dy9ihb9itgy3g.cloudfront.net/products/12598/rq3155/rq3155__c_1.740.webp"
-],
+      heroImages: [],
 
       // --- RSVP ---
       rsvpEmail:         "hector@savio.design",
-      formspreeEndpoint: "https://formspree.io/f/xnjgoewj",                   // Paste Formspree URL here
+      formspreeEndpoint: "",                   // Paste Formspree URL here
 
       // --- Photographer credit ---
       // Leave photographerName "" to hide this section
       photographerName:      "720Studio",
       photographerHandle:    "@720studiophoto",
       photographerInstagram: "https://www.instagram.com/720studiophoto",
+
+      // --- Social preview (Open Graph) ---
+      // Full absolute URL to the image shown when the link is shared via
+      // iMessage, WhatsApp, Instagram DMs, etc.
+      // e.g. "https://savio.design/events/Mia/photo1.jpg"
+      // Leave "" to use no preview image.
+      ogImage: "",
 
       // --- Password gate — leave "" to disable ---
       eventPassword: "savio2025"
@@ -1149,14 +1163,6 @@
             <div class="info-label" id="label-doors">Doors Open</div>
             <div class="info-value" id="el-doors"></div>
           </div>
-          <div class="info-item">
-            <div class="info-label" id="label-duration">Duration</div>
-            <div class="info-value" id="el-duration"></div>
-          </div>
-          <div class="info-item">
-            <div class="info-label" id="label-spots">Spots Available</div>
-            <div class="info-value accent" id="el-spots"></div>
-          </div>
         </div>
 
         <div class="divider"></div>
@@ -1385,17 +1391,26 @@
       document.getElementById('el-subtitle').textContent = EVENT.eventSubtitle;
       document.getElementById('el-host').textContent     = EVENT.hostName;
       document.getElementById('el-date').textContent     = EVENT.date;
-      document.getElementById('el-duration').textContent = EVENT.duration;
       document.getElementById('el-venue').textContent    = EVENT.venueName;
-      document.getElementById('el-address').innerHTML    = EVENT.venueAddress + '<br>' + EVENT.venueCity;
+      const venueMapUrl = 'https://maps.google.com/?q=' + encodeURIComponent([EVENT.venueName, EVENT.venueAddress, EVENT.venueCity].filter(Boolean).join(', '));
+      document.getElementById('el-address').innerHTML = '<a href="' + venueMapUrl + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">' + EVENT.venueAddress + '<br>' + EVENT.venueCity + '</a>';
       document.getElementById('el-notes').textContent    = EVENT.notes;
       document.getElementById('footer-host').textContent = EVENT.hostName;
       document.title = EVENT.eventTitle + ' — ' + EVENT.hostName;
 
+      // --- Open Graph / social preview ---
+      const ogDesc = `You're invited to ${EVENT.eventTitle} on ${EVENT.date}. Hosted by ${EVENT.hostName}.`;
+      document.getElementById('og-title').content       = EVENT.eventTitle + ' — ' + EVENT.hostName;
+      document.getElementById('og-description').content = ogDesc;
+      document.getElementById('og-url').content         = window.location.href;
+      document.getElementById('tw-title').content       = EVENT.eventTitle + ' — ' + EVENT.hostName;
+      if (EVENT.ogImage) {
+        document.getElementById('og-image').content = EVENT.ogImage;
+        document.getElementById('tw-image').content = EVENT.ogImage;
+      }
+
       // --- Bilingual labels ---
       label('label-date',          'Date',            'Fecha');
-      label('label-duration',      'Duration',        'Duración');
-      label('label-spots',         'Spots Available', 'Lugares');
       label('label-doors',         'Doors Open',      'Puertas abren');
       label('label-notes',         'A Note from Your Host', 'Nota del anfitrión');
       label('label-court-sub',     'Court of Honor',  'Corte de Honor');
@@ -1429,7 +1444,8 @@
       if (EVENT.massVenueName && EVENT.massVenueName.trim() !== '') {
         document.getElementById('el-mass-venue').textContent       = EVENT.massVenueName;
         document.getElementById('el-mass-time-detail').textContent = EVENT.massTime || '';
-        document.getElementById('el-mass-address').innerHTML       = EVENT.massVenueAddress + '<br>' + EVENT.massVenueCity;
+        const massMapUrl = 'https://maps.google.com/?q=' + encodeURIComponent([EVENT.massVenueName, EVENT.massVenueAddress, EVENT.massVenueCity].filter(Boolean).join(', '));
+        document.getElementById('el-mass-address').innerHTML = '<a href="' + massMapUrl + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">' + EVENT.massVenueAddress + '<br>' + EVENT.massVenueCity + '</a>';
         label('label-mass', 'Ceremony', 'Ceremonia');
 
         // Show mass + reception in info grid
@@ -1450,14 +1466,6 @@
         document.getElementById('el-doors').textContent            = EVENT.doorsOpen;
       }
 
-      // --- Spots ---
-      const spotsEl = document.getElementById('el-spots');
-      if (EVENT.spotsLeft > 0) {
-        spotsEl.textContent = EVENT.spotsLeft + ' / ' + EVENT.spotsTotal;
-      } else {
-        spotsEl.textContent = es ? 'Lista de espera' : 'Waitlist Only';
-        spotsEl.style.color = '#c0392b';
-      }
 
       // --- Notes ---
       if (!EVENT.notes || EVENT.notes.trim() === '') {
