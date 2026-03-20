@@ -690,27 +690,6 @@
               <label for="f-doorsOpen">Doors Open</label>
               <input type="text" id="f-doorsOpen" placeholder="3:30 PM" />
             </div>
-            <div class="field">
-              <label for="f-duration">Duration</label>
-              <input type="text" id="f-duration" placeholder="5 hours" value="5 hours" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- SECTION: Capacity -->
-      <div class="form-section">
-        <div class="section-title">Capacity</div>
-        <div class="fields">
-          <div class="field-row">
-            <div class="field">
-              <label for="f-spotsLeft">Spots Available</label>
-              <input type="number" id="f-spotsLeft" placeholder="0" value="0" />
-            </div>
-            <div class="field">
-              <label for="f-spotsTotal">Total Capacity</label>
-              <input type="number" id="f-spotsTotal" placeholder="150" value="150" />
-            </div>
           </div>
         </div>
       </div>
@@ -928,14 +907,6 @@
               <div class="p-label" id="pl-doors">Doors Open</div>
               <div class="p-val" id="p-doors"></div>
             </div>
-            <div>
-              <div class="p-label" id="pl-duration">Duration</div>
-              <div class="p-val" id="p-duration"></div>
-            </div>
-            <div>
-              <div class="p-label" id="pl-spots">Spots Available</div>
-              <div class="p-val accent" id="p-spots"></div>
-            </div>
           </div>
 
           <div class="p-divider"></div>
@@ -1052,9 +1023,6 @@
     'f-massTime':         { fn: updateMass },
     'f-receptionTime':    { el: 'p-reception-time' },
     'f-doorsOpen':        { el: 'p-doors' },
-    'f-duration':         { el: 'p-duration' },
-    'f-spotsLeft':        { fn: updateSpots },
-    'f-spotsTotal':       { fn: updateSpots },
     'f-massVenueName':    { fn: updateMass },
     'f-massVenueAddress': { fn: updateMass },
     'f-massVenueCity':    { fn: updateMass },
@@ -1133,18 +1101,6 @@
     }
   }
 
-  function updateSpots() {
-    const left  = parseInt(val('f-spotsLeft'))  || 0;
-    const total = parseInt(val('f-spotsTotal')) || 0;
-    const el = document.getElementById('p-spots');
-    if (left > 0) {
-      el.textContent = left + ' of ' + total;
-      el.style.color = '';
-    } else {
-      el.textContent = 'Waitlist Only';
-      el.style.color = '#c0392b';
-    }
-  }
 
   function updateAddress() {
     const addr = val('f-venueAddress');
@@ -1197,8 +1153,6 @@
     date:     { en: 'Date',             es: 'Fecha'              },
     time:     { en: 'Ceremony',         es: 'Ceremonia'          },
     doors:    { en: 'Doors Open',       es: 'Puertas abren'      },
-    duration: { en: 'Duration',         es: 'Duración'           },
-    spots:    { en: 'Spots Available',  es: 'Lugares'            },
     notes:    { en: 'A Note from Your Host', es: 'Nota del anfitrión' },
     rsvp:     { en: 'Your Response',    es: 'Tu Respuesta'       },
     accept:   { en: 'Accept',           es: 'Acepto'             },
@@ -1359,9 +1313,6 @@
       massVenueAddress: val('f-massVenueAddress'),
       massVenueCity:    val('f-massVenueCity'),
       receptionTime:    val('f-receptionTime'),
-      duration:         val('f-duration'),
-      spotsLeft:        parseInt(val('f-spotsLeft')) || 0,
-      spotsTotal:       parseInt(val('f-spotsTotal')) || 0,
       venueName:        val('f-venueName'),
       venueAddress:     val('f-venueAddress'),
       venueCity:        val('f-venueCity'),
