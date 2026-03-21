@@ -96,6 +96,7 @@
       photographerName:      "720Studio",
       photographerHandle:    "@720studiophoto",
       photographerInstagram: "https://www.instagram.com/720studiophoto",
+      photographerFacebook:  "",
 
       // --- Social preview (Open Graph) ---
       // Full absolute URL to the image shown when the link is shared via
@@ -1037,9 +1038,14 @@
       text-decoration: none;
     }
 
-    .photographer-bar:hover .photographer-handle { color: var(--gold); }
+    .photographer-links {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-left: auto;
+    }
 
-    .photographer-avatar {
+    .photographer-icon-link {
       width: 28px;
       height: 28px;
       border-radius: 50%;
@@ -1048,9 +1054,12 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      transition: border-color 0.2s;
     }
 
-    .photographer-avatar svg {
+    .photographer-icon-link:hover { border-color: var(--gold); }
+
+    .photographer-icon-link svg {
       width: 13px;
       height: 13px;
       stroke: var(--gold);
@@ -1292,20 +1301,26 @@
       </div><!-- /.card-body -->
 
       <!-- Photographer credit -->
-      <a class="photographer-bar" id="photographer-bar" href="#" target="_blank" rel="noopener">
-        <div class="photographer-avatar">
-          <!-- Instagram icon -->
-          <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="2" width="20" height="20" rx="5"/>
-            <circle cx="12" cy="12" r="4"/>
-            <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/>
-          </svg>
-        </div>
+      <div class="photographer-bar" id="photographer-bar">
         <div class="photographer-info">
           <div class="photographer-label">Photography by</div>
           <div class="photographer-handle" id="photographer-handle"></div>
         </div>
-      </a>
+        <div class="photographer-links">
+          <a id="photographer-ig-link" href="#" target="_blank" rel="noopener" class="photographer-icon-link" style="display:none">
+            <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5"/>
+              <circle cx="12" cy="12" r="4"/>
+              <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/>
+            </svg>
+          </a>
+          <a id="photographer-fb-link" href="#" target="_blank" rel="noopener" class="photographer-icon-link" style="display:none">
+            <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
 
       <!-- Footer -->
       <div class="card-footer">
@@ -1516,7 +1531,10 @@
       const photoBar = document.getElementById('photographer-bar');
       if (EVENT.photographerName && EVENT.photographerName.trim() !== '') {
         document.getElementById('photographer-handle').textContent = EVENT.photographerHandle || EVENT.photographerName;
-        photoBar.href = EVENT.photographerInstagram || '#';
+        const igLink = document.getElementById('photographer-ig-link');
+        const fbLink = document.getElementById('photographer-fb-link');
+        if (EVENT.photographerInstagram) { igLink.href = EVENT.photographerInstagram; igLink.style.display = ''; }
+        if (EVENT.photographerFacebook)  { fbLink.href = EVENT.photographerFacebook;  fbLink.style.display = ''; }
       } else {
         photoBar.style.display = 'none';
       }

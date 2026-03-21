@@ -801,6 +801,10 @@
             <label for="f-photographerInstagram">Instagram URL</label>
             <input type="text" id="f-photographerInstagram" placeholder="https://www.instagram.com/720studiophoto" value="https://www.instagram.com/720studiophoto" />
           </div>
+          <div class="field">
+            <label for="f-photographerFacebook">Facebook URL</label>
+            <input type="text" id="f-photographerFacebook" placeholder="https://www.facebook.com/…" value="https://www.facebook.com/share/1KwrrZoLaH/?mibextid=wwXIfr" />
+          </div>
         </div>
       </div>
 
@@ -1022,6 +1026,7 @@
     'f-photographerName':      { fn: updatePhotographer },
     'f-photographerHandle':    { fn: updatePhotographer },
     'f-photographerInstagram': { fn: () => {} },
+    'f-photographerFacebook':  { fn: () => {} },
     'f-ogImage':               { fn: () => {} },
     'f-eventPassword':         { fn: () => {} }
   };
@@ -1334,6 +1339,7 @@
       photographerName:      val('f-photographerName'),
       photographerHandle:    val('f-photographerHandle'),
       photographerInstagram: val('f-photographerInstagram'),
+      photographerFacebook:  val('f-photographerFacebook'),
       ogImage:               val('f-ogImage'),
       eventPassword:         val('f-eventPassword')
     };
