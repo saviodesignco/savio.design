@@ -326,7 +326,7 @@
 
     .p-hero {
       width: 100%;
-      aspect-ratio: 720 / 1030;
+      aspect-ratio: 16/9;
       background: linear-gradient(135deg, #1a1208 0%, #2d1f0a 40%, #0a0a0a 100%);
       position: relative;
       display: flex;
@@ -690,6 +690,27 @@
               <label for="f-doorsOpen">Doors Open</label>
               <input type="text" id="f-doorsOpen" placeholder="3:30 PM" />
             </div>
+            <div class="field">
+              <label for="f-duration">Duration</label>
+              <input type="text" id="f-duration" placeholder="5 hours" value="5 hours" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Capacity -->
+      <div class="form-section">
+        <div class="section-title">Capacity</div>
+        <div class="fields">
+          <div class="field-row">
+            <div class="field">
+              <label for="f-spotsLeft">Spots Available</label>
+              <input type="number" id="f-spotsLeft" placeholder="0" value="0" />
+            </div>
+            <div class="field">
+              <label for="f-spotsTotal">Total Capacity</label>
+              <input type="number" id="f-spotsTotal" placeholder="150" value="150" />
+            </div>
           </div>
         </div>
       </div>
@@ -764,8 +785,20 @@
       <!-- SECTION: Media & RSVP -->
       <div class="form-section">
         <div class="section-title">Photos</div>
-        <div id="photo-rows"></div>
-        <button class="add-row-btn" onclick="addPhotoRow()">+ Add Photo</button>
+        <div class="fields">
+          <div class="field">
+            <label for="f-heroImage1">Image 1 (first slide)</label>
+            <input type="text" id="f-heroImage1" placeholder="photo1.jpg or https://…" />
+          </div>
+          <div class="field">
+            <label for="f-heroImage2">Image 2</label>
+            <input type="text" id="f-heroImage2" placeholder="photo2.jpg or https://…" />
+          </div>
+          <div class="field">
+            <label for="f-heroImage3">Image 3</label>
+            <input type="text" id="f-heroImage3" placeholder="photo3.jpg or https://…" />
+          </div>
+        </div>
       </div>
 
       <!-- SECTION: RSVP -->
@@ -895,6 +928,14 @@
               <div class="p-label" id="pl-doors">Doors Open</div>
               <div class="p-val" id="p-doors"></div>
             </div>
+            <div>
+              <div class="p-label" id="pl-duration">Duration</div>
+              <div class="p-val" id="p-duration"></div>
+            </div>
+            <div>
+              <div class="p-label" id="pl-spots">Spots Available</div>
+              <div class="p-val accent" id="p-spots"></div>
+            </div>
           </div>
 
           <div class="p-divider"></div>
@@ -1011,6 +1052,9 @@
     'f-massTime':         { fn: updateMass },
     'f-receptionTime':    { el: 'p-reception-time' },
     'f-doorsOpen':        { el: 'p-doors' },
+    'f-duration':         { el: 'p-duration' },
+    'f-spotsLeft':        { fn: updateSpots },
+    'f-spotsTotal':       { fn: updateSpots },
     'f-massVenueName':    { fn: updateMass },
     'f-massVenueAddress': { fn: updateMass },
     'f-massVenueCity':    { fn: updateMass },
@@ -1018,6 +1062,9 @@
     'f-venueAddress':     { fn: updateAddress },
     'f-venueCity':        { fn: updateAddress },
     'f-notes':            { fn: updateNotes },
+    'f-heroImage1':       { fn: updateHero },
+    'f-heroImage2':       { fn: updateHero },
+    'f-heroImage3':       { fn: updateHero },
     'f-formspreeEndpoint':     { fn: () => {} },
     'f-photographerName':      { fn: updatePhotographer },
     'f-photographerHandle':    { fn: updatePhotographer },
@@ -1086,6 +1133,18 @@
     }
   }
 
+  function updateSpots() {
+    const left  = parseInt(val('f-spotsLeft'))  || 0;
+    const total = parseInt(val('f-spotsTotal')) || 0;
+    const el = document.getElementById('p-spots');
+    if (left > 0) {
+      el.textContent = left + ' of ' + total;
+      el.style.color = '';
+    } else {
+      el.textContent = 'Waitlist Only';
+      el.style.color = '#c0392b';
+    }
+  }
 
   function updateAddress() {
     const addr = val('f-venueAddress');
@@ -1104,30 +1163,9 @@
     }
   }
 
-  function addPhotoRow(value) {
-    const container = document.getElementById('photo-rows');
-    const index = container.children.length + 1;
-    const row = document.createElement('div');
-    row.className = 'dynamic-row';
-    row.innerHTML =
-      '<div class="field"><label>Image ' + index + (index === 1 ? ' (first slide)' : '') + '</label>' +
-      '<input type="text" class="hero-image-input" placeholder="photo' + index + '.jpg or https://…" value="' + (value || '') + '" /></div>' +
-      '<button class="remove-btn" onclick="this.parentElement.remove(); updatePhotoLabels(); updateHero();" title="Remove">×</button>';
-    row.querySelector('input').addEventListener('input', updateHero);
-    container.appendChild(row);
-    updateHero();
-  }
-
-  function updatePhotoLabels() {
-    const rows = document.querySelectorAll('#photo-rows .dynamic-row');
-    rows.forEach((row, i) => {
-      row.querySelector('label').textContent = 'Image ' + (i + 1) + (i === 0 ? ' (first slide)' : '');
-    });
-  }
-
   function updateHero() {
-    const srcs = Array.from(document.querySelectorAll('#photo-rows .hero-image-input'))
-      .map(el => el.value.trim())
+    const srcs = ['f-heroImage1','f-heroImage2','f-heroImage3']
+      .map(id => val(id).trim())
       .filter(s => s !== '');
     const hero = document.getElementById('p-hero');
 
@@ -1159,6 +1197,8 @@
     date:     { en: 'Date',             es: 'Fecha'              },
     time:     { en: 'Ceremony',         es: 'Ceremonia'          },
     doors:    { en: 'Doors Open',       es: 'Puertas abren'      },
+    duration: { en: 'Duration',         es: 'Duración'           },
+    spots:    { en: 'Spots Available',  es: 'Lugares'            },
     notes:    { en: 'A Note from Your Host', es: 'Nota del anfitrión' },
     rsvp:     { en: 'Your Response',    es: 'Tu Respuesta'       },
     accept:   { en: 'Accept',           es: 'Acepto'             },
@@ -1255,9 +1295,6 @@
 
   // Wire up all inputs
   document.addEventListener('DOMContentLoaded', () => {
-    // Seed default photo rows
-    addPhotoRow(); addPhotoRow(); addPhotoRow();
-
     // Hide optional blocks until filled in
     document.getElementById('p-opening-phrase-block').style.display = 'none';
     document.getElementById('p-mass-block').style.display = 'none';
@@ -1322,13 +1359,16 @@
       massVenueAddress: val('f-massVenueAddress'),
       massVenueCity:    val('f-massVenueCity'),
       receptionTime:    val('f-receptionTime'),
+      duration:         val('f-duration'),
+      spotsLeft:        parseInt(val('f-spotsLeft')) || 0,
+      spotsTotal:       parseInt(val('f-spotsTotal')) || 0,
       venueName:        val('f-venueName'),
       venueAddress:     val('f-venueAddress'),
       venueCity:        val('f-venueCity'),
       notes:            val('f-notes'),
       court,
       padrinos,
-      heroImages:            Array.from(document.querySelectorAll('#photo-rows .hero-image-input')).map(el => el.value.trim()).filter(s => s !== ''),
+      heroImages:            ['f-heroImage1','f-heroImage2','f-heroImage3'].map(id => val(id).trim()).filter(s => s !== ''),
       formspreeEndpoint:     val('f-formspreeEndpoint'),
       rsvpEmail:             val('f-rsvpEmail'),
       photographerName:      val('f-photographerName'),

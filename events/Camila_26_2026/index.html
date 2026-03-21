@@ -26,88 +26,51 @@
        ============================================================ -->
   <script>
     const EVENT = {
-      eventType:     "Quinceañera",            // Badge label
-      eventTitle:    "Mis Quince Años",        // Main headline
-      eventSubtitle: "Una celebración de vida, fe y amor", // Sub-headline
-      hostName:      "Sofía García",           // Honoree's name
-
-      // --- Language ---
-      // "en" = English labels, "es" = Spanish labels, "bilingual" = both
-      language:      "bilingual",
-
-      // --- Honoree ---
-      honoreeAge:    15,                       // Set to 0 to hide the age line
-      parentNames:   "Sr. y Sra. García",      // Shown as "Hija de..." — leave "" to hide
-
-      // --- Opening phrase (religious / personal) ---
-      // Leave "" to hide. Shown at the very top of the card.
-      openingPhrase: "Agradeciendo a Dios por estos 15 años de vida y bendiciones",
-
-      // --- Date & time ---
-      date:          "Sábado, 12 de Abril 2025",
-      dayOfWeek:     "Saturday",               // English, used in .ics
-      doorsOpen:     "3:30 PM",               // Arrival / doors
-
-      // Mass — leave massVenueName "" to hide this section entirely
-      massTime:      "4:00 PM",
-      massVenueName: "Iglesia de San Patricio",
-      massVenueAddress: "5th Avenue & 50th Street",
-      massVenueCity: "New York, NY 10111",
-
-      // Reception
-      receptionTime: "7:00 PM",               // Shown separately from mass
-
-      // Reception venue
-      venueName:     "El Gran Salón",
-      venueAddress:  "123 West 57th Street",
-      venueCity:     "New York, NY 10019",
-
-      // --- Host notes ---
-      notes:         "Código de vestimenta: formal. Por favor confirma tu asistencia antes del 1 de marzo.",
-
-      // --- Court of Honor (Corte de Honor) ---
-      // Array of { dama, chambelan } pairs — leave [] to hide section
-      court: [
-        { dama: "Isabella Martínez",  chambelan: "Carlos López"   },
-        { dama: "Valentina Torres",   chambelan: "Miguel Reyes"   },
-        { dama: "Camila Hernández",   chambelan: "Andrés Morales" },
-        { dama: "Luciana Ramírez",    chambelan: "Diego Castillo" },
+      eventType         : "Quinceañera",
+      eventTitle        : "Mis Quince Años  Camila",
+      eventSubtitle     : "Una celebración de vida, fe y amor",
+      hostName          : "Sofía García",
+      language          : "bilingual",
+      honoreeAge        : 15,
+      parentNames       : "Jorge y Nancy Perea",
+      openingPhrase     : "Agradeciendo a Dios, y con la bendicion de mis Padres",
+      date              : "Sabado 26 de Julio 2025",
+      dayOfWeek         : "Sabado 26 de Julio 2025",
+      doorsOpen         : "5:00pm",
+      massTime          : "2:00pm",
+      massVenueName     : "St Cajetan Catholic Church ",
+      massVenueAddress  : "299 S Raleigh St",
+      massVenueCity     : "Denver CO, 80219 ",
+      receptionTime     : "5:00pm",
+      venueName         : "Salon Venecia",
+      venueAddress      : "10168 Wadsworth Pkwy #100",
+      venueCity         : "Westminster CO, 80021",
+      notes             : "Un Agradecimiento a todos mis Padrinos por hacer de este bonito sueño, una hermosa realidad",
+      court             : [
+        {"dama":"Nohemi Barajas","chambelan":"Carlos Robles"},
+        {"dama":"Cynthia Lopez","chambelan":"Joel Villegas"}
       ],
-
-      // --- Padrinos y Madrinas ---
-      // Array of { names, role } — leave [] to hide section
-      padrinos: [
-        { names: "Roberto & Ana González",  role: "Vestido"       },
-        { names: "Luis & Carmen Reyes",     role: "Corona & Ramo" },
-        { names: "Jorge & Patricia Lima",   role: "Música"        },
-        { names: "Marco & Silvia Torres",   role: "Pastel"        },
+      padrinos          : [
+        {"names":"Roberto y Marlene Villanueva","role":"Padrinos de Honor"}
       ],
-
-      // --- Slideshow images ---
-      // Relative paths (e.g. "photo1.jpg") or full URLs — leave [] for gradient
-      heroImages: [],
-
-      // --- RSVP ---
-      rsvpEmail:         "hector@savio.design",
-      formspreeEndpoint: "",                   // Paste Formspree URL here
-
-      // --- Photographer credit ---
-      // Leave photographerName "" to hide this section
-      photographerName:      "720Studio",
-      photographerHandle:    "@720studiophoto",
+      heroImages        : [
+        "/Users/hector/Developer/savio.design/assets/images/Camila_7_26_2026/XV2.jpg",
+        "/Users/hector/Developer/savio.design/assets/images/Camila_7_26_2026/XV3.jpg",
+        "/Users/hector/Developer/savio.design/assets/images/Camila_7_26_2026/XV4.jpg",
+        "/Users/hector/Developer/savio.design/assets/images/Camila_7_26_2026/XV5.jpg",
+        "/Users/hector/Developer/savio.design/assets/images/Camila_7_26_2026/XV6.jpg",
+        "/Users/hector/Developer/savio.design/assets/images/Camila_7_26_2026/XV7.jpg",
+        "/Users/hector/Developer/savio.design/assets/images/Camila_7_26_2026/X8.jpg"
+      ],
+      formspreeEndpoint : "https://formspree.io/f/xnjgoewj",
+      rsvpEmail         : "hector@savio.design",
+      photographerName  : "720Studio",
+      photographerHandle: "@720studiophoto",
       photographerInstagram: "https://www.instagram.com/720studiophoto",
-
-      // --- Social preview (Open Graph) ---
-      // Full absolute URL to the image shown when the link is shared via
-      // iMessage, WhatsApp, Instagram DMs, etc.
-      // e.g. "https://savio.design/events/Mia/photo1.jpg"
-      // Leave "" to use no preview image.
-      ogImage: "",
-
-      // --- Password gate — leave "" to disable ---
-      eventPassword: "savio2025"
+      ogImage           : "https://savio.design/assets/images/Camila_7_26_2026/XV1.jpg",
+      eventPassword     : "Perea",
     };
-  </script>
+     </script>
 
   <style>
     /* ============================================================

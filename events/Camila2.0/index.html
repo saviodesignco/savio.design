@@ -14,12 +14,12 @@
        ============================================================ -->
   <meta id="og-title"       property="og:title"              content="" />
   <meta id="og-description" property="og:description"        content="" />
-  <meta id="og-image"       property="og:image"              content="" />
+  <meta id="og-image"       property="og:image"              content="https://savio.design/assets/images/Silvia2026images/quincePreview.jpeg" />
   <meta id="og-url"         property="og:url"                content="" />
   <meta                     property="og:type"               content="website" />
   <meta id="tw-card"        name="twitter:card"              content="summary_large_image" />
   <meta id="tw-title"       name="twitter:title"             content="" />
-  <meta id="tw-image"       name="twitter:image"             content="" />
+  <meta id="tw-image"       name="twitter:image"             content="https://savio.design/assets/images/Silvia2026images/quincePreview.jpeg" />
 
   <!-- ============================================================
        EVENT CONFIG — edit this object to customise the invitation
@@ -52,15 +52,18 @@
       massTime:      "4:00 PM",
       massVenueName: "Iglesia de San Patricio",
       massVenueAddress: "5th Avenue & 50th Street",
-      massVenueCity: "New York, NY 10111",
+      massVenueCity: "Aurora, CO 80010",
 
       // Reception
       receptionTime: "7:00 PM",               // Shown separately from mass
+      duration:      "5 hours",               // Duration of reception
+      spotsLeft:     140,                        // Set to 0 to show "Waitlist Only"
+      spotsTotal:    150,
 
       // Reception venue
       venueName:     "El Gran Salón",
       venueAddress:  "123 West 57th Street",
-      venueCity:     "New York, NY 10019",
+      venueCity:     "Denver, CO 80202",
 
       // --- Host notes ---
       notes:         "Código de vestimenta: formal. Por favor confirma tu asistencia antes del 1 de marzo.",
@@ -68,7 +71,7 @@
       // --- Court of Honor (Corte de Honor) ---
       // Array of { dama, chambelan } pairs — leave [] to hide section
       court: [
-        { dama: "Isabella Martínez",  chambelan: "Carlos López"   },
+        { damas: "Isabella Martínez",  chambelan: "Carlos López"   },
         { dama: "Valentina Torres",   chambelan: "Miguel Reyes"   },
         { dama: "Camila Hernández",   chambelan: "Andrés Morales" },
         { dama: "Luciana Ramírez",    chambelan: "Diego Castillo" },
@@ -85,11 +88,15 @@
 
       // --- Slideshow images ---
       // Relative paths (e.g. "photo1.jpg") or full URLs — leave [] for gradient
-      heroImages: [],
+      heroImages: [
+      "https://dy9ihb9itgy3g.cloudfront.net/products/12598/rq3155/rq3155__d_f.740.webp",
+      "https://dy9ihb9itgy3g.cloudfront.net/products/12598/rq3155/rq3155__b_1.740.webp",
+      "https://dy9ihb9itgy3g.cloudfront.net/products/12598/rq3155/rq3155__c_1.740.webp"
+      ],
 
       // --- RSVP ---
       rsvpEmail:         "hector@savio.design",
-      formspreeEndpoint: "",                   // Paste Formspree URL here
+      formspreeEndpoint: "https://formspree.io/f/xnjgoewj",                   // Paste Formspree URL here
 
       // --- Photographer credit ---
       // Leave photographerName "" to hide this section
@@ -102,10 +109,13 @@
       // iMessage, WhatsApp, Instagram DMs, etc.
       // e.g. "https://savio.design/events/Mia/photo1.jpg"
       // Leave "" to use no preview image.
-      ogImage: "",
+      //For the best results across all platforms: 
+      //1200 × 630 px — this is the universal standard
+      //Under 1MB — ideally 300–500KB as a JPEG so it loads fast in previews
+      ogImage: "https://savio.design/assets/images/Silvia2026images/quincePreview.jpeg",
 
       // --- Password gate — leave "" to disable ---
-      eventPassword: "savio2025"
+      eventPassword: "silvia2026"
     };
   </script>
 
@@ -292,7 +302,7 @@
        ============================================================ */
     .hero {
       width: 100%;
-      aspect-ratio: 720 / 1030;
+      aspect-ratio: 3 / 4;
       background: linear-gradient(135deg, #1a1208 0%, #2d1f0a 40%, #0a0a0a 100%);
       position: relative;
       overflow: hidden;
@@ -1163,6 +1173,14 @@
             <div class="info-label" id="label-doors">Doors Open</div>
             <div class="info-value" id="el-doors"></div>
           </div>
+          <div class="info-item">
+            <div class="info-label" id="label-duration">Duration</div>
+            <div class="info-value" id="el-duration"></div>
+          </div>
+          <div class="info-item">
+            <div class="info-label" id="label-spots">Spots Available</div>
+            <div class="info-value accent" id="el-spots"></div>
+          </div>
         </div>
 
         <div class="divider"></div>
@@ -1391,9 +1409,9 @@
       document.getElementById('el-subtitle').textContent = EVENT.eventSubtitle;
       document.getElementById('el-host').textContent     = EVENT.hostName;
       document.getElementById('el-date').textContent     = EVENT.date;
+      document.getElementById('el-duration').textContent = EVENT.duration;
       document.getElementById('el-venue').textContent    = EVENT.venueName;
-      const venueMapUrl = 'https://maps.google.com/?q=' + encodeURIComponent([EVENT.venueName, EVENT.venueAddress, EVENT.venueCity].filter(Boolean).join(', '));
-      document.getElementById('el-address').innerHTML = '<a href="' + venueMapUrl + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">' + EVENT.venueAddress + '<br>' + EVENT.venueCity + '</a>';
+      document.getElementById('el-address').innerHTML    = EVENT.venueAddress + '<br>' + EVENT.venueCity;
       document.getElementById('el-notes').textContent    = EVENT.notes;
       document.getElementById('footer-host').textContent = EVENT.hostName;
       document.title = EVENT.eventTitle + ' — ' + EVENT.hostName;
@@ -1411,6 +1429,8 @@
 
       // --- Bilingual labels ---
       label('label-date',          'Date',            'Fecha');
+      label('label-duration',      'Duration',        'Duración');
+      label('label-spots',         'Spots Available', 'Lugares');
       label('label-doors',         'Doors Open',      'Puertas abren');
       label('label-notes',         'A Note from Your Host', 'Nota del anfitrión');
       label('label-court-sub',     'Court of Honor',  'Corte de Honor');
@@ -1444,8 +1464,7 @@
       if (EVENT.massVenueName && EVENT.massVenueName.trim() !== '') {
         document.getElementById('el-mass-venue').textContent       = EVENT.massVenueName;
         document.getElementById('el-mass-time-detail').textContent = EVENT.massTime || '';
-        const massMapUrl = 'https://maps.google.com/?q=' + encodeURIComponent([EVENT.massVenueName, EVENT.massVenueAddress, EVENT.massVenueCity].filter(Boolean).join(', '));
-        document.getElementById('el-mass-address').innerHTML = '<a href="' + massMapUrl + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">' + EVENT.massVenueAddress + '<br>' + EVENT.massVenueCity + '</a>';
+        document.getElementById('el-mass-address').innerHTML       = EVENT.massVenueAddress + '<br>' + EVENT.massVenueCity;
         label('label-mass', 'Ceremony', 'Ceremonia');
 
         // Show mass + reception in info grid
@@ -1466,6 +1485,14 @@
         document.getElementById('el-doors').textContent            = EVENT.doorsOpen;
       }
 
+      // --- Spots ---
+      const spotsEl = document.getElementById('el-spots');
+      if (EVENT.spotsLeft > 0) {
+        spotsEl.textContent = EVENT.spotsLeft + ' / ' + EVENT.spotsTotal;
+      } else {
+        spotsEl.textContent = es ? 'Lista de espera' : 'Waitlist Only';
+        spotsEl.style.color = '#c0392b';
+      }
 
       // --- Notes ---
       if (!EVENT.notes || EVENT.notes.trim() === '') {
