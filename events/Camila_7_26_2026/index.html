@@ -29,7 +29,7 @@
       eventType         : "Quinceañera",
       eventTitle        : "Mis Quince Años  Camila",
       eventSubtitle     : "Una celebración de vida, fe y amor",
-      hostName          : "Sofía García",
+      hostName          : "Familia Perea",
       language          : "bilingual",
       honoreeAge        : 15,
       parentNames       : "Jorge y Nancy Perea",
@@ -1359,14 +1359,14 @@
       document.getElementById('el-address').innerHTML = '<a href="' + venueMapUrl + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline;text-underline-offset:3px;">' + EVENT.venueAddress + '<br>' + EVENT.venueCity + '</a>';
       document.getElementById('el-notes').textContent    = EVENT.notes;
       document.getElementById('footer-host').textContent = EVENT.hostName;
-      document.title = EVENT.eventTitle + ' — ' + EVENT.hostName;
+      document.title = EVENT.eventTitle;
 
       // --- Open Graph / social preview ---
       const ogDesc = `You're invited to ${EVENT.eventTitle} on ${EVENT.date}. Hosted by ${EVENT.hostName}.`;
-      document.getElementById('og-title').content       = EVENT.eventTitle + ' — ' + EVENT.hostName;
+      document.getElementById('og-title').content       = EVENT.eventTitle;
       document.getElementById('og-description').content = ogDesc;
       document.getElementById('og-url').content         = window.location.href;
-      document.getElementById('tw-title').content       = EVENT.eventTitle + ' — ' + EVENT.hostName;
+      document.getElementById('tw-title').content       = EVENT.eventTitle;
       if (EVENT.ogImage) {
         document.getElementById('og-image').content = EVENT.ogImage;
         document.getElementById('tw-image').content = EVENT.ogImage;
