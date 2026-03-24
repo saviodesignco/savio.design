@@ -26,87 +26,45 @@
        ============================================================ -->
   <script>
     const EVENT = {
-      eventType:     "Wedding",                // Badge label
-      eventTitle:    "Our Wedding Day",        // Main headline
-      eventSubtitle: "Two hearts, one forever", // Sub-headline
-      hostName:      "Emily & James",          // Couple's names
-
-      // --- Language ---
-      // "en" = English labels, "es" = Spanish labels, "bilingual" = both
-      language:      "bilingual",
-
-      // --- Honoree ---
-      honoreeAge:    0,                        // Set to 0 to hide the age line
-      parentNames:   "",                       // Shown as "Families: ..." — leave "" to hide
-
-      // --- Opening phrase (religious / personal) ---
-      // Leave "" to hide. Shown at the very top of the card.
-      openingPhrase: "",
-
-      // --- Date & time ---
-      date:          "Saturday, April 12 2025",
-      dayOfWeek:     "Saturday",               // English, used in .ics
-      doorsOpen:     "3:30 PM",               // Arrival / doors
-
-      // Mass — leave massVenueName "" to hide this section entirely
-      massTime:      "4:00 PM",
-      massVenueName: "St. Patrick's Cathedral",
-      massVenueAddress: "5th Avenue & 50th Street",
-      massVenueCity: "New York, NY 10111",
-
-      // Reception
-      receptionTime: "7:00 PM",               // Shown separately from mass
-
-      // Reception venue
-      venueName:     "The Grand Ballroom",
-      venueAddress:  "123 West 57th Street",
-      venueCity:     "New York, NY 10019",
-
-      // --- Host notes ---
-      notes:         "Black tie optional. Kindly RSVP by March 1st.",
-
-      // --- Wedding Party ---
-      // Array of { bridesmaid, groomsman } pairs — leave [] to hide section
-      court: [
-        { bridesmaid: "Isabella Martínez",  groomsman: "Carlos López"   },
-        { bridesmaid: "Valentina Torres",   groomsman: "Miguel Reyes"   },
-        { bridesmaid: "Camila Hernández",   groomsman: "Andrés Morales" },
-        { bridesmaid: "Luciana Ramírez",    groomsman: "Diego Castillo" },
+      eventType         : "Wedding",
+      eventTitle        : "Nuestra Boda ",
+      eventSubtitle     : "los invitamos a juntos celebrar",
+      hostName          : "Uriel y Nayely",
+      language          : "bilingual",
+      honoreeAge        : 0,
+      parentNames       : "",
+      openingPhrase     : "Agradeciendo a Dios, y con la bendición de mis Padres:",
+      date              : "Sabado 05 de Septiembre 2026",
+      dayOfWeek         : "Sabado 05 de Septiembre 2026",
+      doorsOpen         : "",
+      massTime          : "2:00 pm",
+      massVenueName     : "St. Cajetan Catholic Church",
+      massVenueAddress  : "299 S Raleigh St ",
+      massVenueCity     : "Denver CO, 80219",
+      receptionTime     : "5:00 pm",
+      venueName         : "Salon Venecia",
+      venueAddress      : "10168 Wadsworth Pkwy #100",
+      venueCity         : "Westminster CO, 80021",
+      notes             : "Un Agradecimiento a todos los Padrinos por hacer de este bonito sueño, una hermosa realidad",
+      court             : [],
+      padrinos          : [
+        {"names":"Roberto y Marlene Villanueva","role":"Padrinos de Honor"}
       ],
-
-      // --- Sponsors ---
-      // Array of { names, role } — leave [] to hide section
-      padrinos: [
-        { names: "Roberto & Ana González",  role: "Flowers"      },
-        { names: "Luis & Carmen Reyes",     role: "Music"        },
-        { names: "Jorge & Patricia Lima",   role: "Cake"         },
-        { names: "Marco & Silvia Torres",   role: "Photography"  },
+      heroImages        : [
+        "https://savio.design/assets/images/UrielYNayely/B2.jpg",
+        "https://savio.design/assets/images/UrielYNayely/B3.jpg",
+        "https://savio.design/assets/images/UrielYNayely/B4.jpg",
+        "https://savio.design/assets/images/UrielYNayely/B5.jpg",
+        "https://savio.design/assets/images/UrielYNayely/B6.jpg"
       ],
-
-      // --- Slideshow images ---
-      // Relative paths (e.g. "photo1.jpg") or full URLs — leave [] for gradient
-      heroImages: [],
-
-      // --- RSVP ---
-      rsvpEmail:         "hector@savio.design",
-      formspreeEndpoint: "",                   // Paste Formspree URL here
-
-      // --- Photographer credit ---
-      // Leave photographerName "" to hide this section
-      photographerName:      "720Studio",
-      photographerHandle:    "@720studiophoto",
+      formspreeEndpoint : "https://formspree.io/f/xnjgoewj",
+      rsvpEmail         : "hector@savio.design",
+      photographerName  : "720Studio",
+      photographerHandle: "@720studiophoto",
       photographerInstagram: "https://www.instagram.com/720studiophoto",
-      photographerFacebook:  "https://www.facebook.com/share/1KwrrZoLaH/?mibextid=wwXIfr",
-
-      // --- Social preview (Open Graph) ---
-      // Full absolute URL to the image shown when the link is shared via
-      // iMessage, WhatsApp, Instagram DMs, etc.
-      // e.g. "https://savio.design/events/Mia/photo1.jpg"
-      // Leave "" to use no preview image.
-      ogImage: "",
-
-      // --- Password gate — leave "" to disable ---
-      eventPassword: "savio2025"
+      photographerFacebook: "https://www.facebook.com/nuekjuarez",
+      ogImage           : "https://savio.design/assets/images/UrielYNayely/B1.jpg",
+      eventPassword     : "boda",
     };
   </script>
 
