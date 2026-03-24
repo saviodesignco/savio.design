@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mis Quince Años Camila</title>
+  <title>You're Invited</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
@@ -12,66 +12,103 @@
        OPEN GRAPH — link preview for iMessage, WhatsApp, etc.
        Values are set dynamically from EVENT config below.
        ============================================================ -->
-  <meta id="og-title"       property="og:title"              content="Mis Quince Años Camila" />
-  <meta id="og-description" property="og:description"        content="You're invited to Mis Quince Años Camila on Sabado 26 de Julio 2025. Hosted by Familia Perea." />
-  <meta id="og-image"       property="og:image"              content="https://savio.design/assets/images/Camila_7_26_2026/XV1.jpg" />
-  <meta id="og-url"         property="og:url"                content="https://savio.design/events/Camila_7_26_2026/" />
+  <meta id="og-title"       property="og:title"              content="" />
+  <meta id="og-description" property="og:description"        content="" />
+  <meta id="og-image"       property="og:image"              content="" />
+  <meta id="og-url"         property="og:url"                content="" />
   <meta                     property="og:type"               content="website" />
   <meta id="tw-card"        name="twitter:card"              content="summary_large_image" />
-  <meta id="tw-title"       name="twitter:title"             content="Mis Quince Años Camila" />
-  <meta id="tw-image"       name="twitter:image"             content="https://savio.design/assets/images/Camila_7_26_2026/XV1.jpg" />
+  <meta id="tw-title"       name="twitter:title"             content="" />
+  <meta id="tw-image"       name="twitter:image"             content="" />
 
   <!-- ============================================================
        EVENT CONFIG — edit this object to customise the invitation
        ============================================================ -->
   <script>
     const EVENT = {
-      eventType         : "XV",
-      eventTitle        : "Mis Quince Años  Camila",
-      eventSubtitle     : "Una celebración de vida, fe y amor",
-      hostName          : "Familia Perea",
-      language          : "bilingual",
-      honoreeAge        : 15,
-      parentNames       : "Jorge y Nancy Perea",
-      openingPhrase     : "Agradeciendo a Dios, y con la bendicion de mis Padres",
-      date              : "Sabado 26 de Julio 2025",
-      dayOfWeek         : "Sabado 26 de Julio 2025",
-      doorsOpen         : "5:00pm",
-      massTime          : "2:00pm",
-      massVenueName     : "St Cajetan Catholic Church ",
-      massVenueAddress  : "299 S Raleigh St",
-      massVenueCity     : "Denver CO, 80219 ",
-      receptionTime     : "5:00pm",
-      venueName         : "Salon Venecia",
-      venueAddress      : "10168 Wadsworth Pkwy #100",
-      venueCity         : "Westminster CO, 80021",
-      notes             : "Un Agradecimiento a todos mis Padrinos por hacer de este bonito sueño, una hermosa realidad",
-      court             : [
-        {"dama":"Nohemi Barajas","chambelan":"Carlos Robles"},
-        {"dama":"Cynthia Lopez","chambelan":"Joel Villegas"}
+      eventType:     "Quinceañera",            // Badge label
+      eventTitle:    "Mis Quince Años",        // Main headline
+      eventSubtitle: "Una celebración de vida, fe y amor", // Sub-headline
+      hostName:      "Sofía García",           // Honoree's name
+
+      // --- Language ---
+      // "en" = English labels, "es" = Spanish labels, "bilingual" = both
+      language:      "bilingual",
+
+      // --- Honoree ---
+      honoreeAge:    15,                       // Set to 0 to hide the age line
+      parentNames:   "Sr. y Sra. García",      // Shown as "Hija de..." — leave "" to hide
+
+      // --- Opening phrase (religious / personal) ---
+      // Leave "" to hide. Shown at the very top of the card.
+      openingPhrase: "Agradeciendo a Dios por estos 15 años de vida y bendiciones",
+
+      // --- Date & time ---
+      date:          "Sábado, 12 de Abril 2025",
+      dayOfWeek:     "Saturday",               // English, used in .ics
+      doorsOpen:     "3:30 PM",               // Arrival / doors
+
+      // Mass — leave massVenueName "" to hide this section entirely
+      massTime:      "4:00 PM",
+      massVenueName: "Iglesia de San Patricio",
+      massVenueAddress: "5th Avenue & 50th Street",
+      massVenueCity: "New York, NY 10111",
+
+      // Reception
+      receptionTime: "7:00 PM",               // Shown separately from mass
+
+      // Reception venue
+      venueName:     "El Gran Salón",
+      venueAddress:  "123 West 57th Street",
+      venueCity:     "New York, NY 10019",
+
+      // --- Host notes ---
+      notes:         "Código de vestimenta: formal. Por favor confirma tu asistencia antes del 1 de marzo.",
+
+      // --- Court of Honor (Corte de Honor) ---
+      // Array of { dama, chambelan } pairs — leave [] to hide section
+      court: [
+        { dama: "Isabella Martínez",  chambelan: "Carlos López"   },
+        { dama: "Valentina Torres",   chambelan: "Miguel Reyes"   },
+        { dama: "Camila Hernández",   chambelan: "Andrés Morales" },
+        { dama: "Luciana Ramírez",    chambelan: "Diego Castillo" },
       ],
-      padrinos          : [
-        {"names":"Roberto y Marlene Villanueva","role":"Padrinos de Honor"}
+
+      // --- Padrinos y Madrinas ---
+      // Array of { names, role } — leave [] to hide section
+      padrinos: [
+        { names: "Roberto & Ana González",  role: "Vestido"       },
+        { names: "Luis & Carmen Reyes",     role: "Corona & Ramo" },
+        { names: "Jorge & Patricia Lima",   role: "Música"        },
+        { names: "Marco & Silvia Torres",   role: "Pastel"        },
       ],
-      heroImages        : [
-        "https://savio.design/assets/images/Camila_7_26_2026/XV2.jpg",
-        "https://savio.design/assets/images/Camila_7_26_2026/XV3.jpg",
-        "https://savio.design/assets/images/Camila_7_26_2026/XV4.jpg",
-        "https://savio.design/assets/images/Camila_7_26_2026/XV5.jpg",
-        "https://savio.design/assets/images/Camila_7_26_2026/XV6.jpg",
-        "https://savio.design/assets/images/Camila_7_26_2026/XV7.jpg",
-        "https://savio.design/assets/images/Camila_7_26_2026/XV8.jpg"
-      ],
-      formspreeEndpoint : "https://formspree.io/f/xnjgoewj",
-      rsvpEmail         : "hector@savio.design",
-      photographerName  : "720Studio",
-      photographerHandle: "@720studiophoto",
+
+      // --- Slideshow images ---
+      // Relative paths (e.g. "photo1.jpg") or full URLs — leave [] for gradient
+      heroImages: [],
+
+      // --- RSVP ---
+      rsvpEmail:         "hector@savio.design",
+      formspreeEndpoint: "",                   // Paste Formspree URL here
+
+      // --- Photographer credit ---
+      // Leave photographerName "" to hide this section
+      photographerName:      "720Studio",
+      photographerHandle:    "@720studiophoto",
       photographerInstagram: "https://www.instagram.com/720studiophoto",
-      photographerFacebook:  "https://www.facebook.com/share/1KwrrZoLaH/?mibextid=wwXIfr",
-      ogImage           : "https://savio.design/assets/images/Camila_7_26_2026/XV1.jpg",
-      eventPassword     : "Perea",
+      photographerFacebook:  "",
+
+      // --- Social preview (Open Graph) ---
+      // Full absolute URL to the image shown when the link is shared via
+      // iMessage, WhatsApp, Instagram DMs, etc.
+      // e.g. "https://savio.design/events/Mia/photo1.jpg"
+      // Leave "" to use no preview image.
+      ogImage: "",
+
+      // --- Password gate — leave "" to disable ---
+      eventPassword: "savio2025"
     };
-     </script>
+  </script>
 
   <style>
     /* ============================================================
@@ -1044,6 +1081,82 @@
       color: var(--text-soft);
       transition: color 0.2s;
     }
+
+    /* ============================================================
+       BOTTOM NAV (Twitter/X style)
+       ============================================================ */
+    #bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(8,8,8,0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255,255,255,0.07);
+      display: flex;
+      justify-content: center;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(8px);
+      transition: opacity 0.5s ease, visibility 0.5s ease, transform 0.5s ease;
+    }
+
+    #bottom-nav.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .nav-inner {
+      width: 100%;
+      max-width: var(--card-width);
+      display: flex;
+      justify-content: space-around;
+      padding: 0.55rem 0 0.6rem;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.28rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.35rem 1.1rem;
+      color: rgba(106,101,96,0.7);
+      transition: color 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .nav-item svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.2s;
+    }
+
+    .nav-item span {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.52rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 400;
+    }
+
+    .nav-item.active { color: var(--gold); }
+    .nav-item:hover  { color: var(--text-soft); }
+    .nav-item.active:hover { color: var(--gold-light); }
+
+    /* Extra bottom padding so nav never covers content */
+    #invitation { padding-bottom: 5rem; }
   </style>
 </head>
 <body>
@@ -1118,7 +1231,7 @@
         <div class="divider"></div>
 
         <!-- Info Grid -->
-        <div class="info-grid">
+        <div class="info-grid" id="section-date">
           <div class="info-item">
             <div class="info-label" id="label-date">Date</div>
             <div class="info-value" id="el-date"></div>
@@ -1157,7 +1270,7 @@
         </div>
 
         <!-- Reception Location -->
-        <div class="location-block">
+        <div class="location-block" id="section-venue">
           <div class="location-icon">
             <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 21c-4-4-7-7.5-7-11a7 7 0 0114 0c0 3.5-3 7-7 11z"/>
@@ -1294,6 +1407,53 @@
     </div><!-- /.card -->
   </div><!-- /#invitation -->
 
+  <!-- ============================================================
+       BOTTOM NAVIGATION
+       ============================================================ -->
+  <nav id="bottom-nav">
+    <div class="nav-inner">
+
+      <!-- Date -->
+      <button class="nav-item active" data-target="section-date" onclick="navTo('section-date')">
+        <svg viewBox="0 0 24 24">
+          <rect x="3" y="4" width="18" height="18" rx="2"/>
+          <path d="M16 2v4M8 2v4M3 10h18"/>
+          <circle cx="12" cy="16" r="1" fill="currentColor" stroke="none"/>
+        </svg>
+        <span>Date</span>
+      </button>
+
+      <!-- Misa / Ceremony -->
+      <button class="nav-item" data-target="mass-block" onclick="navTo('mass-block')">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2v4M10 4h4"/>
+          <path d="M5 8h14l1 12H4L5 8z"/>
+          <path d="M9 8v4m6-4v4"/>
+        </svg>
+        <span>Ceremony</span>
+      </button>
+
+      <!-- Venue / Salón -->
+      <button class="nav-item" data-target="section-venue" onclick="navTo('section-venue')">
+        <svg viewBox="0 0 24 24">
+          <path d="M8 3h8l-2 9H10L8 3z"/>
+          <path d="M10 12v9M14 12v9M7 21h10"/>
+          <path d="M6 3h12"/>
+        </svg>
+        <span>Venue</span>
+      </button>
+
+      <!-- RSVP -->
+      <button class="nav-item" data-target="rsvp-section" onclick="navTo('rsvp-section')">
+        <svg viewBox="0 0 24 24">
+          <rect x="2" y="5" width="20" height="14" rx="2"/>
+          <path d="M2 8l10 7 10-7"/>
+        </svg>
+        <span>RSVP</span>
+      </button>
+
+    </div>
+  </nav>
 
   <!-- ============================================================
        JAVASCRIPT — PASSWORD GATE
@@ -1306,6 +1466,7 @@
       document.getElementById('gate').classList.add('hidden');
       const inv = document.getElementById('invitation');
       inv.classList.add('visible');
+      setTimeout(() => document.getElementById('bottom-nav').classList.add('visible'), 400);
     }
 
     function checkPassword(e) {
@@ -1339,6 +1500,7 @@
       if (!EVENT.eventPassword || EVENT.eventPassword === '' || sessionStorage.getItem(SESSION_KEY) === '1') {
         document.getElementById('gate').style.display = 'none';
         document.getElementById('invitation').classList.add('visible');
+        setTimeout(() => document.getElementById('bottom-nav').classList.add('visible'), 400);
       } else {
         document.getElementById('gate-host').textContent = 'An invitation from ' + EVENT.hostName;
       }
@@ -1378,10 +1540,10 @@
 
       // --- Open Graph / social preview ---
       const ogDesc = `You're invited to ${EVENT.eventTitle} on ${EVENT.date}. Hosted by ${EVENT.hostName}.`;
-      document.getElementById('og-title').content       = EVENT.eventTitle;
+      document.getElementById('og-title').content       = EVENT.eventTitle + ' — ' + EVENT.hostName;
       document.getElementById('og-description').content = ogDesc;
       document.getElementById('og-url').content         = window.location.href;
-      document.getElementById('tw-title').content       = EVENT.eventTitle;
+      document.getElementById('tw-title').content       = EVENT.eventTitle + ' — ' + EVENT.hostName;
       if (EVENT.ogImage) {
         document.getElementById('og-image').content = EVENT.ogImage;
         document.getElementById('tw-image').content = EVENT.ogImage;
@@ -1834,6 +1996,39 @@
 
       document.getElementById('gcal-link').href = gcalUrl;
     }
+  </script>
+
+  <!-- ============================================================
+       JAVASCRIPT — BOTTOM NAV
+       ============================================================ -->
+  <script>
+    function navTo(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setActiveNav(id);
+    }
+
+    function setActiveNav(targetId) {
+      document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.target === targetId);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const sections = ['section-date', 'mass-block', 'section-venue', 'rsvp-section'];
+
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) setActiveNav(entry.target.id);
+        });
+      }, { threshold: 0.35 });
+
+      sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) observer.observe(el);
+      });
+    });
   </script>
 
 </body>

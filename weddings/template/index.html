@@ -26,31 +26,31 @@
        ============================================================ -->
   <script>
     const EVENT = {
-      eventType:     "Quinceañera",            // Badge label
-      eventTitle:    "Mis Quince Años",        // Main headline
-      eventSubtitle: "Una celebración de vida, fe y amor", // Sub-headline
-      hostName:      "Sofía García",           // Honoree's name
+      eventType:     "Wedding",                // Badge label
+      eventTitle:    "Our Wedding Day",        // Main headline
+      eventSubtitle: "Two hearts, one forever", // Sub-headline
+      hostName:      "Emily & James",          // Couple's names
 
       // --- Language ---
       // "en" = English labels, "es" = Spanish labels, "bilingual" = both
       language:      "bilingual",
 
       // --- Honoree ---
-      honoreeAge:    15,                       // Set to 0 to hide the age line
-      parentNames:   "Sr. y Sra. García",      // Shown as "Hija de..." — leave "" to hide
+      honoreeAge:    0,                        // Set to 0 to hide the age line
+      parentNames:   "",                       // Shown as "Families: ..." — leave "" to hide
 
       // --- Opening phrase (religious / personal) ---
       // Leave "" to hide. Shown at the very top of the card.
-      openingPhrase: "Agradeciendo a Dios por estos 15 años de vida y bendiciones",
+      openingPhrase: "",
 
       // --- Date & time ---
-      date:          "Sábado, 12 de Abril 2025",
+      date:          "Saturday, April 12 2025",
       dayOfWeek:     "Saturday",               // English, used in .ics
       doorsOpen:     "3:30 PM",               // Arrival / doors
 
       // Mass — leave massVenueName "" to hide this section entirely
       massTime:      "4:00 PM",
-      massVenueName: "Iglesia de San Patricio",
+      massVenueName: "St. Patrick's Cathedral",
       massVenueAddress: "5th Avenue & 50th Street",
       massVenueCity: "New York, NY 10111",
 
@@ -58,29 +58,29 @@
       receptionTime: "7:00 PM",               // Shown separately from mass
 
       // Reception venue
-      venueName:     "El Gran Salón",
+      venueName:     "The Grand Ballroom",
       venueAddress:  "123 West 57th Street",
       venueCity:     "New York, NY 10019",
 
       // --- Host notes ---
-      notes:         "Código de vestimenta: formal. Por favor confirma tu asistencia antes del 1 de marzo.",
+      notes:         "Black tie optional. Kindly RSVP by March 1st.",
 
-      // --- Court of Honor (Corte de Honor) ---
-      // Array of { dama, chambelan } pairs — leave [] to hide section
+      // --- Wedding Party ---
+      // Array of { bridesmaid, groomsman } pairs — leave [] to hide section
       court: [
-        { dama: "Isabella Martínez",  chambelan: "Carlos López"   },
-        { dama: "Valentina Torres",   chambelan: "Miguel Reyes"   },
-        { dama: "Camila Hernández",   chambelan: "Andrés Morales" },
-        { dama: "Luciana Ramírez",    chambelan: "Diego Castillo" },
+        { bridesmaid: "Isabella Martínez",  groomsman: "Carlos López"   },
+        { bridesmaid: "Valentina Torres",   groomsman: "Miguel Reyes"   },
+        { bridesmaid: "Camila Hernández",   groomsman: "Andrés Morales" },
+        { bridesmaid: "Luciana Ramírez",    groomsman: "Diego Castillo" },
       ],
 
-      // --- Padrinos y Madrinas ---
+      // --- Sponsors ---
       // Array of { names, role } — leave [] to hide section
       padrinos: [
-        { names: "Roberto & Ana González",  role: "Vestido"       },
-        { names: "Luis & Carmen Reyes",     role: "Corona & Ramo" },
-        { names: "Jorge & Patricia Lima",   role: "Música"        },
-        { names: "Marco & Silvia Torres",   role: "Pastel"        },
+        { names: "Roberto & Ana González",  role: "Flowers"      },
+        { names: "Luis & Carmen Reyes",     role: "Music"        },
+        { names: "Jorge & Patricia Lima",   role: "Cake"         },
+        { names: "Marco & Silvia Torres",   role: "Photography"  },
       ],
 
       // --- Slideshow images ---
@@ -96,7 +96,7 @@
       photographerName:      "720Studio",
       photographerHandle:    "@720studiophoto",
       photographerInstagram: "https://www.instagram.com/720studiophoto",
-      photographerFacebook:  "",
+      photographerFacebook:  "https://www.facebook.com/share/1KwrrZoLaH/?mibextid=wwXIfr",
 
       // --- Social preview (Open Graph) ---
       // Full absolute URL to the image shown when the link is shared via
@@ -1081,6 +1081,82 @@
       color: var(--text-soft);
       transition: color 0.2s;
     }
+
+    /* ============================================================
+       BOTTOM NAV (Twitter/X style)
+       ============================================================ */
+    #bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(8,8,8,0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255,255,255,0.07);
+      display: flex;
+      justify-content: center;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(8px);
+      transition: opacity 0.5s ease, visibility 0.5s ease, transform 0.5s ease;
+    }
+
+    #bottom-nav.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .nav-inner {
+      width: 100%;
+      max-width: var(--card-width);
+      display: flex;
+      justify-content: space-around;
+      padding: 0.55rem 0 0.6rem;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.28rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.35rem 1.1rem;
+      color: rgba(106,101,96,0.7);
+      transition: color 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .nav-item svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.2s;
+    }
+
+    .nav-item span {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.52rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 400;
+    }
+
+    .nav-item.active { color: var(--gold); }
+    .nav-item:hover  { color: var(--text-soft); }
+    .nav-item.active:hover { color: var(--gold-light); }
+
+    /* Extra bottom padding so nav never covers content */
+    #invitation { padding-bottom: 5rem; }
   </style>
 </head>
 <body>
@@ -1155,7 +1231,7 @@
         <div class="divider"></div>
 
         <!-- Info Grid -->
-        <div class="info-grid">
+        <div class="info-grid" id="section-date">
           <div class="info-item">
             <div class="info-label" id="label-date">Date</div>
             <div class="info-value" id="el-date"></div>
@@ -1194,7 +1270,7 @@
         </div>
 
         <!-- Reception Location -->
-        <div class="location-block">
+        <div class="location-block" id="section-venue">
           <div class="location-icon">
             <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 21c-4-4-7-7.5-7-11a7 7 0 0114 0c0 3.5-3 7-7 11z"/>
@@ -1216,16 +1292,16 @@
         <!-- Court of Honor -->
         <div class="court-block" id="court-block">
           <div class="court-header">
-            <div class="court-title" id="label-court-title">Corte de Honor</div>
-            <div class="court-subtitle" id="label-court-sub">Court of Honor</div>
+            <div class="court-title" id="label-court-title">Wedding Party</div>
+            <div class="court-subtitle" id="label-court-sub"></div>
           </div>
           <div class="court-grid" id="court-grid"></div>
         </div>
 
-        <!-- Padrinos y Madrinas -->
+        <!-- Sponsors -->
         <div class="padrinos-block" id="padrinos-block">
-          <div class="padrinos-title" id="label-padrinos-title">Padrinos y Madrinas</div>
-          <div class="padrinos-subtitle" id="label-padrinos-sub">Sponsors</div>
+          <div class="padrinos-title" id="label-padrinos-title">Sponsors</div>
+          <div class="padrinos-subtitle" id="label-padrinos-sub"></div>
           <div class="padrinos-grid" id="padrinos-grid"></div>
         </div>
 
@@ -1331,6 +1407,52 @@
     </div><!-- /.card -->
   </div><!-- /#invitation -->
 
+  <!-- ============================================================
+       BOTTOM NAVIGATION
+       ============================================================ -->
+  <nav id="bottom-nav">
+    <div class="nav-inner">
+
+      <!-- Date -->
+      <button class="nav-item active" data-target="section-date" onclick="navTo('section-date')">
+        <svg viewBox="0 0 24 24">
+          <rect x="3" y="4" width="18" height="18" rx="2"/>
+          <path d="M16 2v4M8 2v4M3 10h18"/>
+          <circle cx="12" cy="16" r="1" fill="currentColor" stroke="none"/>
+        </svg>
+        <span>Date</span>
+      </button>
+
+      <!-- Ceremony -->
+      <button class="nav-item" data-target="mass-block" onclick="navTo('mass-block')">
+        <svg viewBox="0 0 24 24">
+          <circle cx="8.5" cy="12" r="4.5"/>
+          <circle cx="15.5" cy="12" r="4.5"/>
+        </svg>
+        <span>Ceremony</span>
+      </button>
+
+      <!-- Venue -->
+      <button class="nav-item" data-target="section-venue" onclick="navTo('section-venue')">
+        <svg viewBox="0 0 24 24">
+          <path d="M8 3h8l-2 9H10L8 3z"/>
+          <path d="M10 12v9M14 12v9M7 21h10"/>
+          <path d="M6 3h12"/>
+        </svg>
+        <span>Venue</span>
+      </button>
+
+      <!-- RSVP -->
+      <button class="nav-item" data-target="rsvp-section" onclick="navTo('rsvp-section')">
+        <svg viewBox="0 0 24 24">
+          <rect x="2" y="5" width="20" height="14" rx="2"/>
+          <path d="M2 8l10 7 10-7"/>
+        </svg>
+        <span>RSVP</span>
+      </button>
+
+    </div>
+  </nav>
 
   <!-- ============================================================
        JAVASCRIPT — PASSWORD GATE
@@ -1343,6 +1465,7 @@
       document.getElementById('gate').classList.add('hidden');
       const inv = document.getElementById('invitation');
       inv.classList.add('visible');
+      setTimeout(() => document.getElementById('bottom-nav').classList.add('visible'), 400);
     }
 
     function checkPassword(e) {
@@ -1376,6 +1499,7 @@
       if (!EVENT.eventPassword || EVENT.eventPassword === '' || sessionStorage.getItem(SESSION_KEY) === '1') {
         document.getElementById('gate').style.display = 'none';
         document.getElementById('invitation').classList.add('visible');
+        setTimeout(() => document.getElementById('bottom-nav').classList.add('visible'), 400);
       } else {
         document.getElementById('gate-host').textContent = 'An invitation from ' + EVENT.hostName;
       }
@@ -1428,8 +1552,8 @@
       label('label-date',          'Date',            'Fecha');
       label('label-doors',         'Doors Open',      'Puertas abren');
       label('label-notes',         'A Note from Your Host', 'Nota del anfitrión');
-      label('label-court-sub',     'Court of Honor',  'Corte de Honor');
-      label('label-padrinos-sub',  'Sponsors',        'Padrinos y Madrinas');
+      label('label-court-title',   'Wedding Party',   'Cortejo Nupcial');
+      label('label-padrinos-title','Sponsors',        'Patrocinadores');
 
       // --- Opening phrase ---
       if (EVENT.openingPhrase && EVENT.openingPhrase.trim() !== '') {
@@ -1449,8 +1573,8 @@
       // --- Parent names ---
       const parentEl = document.getElementById('el-parent-line');
       if (EVENT.parentNames && EVENT.parentNames.trim() !== '') {
-        const prefix = es ? 'Hija de ' : 'Daughter of ';
-        parentEl.innerHTML = prefix + '<span>' + EVENT.parentNames + '</span>';
+        const familiesPrefix = es ? 'Familias: ' : 'Families: ';
+        parentEl.innerHTML = familiesPrefix + '<span>' + EVENT.parentNames + '</span>';
       } else {
         parentEl.style.display = 'none';
       }
@@ -1466,7 +1590,7 @@
         // Show mass + reception in info grid
         document.getElementById('el-mass-time').textContent        = EVENT.massTime || '';
         document.getElementById('el-reception-time').textContent   = EVENT.receptionTime || '';
-        label('label-mass-time',      'Mass',       'Misa');
+        label('label-mass-time',      'Ceremony',   'Ceremonia');
         label('label-reception-time', 'Reception',  'Recepción');
 
         // Hide generic "doors open" row (mass block shows detail instead)
@@ -1487,23 +1611,22 @@
         document.getElementById('notes-block').style.display = 'none';
       }
 
-      // --- Court of Honor ---
+      // --- Wedding Party ---
       const court = EVENT.court || [];
       if (court.length > 0) {
-        label('label-court-title', 'Court of Honor', 'Corte de Honor');
+        const roleB = es ? 'Dama de Honor' : 'Bridesmaid';
+        const roleG = es ? 'Padrino'       : 'Groomsman';
         const grid = document.getElementById('court-grid');
         court.forEach(pair => {
-          // Dama
           const d = document.createElement('div');
           d.className = 'court-pair';
-          d.innerHTML = '<div class="court-role">' + (es ? 'Dama' : 'Dama') + '</div>'
-                      + '<div class="court-name">' + pair.dama + '</div>';
+          d.innerHTML = '<div class="court-role">' + roleB + '</div>'
+                      + '<div class="court-name">' + pair.bridesmaid + '</div>';
           grid.appendChild(d);
-          // Chambelán
           const c = document.createElement('div');
           c.className = 'court-pair';
-          c.innerHTML = '<div class="court-role">' + (es ? 'Chambelán' : 'Chambelan') + '</div>'
-                      + '<div class="court-name">' + pair.chambelan + '</div>';
+          c.innerHTML = '<div class="court-role">' + roleG + '</div>'
+                      + '<div class="court-name">' + pair.groomsman + '</div>';
           grid.appendChild(c);
         });
       } else {
@@ -1513,8 +1636,6 @@
       // --- Padrinos ---
       const padrinos = EVENT.padrinos || [];
       if (padrinos.length > 0) {
-        label('label-padrinos-title', 'Sponsors',           'Padrinos y Madrinas');
-        label('label-padrinos-sub',   'Event Sponsors',     'Patrocinadores');
         const grid = document.getElementById('padrinos-grid');
         padrinos.forEach(p => {
           const el = document.createElement('div');
@@ -1871,6 +1992,41 @@
 
       document.getElementById('gcal-link').href = gcalUrl;
     }
+  </script>
+
+  <!-- ============================================================
+       JAVASCRIPT — BOTTOM NAV
+       ============================================================ -->
+  <script>
+    // Smooth-scroll to a section and set it active immediately
+    function navTo(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setActiveNav(id);
+    }
+
+    function setActiveNav(targetId) {
+      document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.target === targetId);
+      });
+    }
+
+    // Highlight nav icon as sections scroll into view
+    document.addEventListener('DOMContentLoaded', () => {
+      const sections = ['section-date', 'mass-block', 'section-venue', 'rsvp-section'];
+
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) setActiveNav(entry.target.id);
+        });
+      }, { threshold: 0.35 });
+
+      sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) observer.observe(el);
+      });
+    });
   </script>
 
 </body>
