@@ -30,6 +30,7 @@
       eventTitle:    "Our Wedding Day",        // Main headline
       eventSubtitle: "Two hearts, one forever", // Sub-headline
       hostName:      "Emily & James",          // Couple's names
+      gateMessage:   "An invitation from Emily & James", // Password gate greeting
 
       // --- Language ---
       // "en" = English labels, "es" = Spanish labels, "bilingual" = both
@@ -1501,7 +1502,7 @@
         document.getElementById('invitation').classList.add('visible');
         setTimeout(() => document.getElementById('bottom-nav').classList.add('visible'), 400);
       } else {
-        document.getElementById('gate-host').textContent = 'An invitation from ' + EVENT.hostName;
+        document.getElementById('gate-host').textContent = EVENT.gateMessage || ('An invitation from ' + EVENT.hostName);
       }
     });
   </script>

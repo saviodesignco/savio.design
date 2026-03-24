@@ -30,6 +30,7 @@
       eventTitle        : "Nuestra Boda ",
       eventSubtitle     : "los invitamos a juntos celebrar",
       hostName          : "Uriel y Nayely",
+      gateMessage       : "An invitation from Uriel y Nayely", // Password gate greeting
       language          : "bilingual",
       honoreeAge        : 0,
       parentNames       : "",
@@ -1459,7 +1460,7 @@
         document.getElementById('invitation').classList.add('visible');
         setTimeout(() => document.getElementById('bottom-nav').classList.add('visible'), 400);
       } else {
-        document.getElementById('gate-host').textContent = 'An invitation from ' + EVENT.hostName;
+        document.getElementById('gate-host').textContent = EVENT.gateMessage || ('An invitation from ' + EVENT.hostName);
       }
     });
   </script>
