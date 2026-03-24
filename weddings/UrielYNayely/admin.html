@@ -837,6 +837,8 @@
     <div class="config-footer">
       <button class="copy-btn" id="copy-btn" onclick="copyConfig()">Copy Config Object</button>
       <p class="copy-hint">Paste this into the &lt;script&gt; block at the top of index.html</p>
+      <button class="copy-btn" id="copy-meta-btn" onclick="copyMetaTags()" style="margin-top:0.5rem">Copy OG Meta Tags</button>
+      <p class="copy-hint">Paste this into the &lt;head&gt; of index.html, replacing the existing OG meta tags</p>
     </div>
   </div><!-- /.config-pane -->
 
@@ -1387,6 +1389,37 @@
         btn.textContent = 'Copy Config Object';
         btn.classList.remove('copied');
       }, 2000);
+    });
+  }
+
+  function copyMetaTags() {
+    const title   = val('f-eventTitle').trim();
+    const host    = val('f-hostName').trim();
+    const image   = val('f-ogImage').trim();
+    const ogTitle = title + ' — ' + host;
+    const ogDesc  = 'Los invitamos a juntos celebrar. Hosted by ' + host + '.';
+    const output  =
+`  <meta id="og-title"       property="og:title"              content="${ogTitle}" />
+  <meta id="og-description" property="og:description"        content="${ogDesc}" />
+  <meta id="og-image"       property="og:image"              content="${image}" />
+  <meta id="og-url"         property="og:url"                content="" />
+  <meta                     property="og:type"               content="website" />
+  <meta id="tw-card"        name="twitter:card"              content="summary_large_image" />
+  <meta id="tw-title"       name="twitter:title"             content="${ogTitle}" />
+  <meta id="tw-image"       name="twitter:image"             content="${image}" />`;
+
+    const btn = document.getElementById('copy-meta-btn');
+    navigator.clipboard.writeText(output).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy OG Meta Tags'; btn.classList.remove('copied'); }, 2000);
+    }).catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = output; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy OG Meta Tags'; btn.classList.remove('copied'); }, 2000);
     });
   }
 </script>
