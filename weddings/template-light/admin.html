@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wedding Config — savio.design Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #080808;
+      --surface:    #111111;
+      --surface-2:  #181818;
+      --surface-3:  #1e1e1e;
+      --border:     rgba(255,255,255,0.08);
+      --border-2:   rgba(255,255,255,0.05);
+      --gold:       #c9a96e;
+      --gold-light: #e8c98a;
+      --text:       #f0ece4;
+      --text-muted: #6a6560;
+      --text-soft:  #a09890;
+      --accent:     rgba(201,169,110,0.12);
+      --radius:     12px;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-weight: 300;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ============================================================
+       LAYOUT — two-pane split
+       ============================================================ */
+    .admin-layout {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ============================================================
+       LEFT PANE — config form
+       ============================================================ */
+    .config-pane {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .config-header {
+      padding: 1.5rem 1.5rem 1rem;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .config-header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.15rem;
+    }
+
+    .config-header p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.03em;
+    }
+
+    .config-scroll {
+      overflow-y: auto;
+      flex: 1;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+    }
+
+    /* Scrollbar */
+    .config-scroll::-webkit-scrollbar { width: 4px; }
+    .config-scroll::-webkit-scrollbar-track { background: transparent; }
+    .config-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    /* ============================================================
+       FORM SECTIONS
+       ============================================================ */
+    .form-section {}
+
+    .section-title {
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(201,169,110,0.15);
+    }
+
+    .fields { display: flex; flex-direction: column; gap: 0.65rem; }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.65rem;
+    }
+
+    .field { display: flex; flex-direction: column; gap: 0.3rem; }
+
+    label {
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    input[type="password"],
+    textarea {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 0.6rem 0.8rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+      resize: none;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="number"]:focus,
+    input[type="password"]:focus,
+    textarea:focus {
+      border-color: var(--gold);
+      background: var(--surface-3);
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+
+    select {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 0.6rem 0.8rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--text);
+      outline: none;
+      width: 100%;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+
+    select:focus { border-color: var(--gold); }
+
+    /* Dynamic row (court / padrinos) */
+    .dynamic-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: flex-end;
+    }
+
+    .dynamic-row .field { flex: 1; }
+
+    .remove-btn {
+      flex-shrink: 0;
+      width: 30px;
+      height: 30px;
+      background: transparent;
+      border: 1px solid rgba(180,60,50,0.3);
+      border-radius: 6px;
+      color: #c0392b;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2px;
+      transition: background 0.15s;
+    }
+
+    .remove-btn:hover { background: rgba(180,60,50,0.12); }
+
+    .add-row-btn {
+      margin-top: 0.5rem;
+      width: 100%;
+      padding: 0.6rem;
+      background: transparent;
+      border: 1px dashed rgba(201,169,110,0.25);
+      border-radius: 7px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .add-row-btn:hover { border-color: var(--gold); background: rgba(201,169,110,0.06); }
+
+    /* ============================================================
+       COPY CONFIG BUTTON
+       ============================================================ */
+    .copy-btn {
+      width: 100%;
+      padding: 0.85rem;
+      background: var(--gold);
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #0a0a0a;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      flex-shrink: 0;
+    }
+
+    .copy-btn:hover   { background: var(--gold-light); }
+    .copy-btn:active  { transform: scale(0.99); }
+    .copy-btn.copied  { background: #2ecc71; color: #0a0a0a; }
+
+    .config-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .copy-hint {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+
+    /* ============================================================
+       RIGHT PANE — preview
+       ============================================================ */
+    .preview-pane {
+      background: #0a0a0a;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .preview-pane::-webkit-scrollbar { width: 4px; }
+    .preview-pane::-webkit-scrollbar-track { background: transparent; }
+    .preview-pane::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    .preview-topbar {
+      padding: 0.7rem 1.5rem;
+      border-bottom: 1px solid var(--border-2);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      background: #0a0a0a;
+      z-index: 5;
+    }
+
+    .preview-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--border);
+    }
+
+    .preview-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-left: 0.25rem;
+    }
+
+    .preview-content {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem 1rem 4rem;
+    }
+
+    /* ============================================================
+       INVITATION CARD (preview mirror)
+       — identical variables, isolated in preview scope
+       ============================================================ */
+    .preview-card {
+      width: 100%;
+      max-width: 440px;
+      background: #111111;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .p-hero {
+      width: 100%;
+      aspect-ratio: 720 / 1030;
+      background: linear-gradient(135deg, #1a1208 0%, #2d1f0a 40%, #0a0a0a 100%);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .p-hero svg { width: 50px; height: 50px; opacity: 0.12; }
+
+    .p-hero img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .p-hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 50%, #111111 100%);
+    }
+
+    .p-body {
+      padding: 1.75rem 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .p-badge {
+      display: inline-block;
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #c9a96e;
+      border: 1px solid rgba(201,169,110,0.3);
+      border-radius: 100px;
+      padding: 0.25rem 0.75rem;
+      align-self: flex-start;
+    }
+
+    .p-title-block { display: flex; flex-direction: column; gap: 0.4rem; }
+
+    .p-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.6rem, 5vw, 2.2rem);
+      font-weight: 400;
+      line-height: 1.1;
+      color: #f0ece4;
+    }
+
+    .p-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.95rem;
+      font-style: italic;
+      font-weight: 300;
+      color: #a09890;
+    }
+
+    .p-byline {
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #6a6560;
+      margin-top: 0.1rem;
+    }
+
+    .p-byline span { color: #e8c98a; font-weight: 400; }
+
+    .p-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.08);
+      position: relative;
+    }
+
+    .p-divider::after {
+      content: '';
+      position: absolute;
+      left: 0; top: 0;
+      width: 40px; height: 1px;
+      background: #c9a96e;
+      opacity: 0.4;
+    }
+
+    .p-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem 0.75rem;
+    }
+
+    .p-label {
+      font-size: 0.58rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #6a6560;
+      margin-bottom: 0.2rem;
+    }
+
+    .p-val {
+      font-size: 0.85rem;
+      color: #f0ece4;
+      line-height: 1.4;
+    }
+
+    .p-val.accent { color: #e8c98a; }
+
+    .p-location {
+      background: #1a1a1a;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 9px;
+      padding: 1rem;
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .p-loc-icon {
+      flex-shrink: 0;
+      width: 32px; height: 32px;
+      border: 1px solid rgba(201,169,110,0.2);
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .p-loc-icon svg { width: 13px; height: 13px; stroke: #c9a96e; fill: none; }
+
+    .p-venue { font-family: 'Cormorant Garamond', serif; font-size: 0.95rem; font-weight: 500; color: #f0ece4; margin-bottom: 0.15rem; }
+
+    .p-addr { font-size: 0.75rem; color: #6a6560; line-height: 1.4; }
+
+    .p-notes {
+      border-left: 2px solid rgba(201,169,110,0.2);
+      padding-left: 0.85rem;
+    }
+
+    .p-notes-label {
+      font-size: 0.58rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #c9a96e;
+      margin-bottom: 0.4rem;
+    }
+
+    .p-notes-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.9rem;
+      font-style: italic;
+      font-weight: 300;
+      color: #a09890;
+      line-height: 1.7;
+    }
+
+    .p-rsvp-label {
+      font-size: 0.58rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #6a6560;
+      margin-bottom: 0.5rem;
+    }
+
+    .p-rsvp-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    .p-rsvp-btn {
+      padding: 0.65rem 0.4rem;
+      border-radius: 7px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #1a1a1a;
+      color: #a09890;
+      text-align: center;
+    }
+
+    .p-cal-btn {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 7px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #6a6560;
+      background: transparent;
+      text-align: center;
+    }
+
+    .p-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .p-footer-host { font-size: 0.72rem; color: #6a6560; }
+    .p-footer-host strong { color: #a09890; font-weight: 400; }
+    .p-footer-brand { font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: #6a6560; opacity: 0.5; }
+
+    /* Opening phrase */
+    .p-opening-phrase {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.88rem;
+      font-style: italic;
+      font-weight: 300;
+      color: #a09890;
+      text-align: center;
+      line-height: 1.6;
+      padding: 0 0.25rem;
+    }
+
+    /* Honoree age + parent names */
+    .p-age { font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: #c9a96e; margin-top: 0.2rem; }
+    .p-parent { font-size: 0.72rem; color: #6a6560; margin-top: 0.1rem; }
+    .p-parent span { color: #a09890; }
+
+    /* Mass block */
+    .p-mass {
+      background: #1a1a1a;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 9px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      gap: 0.65rem;
+    }
+
+    .p-mass-icon {
+      flex-shrink: 0;
+      width: 28px; height: 28px;
+      border: 1px solid rgba(201,169,110,0.2);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .p-mass-icon svg { width: 12px; height: 12px; stroke: #c9a96e; fill: none; }
+    .p-mass-tag { font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase; color: #c9a96e; margin-bottom: 0.15rem; }
+    .p-mass-name { font-family: 'Cormorant Garamond', serif; font-size: 0.9rem; font-weight: 500; color: #f0ece4; }
+    .p-mass-time-val { font-size: 0.75rem; color: #a09890; margin-top: 0.1rem; }
+    .p-mass-addr { font-size: 0.7rem; color: #6a6560; margin-top: 0.1rem; line-height: 1.4; }
+
+    /* Court of Honor */
+    .p-court { display: flex; flex-direction: column; gap: 0.6rem; }
+    .p-court-title { font-family: 'Cormorant Garamond', serif; font-size: 0.95rem; font-weight: 400; color: #f0ece4; }
+    .p-court-sub { font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase; color: #c9a96e; margin-top: 0.1rem; margin-bottom: 0.4rem; }
+    .p-court-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+    .p-court-pair { background: #1a1a1a; border: 1px solid rgba(255,255,255,0.08); border-radius: 7px; padding: 0.6rem 0.7rem; }
+    .p-court-role { font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; color: #6a6560; margin-bottom: 0.15rem; }
+    .p-court-name { font-size: 0.75rem; color: #a09890; }
+
+    /* Padrinos */
+    .p-padrinos { display: flex; flex-direction: column; gap: 0.6rem; }
+    .p-padrinos-title { font-family: 'Cormorant Garamond', serif; font-size: 0.95rem; font-weight: 400; color: #f0ece4; }
+    .p-padrinos-sub { font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase; color: #c9a96e; margin-top: 0.1rem; margin-bottom: 0.4rem; }
+    .p-padrinos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+    .p-padrino { background: #1a1a1a; border: 1px solid rgba(255,255,255,0.08); border-radius: 7px; padding: 0.6rem 0.7rem; }
+    .p-padrino-role { font-size: 0.55rem; letter-spacing: 0.12em; text-transform: uppercase; color: #c9a96e; margin-bottom: 0.15rem; }
+    .p-padrino-names { font-size: 0.75rem; color: #a09890; }
+  </style>
+</head>
+<body>
+
+<div class="admin-layout">
+
+  <!-- ============================================================
+       LEFT PANE — CONFIG FORM
+       ============================================================ -->
+  <div class="config-pane">
+    <div class="config-header">
+      <h1>Wedding Config</h1>
+      <p>Fill in the fields — the preview updates live as you type.</p>
+    </div>
+
+    <div class="config-scroll" id="config-form">
+
+      <!-- SECTION: Event Identity -->
+      <div class="form-section">
+        <div class="section-title">Event Identity</div>
+        <div class="fields">
+          <div class="field-row">
+            <div class="field">
+              <label for="f-eventType">Event Type</label>
+              <input type="text" id="f-eventType" placeholder="Wedding" value="Wedding" />
+            </div>
+            <div class="field">
+              <label for="f-language">Language</label>
+              <select id="f-language">
+                <option value="en">English</option>
+                <option value="es">Español</option>
+                <option value="bilingual" selected>Bilingual</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="f-eventTitle">Event Title</label>
+            <input type="text" id="f-eventTitle" placeholder="Our Wedding Day" value="Our Wedding Day" />
+          </div>
+          <div class="field">
+            <label for="f-eventSubtitle">Subtitle / tagline</label>
+            <input type="text" id="f-eventSubtitle" placeholder="Two hearts, one forever" value="Two hearts, one forever" />
+          </div>
+          <div class="field">
+            <label for="f-openingPhrase">Opening Phrase (religious / personal — leave blank to hide)</label>
+            <textarea id="f-openingPhrase" rows="2" placeholder="Agradeciendo a Dios por estos 15 años de vida y bendiciones"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Honoree -->
+      <div class="form-section">
+        <div class="section-title">The Couple</div>
+        <div class="fields">
+          <div class="field">
+            <label for="f-hostName">Couple Names (e.g. Emily &amp; James)</label>
+            <input type="text" id="f-hostName" placeholder="Emily &amp; James" value="Emily &amp; James" />
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="f-honoreeAge">Age (leave 0 for weddings)</label>
+              <input type="number" id="f-honoreeAge" placeholder="0" value="0" />
+            </div>
+            <div class="field">
+              <label for="f-parentNames">Families (optional)</label>
+              <input type="text" id="f-parentNames" placeholder="The Smith &amp; Johnson Families" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Date & Time -->
+      <div class="form-section">
+        <div class="section-title">Date &amp; Time</div>
+        <div class="fields">
+          <div class="field">
+            <label for="f-date">Date (display string)</label>
+            <input type="text" id="f-date" placeholder="Saturday, April 12 2025" value="Saturday, April 12 2025" />
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="f-massTime">Mass Time</label>
+              <input type="text" id="f-massTime" placeholder="4:00 PM" />
+            </div>
+            <div class="field">
+              <label for="f-receptionTime">Reception Time</label>
+              <input type="text" id="f-receptionTime" placeholder="7:00 PM" />
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="f-doorsOpen">Doors Open</label>
+              <input type="text" id="f-doorsOpen" placeholder="3:30 PM" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Mass / Church -->
+      <div class="form-section">
+        <div class="section-title">Ceremony / Church (leave name blank to hide)</div>
+        <div class="fields">
+          <div class="field">
+            <label for="f-massVenueName">Church Name</label>
+            <input type="text" id="f-massVenueName" placeholder="St. Patrick's Cathedral" />
+          </div>
+          <div class="field">
+            <label for="f-massVenueAddress">Street Address</label>
+            <input type="text" id="f-massVenueAddress" placeholder="5th Avenue & 50th Street" />
+          </div>
+          <div class="field">
+            <label for="f-massVenueCity">City / Zip</label>
+            <input type="text" id="f-massVenueCity" placeholder="New York, NY 10111" />
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Reception Venue -->
+      <div class="form-section">
+        <div class="section-title">Reception Venue</div>
+        <div class="fields">
+          <div class="field">
+            <label for="f-venueName">Venue Name</label>
+            <input type="text" id="f-venueName" placeholder="The Grand Ballroom" value="The Grand Ballroom" />
+          </div>
+          <div class="field">
+            <label for="f-venueAddress">Street Address</label>
+            <input type="text" id="f-venueAddress" placeholder="123 West 57th Street" value="123 West 57th Street" />
+          </div>
+          <div class="field">
+            <label for="f-venueCity">City / Zip</label>
+            <input type="text" id="f-venueCity" placeholder="New York, NY 10019" value="New York, NY 10019" />
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Host Notes -->
+      <div class="form-section">
+        <div class="section-title">Notes to Guests</div>
+        <div class="fields">
+          <div class="field">
+            <label for="f-notes">Note (dress code, arrival info, etc.)</label>
+            <textarea id="f-notes" rows="3" placeholder="Código de vestimenta: formal…"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Court of Honor -->
+      <div class="form-section">
+        <div class="section-title">Wedding Party (leave empty to hide)</div>
+        <div class="fields" id="court-rows">
+          <!-- Rows added dynamically -->
+        </div>
+        <button class="add-row-btn" onclick="addCourtRow()">+ Add Pair</button>
+      </div>
+
+      <!-- SECTION: Padrinos -->
+      <div class="form-section">
+        <div class="section-title">Sponsors (leave empty to hide)</div>
+        <div class="fields" id="padrino-rows">
+          <!-- Rows added dynamically -->
+        </div>
+        <button class="add-row-btn" onclick="addPadrinoRow()">+ Add Padrino</button>
+      </div>
+
+      <!-- SECTION: Media & RSVP -->
+      <div class="form-section">
+        <div class="section-title">Photos</div>
+        <div id="photo-rows"></div>
+        <button class="add-row-btn" onclick="addPhotoRow()">+ Add Photo</button>
+      </div>
+
+      <!-- SECTION: RSVP -->
+      <div class="form-section">
+        <div class="section-title">RSVP</div>
+        <div class="fields">
+          <div class="field">
+            <label for="f-formspreeEndpoint">Formspree Endpoint URL</label>
+            <input type="text" id="f-formspreeEndpoint" placeholder="https://formspree.io/f/xxxxxxxx" />
+          </div>
+          <div class="field">
+            <label for="f-rsvpEmail">Fallback RSVP Email (used if Formspree is blank)</label>
+            <input type="email" id="f-rsvpEmail" placeholder="you@example.com" value="hector@savio.design" />
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Photographer -->
+      <div class="form-section">
+        <div class="section-title">Photographer Credit (leave name blank to hide)</div>
+        <div class="fields">
+          <div class="field-row">
+            <div class="field">
+              <label for="f-photographerName">Studio / Name</label>
+              <input type="text" id="f-photographerName" placeholder="720Studio" value="720Studio" />
+            </div>
+            <div class="field">
+              <label for="f-photographerHandle">Instagram Handle</label>
+              <input type="text" id="f-photographerHandle" placeholder="@720studiophoto" value="@720studiophoto" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="f-photographerInstagram">Instagram URL</label>
+            <input type="text" id="f-photographerInstagram" placeholder="https://www.instagram.com/720studiophoto" value="https://www.instagram.com/720studiophoto" />
+          </div>
+          <div class="field">
+            <label for="f-photographerFacebook">Facebook URL</label>
+            <input type="text" id="f-photographerFacebook" placeholder="https://www.facebook.com/…" value="https://www.facebook.com/nuekjuarez" />
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Social Preview -->
+      <div class="form-section">
+        <div class="section-title">Social Preview (iMessage / WhatsApp)</div>
+        <div class="fields">
+          <div class="field">
+            <label for="f-ogImage">Preview Image URL</label>
+            <input type="text" id="f-ogImage" placeholder="https://savio.design/events/Mia/photo1.jpg" />
+            <small style="color:#7a7570;font-size:11px;margin-top:4px;display:block;">Full URL shown when the link is shared. Use one of your hero image filenames with the full savio.design path.</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Password Gate -->
+      <div class="form-section">
+        <div class="section-title">Password Gate</div>
+        <div class="fields">
+          <div class="field">
+            <label for="f-eventPassword">Password (leave blank to disable gate)</label>
+            <input type="text" id="f-eventPassword" placeholder="e.g. savio2025" />
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.config-scroll -->
+
+    <!-- Copy Config Button -->
+    <div class="config-footer">
+      <button class="copy-btn" id="copy-btn" onclick="copyConfig()">Copy Config Object</button>
+      <p class="copy-hint">Paste this into the &lt;script&gt; block at the top of index.html</p>
+      <button class="copy-btn" id="copy-meta-btn" onclick="copyMetaTags()" style="margin-top:0.5rem">Copy OG Meta Tags</button>
+      <p class="copy-hint">Paste this into the &lt;head&gt; of index.html, replacing the existing OG meta tags</p>
+    </div>
+  </div><!-- /.config-pane -->
+
+
+  <!-- ============================================================
+       RIGHT PANE — LIVE PREVIEW
+       ============================================================ -->
+  <div class="preview-pane">
+    <div class="preview-topbar">
+      <div class="preview-dot"></div>
+      <div class="preview-dot"></div>
+      <div class="preview-dot"></div>
+      <span class="preview-label">Live Preview</span>
+    </div>
+
+    <div class="preview-content">
+      <div class="preview-card" id="preview-card">
+
+        <!-- Hero -->
+        <div class="p-hero" id="p-hero">
+          <svg viewBox="0 0 60 60" fill="none">
+            <rect x="30" y="4" width="37" height="37" rx="2" transform="rotate(45 30 4)" stroke="#c9a96e" stroke-width="0.5"/>
+            <rect x="30" y="12" width="26" height="26" rx="1" transform="rotate(45 30 12)" stroke="#c9a96e" stroke-width="0.5"/>
+          </svg>
+        </div>
+
+        <div class="p-body">
+
+          <div class="p-badge" id="p-badge">Wedding</div>
+
+          <!-- Opening phrase -->
+          <div class="p-opening-phrase" id="p-opening-phrase-block">
+            <div id="p-opening-phrase"></div>
+          </div>
+
+          <div class="p-title-block">
+            <div class="p-title" id="p-title">Our Wedding Day</div>
+            <div class="p-subtitle" id="p-subtitle">Two hearts, one forever</div>
+            <div class="p-age" id="p-honoree-age">15 Años</div>
+            <div class="p-parent" id="p-parent-line"></div>
+            <div class="p-byline">Hosted by <span id="p-host">Emily &amp; James</span></div>
+          </div>
+
+          <div class="p-divider"></div>
+
+          <div class="p-grid">
+            <div>
+              <div class="p-label" id="pl-date">Date</div>
+              <div class="p-val" id="p-date">Saturday, April 12 2025</div>
+            </div>
+            <div id="p-mass-time-cell">
+              <div class="p-label" id="pl-time">Misa</div>
+              <div class="p-val" id="p-time"></div>
+            </div>
+            <div id="p-reception-time-cell">
+              <div class="p-label" id="pl-reception">Recepción</div>
+              <div class="p-val" id="p-reception-time"></div>
+            </div>
+            <div>
+              <div class="p-label" id="pl-doors">Doors Open</div>
+              <div class="p-val" id="p-doors"></div>
+            </div>
+          </div>
+
+          <div class="p-divider"></div>
+
+          <!-- Mass block -->
+          <div class="p-mass" id="p-mass-block">
+            <div class="p-mass-icon">
+              <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+                <path d="M12 2v4M10 4h4M5 8h14l1 12H4L5 8z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="p-mass-tag" id="pl-mass">Ceremony</div>
+              <div class="p-mass-name" id="p-mass-venue"></div>
+              <div class="p-mass-time-val" id="p-mass-time-detail"></div>
+              <div class="p-mass-addr" id="p-mass-addr"></div>
+            </div>
+          </div>
+
+          <!-- Reception venue -->
+          <div class="p-location">
+            <div class="p-loc-icon">
+              <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 21c-4-4-7-7.5-7-11a7 7 0 0114 0c0 3.5-3 7-7 11z"/>
+                <circle cx="12" cy="10" r="2"/>
+              </svg>
+            </div>
+            <div>
+              <div class="p-venue" id="p-venue">The Grand Ballroom</div>
+              <div class="p-addr" id="p-addr">123 West 57th Street<br>New York, NY 10019</div>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div class="p-notes" id="p-notes-block">
+            <div class="p-notes-label" id="pl-notes">A Note from Your Host</div>
+            <div class="p-notes-text" id="p-notes"></div>
+          </div>
+
+          <!-- Court of Honor -->
+          <div class="p-court" id="p-court-block">
+            <div>
+              <div class="p-court-title">Wedding Party</div>
+              <div class="p-court-sub"></div>
+            </div>
+            <div class="p-court-grid" id="p-court-grid"></div>
+          </div>
+
+          <!-- Padrinos -->
+          <div class="p-padrinos" id="p-padrinos-block">
+            <div>
+              <div class="p-padrinos-title">Sponsors</div>
+              <div class="p-padrinos-sub"></div>
+            </div>
+            <div class="p-padrinos-grid" id="p-padrinos-grid"></div>
+          </div>
+
+          <div class="p-divider"></div>
+
+          <div>
+            <div class="p-rsvp-label" id="pl-rsvp">Your Response</div>
+            <div class="p-rsvp-btns">
+              <div class="p-rsvp-btn" id="pl-accept">Accept</div>
+              <div class="p-rsvp-btn" id="pl-maybe">Maybe</div>
+              <div class="p-rsvp-btn" id="pl-decline">Decline</div>
+            </div>
+          </div>
+
+          <div class="p-cal-btn">+ Add to Calendar</div>
+
+        </div><!-- /.p-body -->
+
+        <!-- Photographer credit -->
+        <div id="p-photographer-bar" style="padding:0.7rem 1.25rem; border-top:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; gap:0.5rem;">
+          <div style="width:24px;height:24px;border-radius:50%;border:1px solid rgba(201,169,110,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg viewBox="0 0 24 24" width="11" height="11" stroke="#c9a96e" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5"/>
+              <circle cx="12" cy="12" r="4"/>
+            </svg>
+          </div>
+          <div>
+            <div style="font-size:0.52rem;letter-spacing:0.15em;text-transform:uppercase;color:#6a6560;">Photography by</div>
+            <div id="p-photographer-handle" style="font-size:0.75rem;color:#a09890;">@720studiophoto</div>
+          </div>
+        </div>
+
+        <div class="p-footer">
+          <div class="p-footer-host">Hosted by <strong id="p-footer-host">Emily &amp; James</strong></div>
+          <div class="p-footer-brand">savio.design</div>
+        </div>
+
+      </div><!-- /.preview-card -->
+    </div>
+  </div><!-- /.preview-pane -->
+
+</div><!-- /.admin-layout -->
+
+
+<!-- ============================================================
+     JAVASCRIPT — LIVE PREVIEW ENGINE
+     ============================================================ -->
+<script>
+  // Map: field id → preview element id (or custom handler)
+  const FIELD_MAP = {
+    'f-eventType':        { el: 'p-badge' },
+    'f-language':         { fn: updateLanguage },
+    'f-hostName':         { fn: updateHost },
+    'f-eventTitle':       { el: 'p-title' },
+    'f-eventSubtitle':    { el: 'p-subtitle' },
+    'f-openingPhrase':    { fn: updateOpeningPhrase },
+    'f-honoreeAge':       { fn: updateHonoreeAge },
+    'f-parentNames':      { fn: updateParentNames },
+    'f-date':             { el: 'p-date' },
+    'f-massTime':         { fn: updateMass },
+    'f-receptionTime':    { el: 'p-reception-time' },
+    'f-doorsOpen':        { el: 'p-doors' },
+    'f-massVenueName':    { fn: updateMass },
+    'f-massVenueAddress': { fn: updateMass },
+    'f-massVenueCity':    { fn: updateMass },
+    'f-venueName':        { el: 'p-venue' },
+    'f-venueAddress':     { fn: updateAddress },
+    'f-venueCity':        { fn: updateAddress },
+    'f-notes':            { fn: updateNotes },
+    'f-formspreeEndpoint':     { fn: () => {} },
+    'f-photographerName':      { fn: updatePhotographer },
+    'f-photographerHandle':    { fn: updatePhotographer },
+    'f-photographerInstagram': { fn: () => {} },
+    'f-photographerFacebook':  { fn: () => {} },
+    'f-ogImage':               { fn: () => {} },
+    'f-eventPassword':         { fn: () => {} }
+  };
+
+  function updateHost() {
+    const v = val('f-hostName');
+    set('p-host', v);
+    set('p-footer-host', v);
+  }
+
+  function updateOpeningPhrase() {
+    const v = val('f-openingPhrase').trim();
+    const block = document.getElementById('p-opening-phrase-block');
+    if (v) {
+      block.style.display = '';
+      set('p-opening-phrase', v);
+    } else {
+      block.style.display = 'none';
+    }
+  }
+
+  function updateHonoreeAge() {
+    const age = parseInt(val('f-honoreeAge')) || 0;
+    const el  = document.getElementById('p-honoree-age');
+    if (age > 0) {
+      el.style.display = '';
+      el.textContent = age + ' Años';
+    } else {
+      el.style.display = 'none';
+    }
+  }
+
+  function updateParentNames() {
+    const v  = val('f-parentNames').trim();
+    const el = document.getElementById('p-parent-line');
+    if (v) {
+      el.style.display = '';
+      el.innerHTML = 'Hija de <span>' + v + '</span>';
+    } else {
+      el.style.display = 'none';
+    }
+  }
+
+  function updateMass() {
+    const name = val('f-massVenueName').trim();
+    const time = val('f-massTime').trim();
+    const addr = val('f-massVenueAddress').trim();
+    const city = val('f-massVenueCity').trim();
+    const block = document.getElementById('p-mass-block');
+
+    if (name) {
+      block.style.display = '';
+      set('p-mass-venue', name);
+      set('p-mass-time-detail', time);
+      document.getElementById('p-mass-addr').innerHTML = addr + (city ? '<br>' + city : '');
+      // also update grid cell
+      set('p-time', time);
+      document.getElementById('p-mass-time-cell').style.display = '';
+    } else {
+      block.style.display = 'none';
+      document.getElementById('p-mass-time-cell').style.display = 'none';
+    }
+  }
+
+
+  function updateAddress() {
+    const addr = val('f-venueAddress');
+    const city = val('f-venueCity');
+    document.getElementById('p-addr').innerHTML = addr + '<br>' + city;
+  }
+
+  function updateNotes() {
+    const v = val('f-notes');
+    const block = document.getElementById('p-notes-block');
+    if (!v.trim()) {
+      block.style.display = 'none';
+    } else {
+      block.style.display = '';
+      set('p-notes', v);
+    }
+  }
+
+  function addPhotoRow(value) {
+    const container = document.getElementById('photo-rows');
+    const index = container.children.length + 1;
+    const row = document.createElement('div');
+    row.className = 'dynamic-row';
+    row.innerHTML =
+      '<div class="field"><label>Image ' + index + (index === 1 ? ' (first slide)' : '') + '</label>' +
+      '<input type="text" class="hero-image-input" placeholder="photo' + index + '.jpg or https://…" value="' + (value || '') + '" /></div>' +
+      '<button class="remove-btn" onclick="this.parentElement.remove(); updatePhotoLabels(); updateHero();" title="Remove">×</button>';
+    row.querySelector('input').addEventListener('input', updateHero);
+    container.appendChild(row);
+    updateHero();
+  }
+
+  function updatePhotoLabels() {
+    const rows = document.querySelectorAll('#photo-rows .dynamic-row');
+    rows.forEach((row, i) => {
+      row.querySelector('label').textContent = 'Image ' + (i + 1) + (i === 0 ? ' (first slide)' : '');
+    });
+  }
+
+  function updateHero() {
+    const srcs = Array.from(document.querySelectorAll('#photo-rows .hero-image-input'))
+      .map(el => el.value.trim())
+      .filter(s => s !== '');
+    const hero = document.getElementById('p-hero');
+
+    // Remove existing preview images
+    hero.querySelectorAll('img').forEach(el => el.remove());
+
+    if (srcs.length > 0) {
+      // Show first image as preview (full slideshow runs in the real invitation)
+      const img = document.createElement('img');
+      img.src = srcs[0];
+      hero.appendChild(img);
+    }
+  }
+
+  function updatePhotographer() {
+    const name   = val('f-photographerName').trim();
+    const handle = val('f-photographerHandle').trim();
+    const bar    = document.getElementById('p-photographer-bar');
+    if (name) {
+      bar.style.display = '';
+      set('p-photographer-handle', handle || name);
+    } else {
+      bar.style.display = 'none';
+    }
+  }
+
+  // --- Language labels ---
+  const LABELS = {
+    date:     { en: 'Date',             es: 'Fecha'              },
+    time:     { en: 'Ceremony',         es: 'Ceremonia'          },
+    doors:    { en: 'Doors Open',       es: 'Puertas abren'      },
+    notes:    { en: 'A Note from Your Host', es: 'Nota del anfitrión' },
+    rsvp:     { en: 'Your Response',    es: 'Tu Respuesta'       },
+    accept:   { en: 'Accept',           es: 'Acepto'             },
+    maybe:    { en: 'Maybe',            es: 'Quizás'             },
+    decline:  { en: 'Decline',          es: 'No Puedo'           },
+  };
+
+  function updateLanguage() {
+    const lang = document.getElementById('f-language').value;
+    Object.entries(LABELS).forEach(([key, vals]) => {
+      const el = document.getElementById('pl-' + key);
+      if (!el) return;
+      if (lang === 'bilingual') {
+        el.textContent = vals.es + ' / ' + vals.en;
+      } else if (lang === 'es') {
+        el.textContent = vals.es;
+      } else {
+        el.textContent = vals.en;
+      }
+    });
+  }
+
+  // --- Dynamic rows: Court of Honor ---
+  function addCourtRow(bridesmaid, groomsman) {
+    const container = document.getElementById('court-rows');
+    const row = document.createElement('div');
+    row.className = 'dynamic-row';
+    row.innerHTML =
+      '<div class="field"><label>Bridesmaid</label><input type="text" class="court-bridesmaid" placeholder="Bridesmaid name" value="' + (bridesmaid||'') + '" /></div>' +
+      '<div class="field"><label>Groomsman</label><input type="text" class="court-groomsman" placeholder="Groomsman name" value="' + (groomsman||'') + '" /></div>' +
+      '<button class="remove-btn" onclick="this.parentElement.remove(); updateCourtPreview();" title="Remove">×</button>';
+    row.querySelectorAll('input').forEach(i => i.addEventListener('input', updateCourtPreview));
+    container.appendChild(row);
+    updateCourtPreview();
+  }
+
+  function updateCourtPreview() {
+    const grid  = document.getElementById('p-court-grid');
+    const block = document.getElementById('p-court-block');
+    const pairs = Array.from(document.querySelectorAll('#court-rows .dynamic-row'))
+      .map(r => ({ bridesmaid: r.querySelector('.court-bridesmaid').value.trim(), groomsman: r.querySelector('.court-groomsman').value.trim() }))
+      .filter(p => p.bridesmaid || p.groomsman);
+
+    grid.innerHTML = '';
+    if (pairs.length === 0) { block.style.display = 'none'; return; }
+    block.style.display = '';
+    pairs.forEach(p => {
+      ['bridesmaid','groomsman'].forEach(role => {
+        const el = document.createElement('div');
+        el.className = 'p-court-pair';
+        el.innerHTML = '<div class="p-court-role">' + (role === 'bridesmaid' ? 'Bridesmaid' : 'Groomsman') + '</div>'
+                     + '<div class="p-court-name">' + (role === 'bridesmaid' ? p.bridesmaid : p.groomsman) + '</div>';
+        grid.appendChild(el);
+      });
+    });
+  }
+
+  // --- Dynamic rows: Padrinos ---
+  function addPadrinoRow(names, role) {
+    const container = document.getElementById('padrino-rows');
+    const row = document.createElement('div');
+    row.className = 'dynamic-row';
+    row.innerHTML =
+      '<div class="field"><label>Names</label><input type="text" class="padrino-names" placeholder="Roberto & Ana González" value="' + (names||'') + '" /></div>' +
+      '<div class="field"><label>Role / Sponsor of</label><input type="text" class="padrino-role" placeholder="Vestido" value="' + (role||'') + '" /></div>' +
+      '<button class="remove-btn" onclick="this.parentElement.remove(); updatePadrinosPreview();" title="Remove">×</button>';
+    row.querySelectorAll('input').forEach(i => i.addEventListener('input', updatePadrinosPreview));
+    container.appendChild(row);
+    updatePadrinosPreview();
+  }
+
+  function updatePadrinosPreview() {
+    const grid  = document.getElementById('p-padrinos-grid');
+    const block = document.getElementById('p-padrinos-block');
+    const items = Array.from(document.querySelectorAll('#padrino-rows .dynamic-row'))
+      .map(r => ({ names: r.querySelector('.padrino-names').value.trim(), role: r.querySelector('.padrino-role').value.trim() }))
+      .filter(p => p.names || p.role);
+
+    grid.innerHTML = '';
+    if (items.length === 0) { block.style.display = 'none'; return; }
+    block.style.display = '';
+    items.forEach(p => {
+      const el = document.createElement('div');
+      el.className = 'p-padrino';
+      el.innerHTML = '<div class="p-padrino-role">' + p.role + '</div>'
+                   + '<div class="p-padrino-names">' + p.names + '</div>';
+      grid.appendChild(el);
+    });
+  }
+
+  // Helpers
+  function val(id) { return document.getElementById(id).value; }
+  function set(id, text) { document.getElementById(id).textContent = text; }
+
+  // Wire up all inputs
+  document.addEventListener('DOMContentLoaded', () => {
+    // Seed default photo rows
+    addPhotoRow(); addPhotoRow(); addPhotoRow();
+
+    // Apply default bilingual labels to preview
+    updateLanguage();
+
+    // Hide optional blocks until filled in
+    document.getElementById('p-opening-phrase-block').style.display = 'none';
+    document.getElementById('p-mass-block').style.display = 'none';
+    document.getElementById('p-mass-time-cell').style.display = 'none';
+    document.getElementById('p-court-block').style.display = 'none';
+    document.getElementById('p-padrinos-block').style.display = 'none';
+
+    Object.keys(FIELD_MAP).forEach(fieldId => {
+      const field = document.getElementById(fieldId);
+      if (!field) return;
+      const mapping = FIELD_MAP[fieldId];
+
+      const handler = () => {
+        if (mapping.fn) {
+          mapping.fn();
+        } else {
+          set(mapping.el, field.value);
+        }
+      };
+
+      field.addEventListener('input', handler);
+    });
+  });
+</script>
+
+
+<!-- ============================================================
+     JAVASCRIPT — COPY CONFIG
+     ============================================================ -->
+<script>
+  function copyConfig() {
+    // Collect court rows
+    const court = Array.from(document.querySelectorAll('#court-rows .dynamic-row'))
+      .map(row => ({
+        bridesmaid: row.querySelector('.court-bridesmaid').value.trim(),
+        groomsman:  row.querySelector('.court-groomsman').value.trim()
+      }))
+      .filter(p => p.bridesmaid || p.groomsman);
+
+    // Collect padrino rows
+    const padrinos = Array.from(document.querySelectorAll('#padrino-rows .dynamic-row'))
+      .map(row => ({
+        names: row.querySelector('.padrino-names').value.trim(),
+        role:  row.querySelector('.padrino-role').value.trim()
+      }))
+      .filter(p => p.names || p.role);
+
+    const cfg = {
+      eventType:        val('f-eventType'),
+      eventTitle:       val('f-eventTitle'),
+      eventSubtitle:    val('f-eventSubtitle'),
+      hostName:         val('f-hostName'),
+      language:         val('f-language'),
+      honoreeAge:       parseInt(val('f-honoreeAge')) || 0,
+      parentNames:      val('f-parentNames'),
+      openingPhrase:    val('f-openingPhrase'),
+      date:             val('f-date'),
+      dayOfWeek:        val('f-date').split(',')[0].trim(),
+      doorsOpen:        val('f-doorsOpen'),
+      massTime:         val('f-massTime'),
+      massVenueName:    val('f-massVenueName'),
+      massVenueAddress: val('f-massVenueAddress'),
+      massVenueCity:    val('f-massVenueCity'),
+      receptionTime:    val('f-receptionTime'),
+      venueName:        val('f-venueName'),
+      venueAddress:     val('f-venueAddress'),
+      venueCity:        val('f-venueCity'),
+      notes:            val('f-notes'),
+      court,
+      padrinos,
+      heroImages:            Array.from(document.querySelectorAll('#photo-rows .hero-image-input')).map(el => el.value.trim()).filter(s => s !== ''),
+      formspreeEndpoint:     val('f-formspreeEndpoint'),
+      rsvpEmail:             val('f-rsvpEmail'),
+      photographerName:      val('f-photographerName'),
+      photographerHandle:    val('f-photographerHandle'),
+      photographerInstagram: val('f-photographerInstagram'),
+      photographerFacebook:  val('f-photographerFacebook'),
+      ogImage:               val('f-ogImage'),
+      eventPassword:         val('f-eventPassword')
+    };
+
+    // Build formatted JS object string
+    const lines = Object.entries(cfg).map(([k, v]) => {
+      let value;
+      if (typeof v === 'number') {
+        value = v;
+      } else if (Array.isArray(v)) {
+        value = v.length === 0 ? '[]' : '[\n' + v.map(s => '        ' + JSON.stringify(s)).join(',\n') + '\n      ]';
+      } else {
+        value = JSON.stringify(v);
+      }
+      return `      ${k.padEnd(18)}: ${value},`;
+    });
+
+    const output = `    const EVENT = {\n${lines.join('\n')}\n    };`;
+
+    navigator.clipboard.writeText(output).then(() => {
+      const btn = document.getElementById('copy-btn');
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy Config Object';
+        btn.classList.remove('copied');
+      }, 2000);
+    }).catch(() => {
+      // Fallback for non-https
+      const ta = document.createElement('textarea');
+      ta.value = output;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      const btn = document.getElementById('copy-btn');
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy Config Object';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+
+  function copyMetaTags() {
+    const title   = val('f-eventTitle').trim();
+    const host    = val('f-hostName').trim();
+    const image   = val('f-ogImage').trim();
+    const ogTitle = title + ' — ' + host;
+    const ogDesc  = 'You\'re invited to ' + title + '. Hosted by ' + host + '.';
+    const output  =
+`  <meta id="og-title"       property="og:title"              content="${ogTitle}" />
+  <meta id="og-description" property="og:description"        content="${ogDesc}" />
+  <meta id="og-image"       property="og:image"              content="${image}" />
+  <meta                     property="og:image:width"        content="1200" />
+  <meta                     property="og:image:height"       content="630" />
+  <meta                     property="og:image:type"         content="image/jpeg" />
+  <meta id="og-url"         property="og:url"                content="" />
+  <meta                     property="og:type"               content="website" />
+  <meta id="tw-card"        name="twitter:card"              content="summary_large_image" />
+  <meta id="tw-title"       name="twitter:title"             content="${ogTitle}" />
+  <meta id="tw-image"       name="twitter:image"             content="${image}" />`;
+
+    const btn = document.getElementById('copy-meta-btn');
+    navigator.clipboard.writeText(output).then(() => {
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy OG Meta Tags'; btn.classList.remove('copied'); }, 2000);
+    }).catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = output; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy OG Meta Tags'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+</script>
+
+</body>
+</html>
