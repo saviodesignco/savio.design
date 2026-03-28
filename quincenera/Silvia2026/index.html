@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>You're Invited</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='16' y='2' width='20' height='20' rx='1.5' transform='rotate(45 16 2)' fill='none' stroke='%23c9a96e' stroke-width='1.5'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
@@ -340,15 +341,35 @@
       position: absolute;
       inset: 0;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+      gap: 1.5rem;
       z-index: 1;
+      padding: 2rem;
     }
 
     .hero-ornament svg {
       width: 60px;
       height: 60px;
       opacity: 0.15;
+      animation: hero-pulse 4s ease-in-out infinite;
+    }
+
+    .hero-ornament-name {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(1.6rem, 7vw, 2.2rem);
+      font-weight: 300;
+      font-style: italic;
+      color: rgba(201,169,110,0.55);
+      text-align: center;
+      letter-spacing: 0.04em;
+      line-height: 1.2;
+    }
+
+    @keyframes hero-pulse {
+      0%, 100% { opacity: 0.12; }
+      50%       { opacity: 0.25; }
     }
 
     /* Dot navigation */
@@ -507,7 +528,7 @@
     .info-item {}
 
     .info-label {
-      font-size: 0.62rem;
+      font-size: 0.72rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--text-muted);
@@ -579,7 +600,7 @@
     }
 
     .notes-label {
-      font-size: 0.62rem;
+      font-size: 0.72rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--gold);
@@ -601,7 +622,7 @@
     .rsvp-section { display: flex; flex-direction: column; gap: 0.85rem; }
 
     .rsvp-label {
-      font-size: 0.62rem;
+      font-size: 0.72rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--text-muted);
@@ -649,7 +670,7 @@
     }
 
     .rsvp-name-label {
-      font-size: 0.62rem;
+      font-size: 0.72rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--text-muted);
@@ -793,7 +814,7 @@
     .mass-text {}
 
     .mass-label {
-      font-size: 0.58rem;
+      font-size: 0.68rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--gold);
@@ -840,7 +861,7 @@
     }
 
     .court-subtitle {
-      font-size: 0.62rem;
+      font-size: 0.72rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--gold);
@@ -869,7 +890,7 @@
     }
 
     .court-role {
-      font-size: 0.58rem;
+      font-size: 0.68rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--text-muted);
@@ -895,7 +916,7 @@
     }
 
     .padrinos-subtitle {
-      font-size: 0.62rem;
+      font-size: 0.72rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--gold);
@@ -916,7 +937,7 @@
     }
 
     .padrino-role {
-      font-size: 0.58rem;
+      font-size: 0.68rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--gold);
@@ -1070,7 +1091,7 @@
     .photographer-info { display: flex; flex-direction: column; gap: 0.05rem; }
 
     .photographer-label {
-      font-size: 0.55rem;
+      font-size: 0.65rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--text-muted);
@@ -1119,6 +1140,7 @@
     }
 
     .nav-item {
+      position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -1130,6 +1152,23 @@
       color: rgba(106,101,96,0.7);
       transition: color 0.2s;
       -webkit-tap-highlight-color: transparent;
+    }
+
+    .nav-item::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      left: 50%;
+      transform: translateX(-50%) scaleX(0);
+      width: 20px;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--gold);
+      transition: transform 0.25s ease;
+    }
+
+    .nav-item.active::after {
+      transform: translateX(-50%) scaleX(1);
     }
 
     .nav-item svg {
@@ -1469,6 +1508,7 @@
     document.addEventListener('DOMContentLoaded', () => {
 
       const lang = EVENT.language || 'en';
+      document.documentElement.lang = (lang === 'es' || lang === 'bilingual') ? 'es' : 'en';
       const es   = lang === 'es' || lang === 'bilingual';
 
       // --- Helper: set bilingual label ---
@@ -1491,7 +1531,7 @@
       document.getElementById('el-address').innerHTML    = EVENT.venueAddress + '<br>' + EVENT.venueCity;
       document.getElementById('el-notes').textContent    = EVENT.notes;
       document.getElementById('footer-host').textContent = EVENT.hostName;
-      document.title = EVENT.eventTitle + ' — ' + EVENT.hostName;
+      document.title = EVENT.hostName + ' — ' + EVENT.eventTitle;
 
       // --- Open Graph / social preview ---
       const ogDesc = `You're invited to ${EVENT.eventTitle} on ${EVENT.date}. Hosted by ${EVENT.hostName}.`;
@@ -1759,8 +1799,12 @@
       const hero   = document.getElementById('hero-slot');
       const dots   = document.getElementById('slide-dots');
 
-      // No images — keep gradient ornament, hide controls
+      // No images — show name in gradient ornament, hide controls
       if (images.length === 0) {
+        const nameEl = document.createElement('div');
+        nameEl.className = 'hero-ornament-name';
+        nameEl.textContent = EVENT.hostName;
+        document.getElementById('hero-ornament').appendChild(nameEl);
         document.getElementById('slide-prev').style.display = 'none';
         document.getElementById('slide-next').style.display = 'none';
         return;
