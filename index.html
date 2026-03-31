@@ -285,6 +285,74 @@
     }
 
     /* ============================================================
+       HERO PARALLAX ELEMENTS
+       ============================================================ */
+    #hero-glow {
+      position: absolute;
+      width: 520px;
+      height: 520px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,169,110,0.08) 0%, transparent 60%);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      will-change: left, top;
+      z-index: 0;
+      left: 50%;
+      top: 42%;
+    }
+
+    .p-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      will-change: transform;
+      z-index: 0;
+    }
+
+    .p-diamond {
+      position: absolute;
+      transform: rotate(45deg);
+    }
+
+    .p-diamond.lg {
+      width: 110px;
+      height: 110px;
+      border: 1px solid rgba(201,169,110,0.10);
+    }
+
+    .p-diamond.md {
+      width: 44px;
+      height: 44px;
+      border: 1px solid rgba(201,169,110,0.30);
+      background: rgba(201,169,110,0.025);
+    }
+
+    .p-diamond.sm {
+      width: 10px;
+      height: 10px;
+      background: rgba(201,169,110,0.50);
+    }
+
+    .p-dot {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: rgba(201,169,110,0.30);
+    }
+
+    .p-orb {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,169,110,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      will-change: transform;
+    }
+
+    /* ============================================================
        SERVICES
        ============================================================ */
     #services .services-heading {
@@ -597,6 +665,36 @@
        HERO
        ============================================================ -->
   <section id="hero">
+
+    <!-- Mouse-following glow -->
+    <div id="hero-glow"></div>
+
+    <!-- Layer 1 — slowest: large diamond outlines + background orb -->
+    <div class="p-layer" id="pl-1">
+      <div class="p-diamond lg" style="top:12%;left:7%"></div>
+      <div class="p-diamond lg" style="bottom:15%;right:8%"></div>
+      <div class="p-orb" style="width:420px;height:420px;top:-8%;right:-4%;opacity:0.8"></div>
+    </div>
+
+    <!-- Layer 2 — medium: smaller diamonds -->
+    <div class="p-layer" id="pl-2">
+      <div class="p-diamond md" style="top:20%;right:16%"></div>
+      <div class="p-diamond md" style="bottom:26%;left:13%"></div>
+      <div class="p-diamond md" style="top:68%;right:11%"></div>
+    </div>
+
+    <!-- Layer 3 — fastest: tiny diamonds + dots -->
+    <div class="p-layer" id="pl-3">
+      <div class="p-diamond sm" style="top:36%;right:23%"></div>
+      <div class="p-diamond sm" style="bottom:40%;left:19%"></div>
+      <div class="p-diamond sm" style="top:22%;left:36%"></div>
+      <div class="p-dot" style="top:28%;right:34%"></div>
+      <div class="p-dot" style="top:72%;left:29%"></div>
+      <div class="p-dot" style="top:50%;right:9%"></div>
+      <div class="p-dot" style="bottom:20%;right:44%"></div>
+      <div class="p-dot" style="top:18%;left:21%"></div>
+    </div>
+
     <div class="hero-inner">
       <p class="hero-eyebrow">Web Design &middot; Denver, CO</p>
       <h1 class="hero-headline">Your business deserves<br>a better website.</h1>
@@ -792,6 +890,48 @@
         alert('Something went wrong. Please email hector@savio.design directly.');
       }
     });
+
+    // ── Hero parallax ──────────────────────────────────────────────
+    (function () {
+      const hero = document.getElementById('hero');
+      if (!hero || 'ontouchstart' in window) return;
+
+      const glow  = document.getElementById('hero-glow');
+      const inner = hero.querySelector('.hero-inner');
+      const pl1   = document.getElementById('pl-1');
+      const pl2   = document.getElementById('pl-2');
+      const pl3   = document.getElementById('pl-3');
+
+      let tx = 0, ty = 0, cx = 0, cy = 0;
+      let gx = hero.offsetWidth / 2, gy = hero.offsetHeight * 0.42;
+      let gcx = gx, gcy = gy;
+
+      hero.addEventListener('mousemove', function (e) {
+        const r = hero.getBoundingClientRect();
+        tx = (e.clientX - r.left) / r.width  * 2 - 1;
+        ty = (e.clientY - r.top)  / r.height * 2 - 1;
+        gx = e.clientX - r.left;
+        gy = e.clientY - r.top;
+      });
+
+      hero.addEventListener('mouseleave', function () { tx = 0; ty = 0; });
+
+      (function tick() {
+        cx  += (tx  - cx)  * 0.065;
+        cy  += (ty  - cy)  * 0.065;
+        gcx += (gx  - gcx) * 0.09;
+        gcy += (gy  - gcy) * 0.09;
+
+        pl1.style.transform   = 'translate(' + (cx * 14) + 'px,' + (cy * 14) + 'px)';
+        pl2.style.transform   = 'translate(' + (cx * 26) + 'px,' + (cy * 26) + 'px)';
+        pl3.style.transform   = 'translate(' + (cx * 42) + 'px,' + (cy * 42) + 'px)';
+        inner.style.transform = 'translate(' + (cx * -6) + 'px,' + (cy * -6) + 'px)';
+        glow.style.left       = gcx + 'px';
+        glow.style.top        = gcy + 'px';
+
+        requestAnimationFrame(tick);
+      })();
+    })();
 
     const yearEl = document.querySelector('.footer-copy');
     if (yearEl) yearEl.innerHTML = yearEl.innerHTML.replace('2025', new Date().getFullYear());
