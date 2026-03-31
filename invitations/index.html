@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Invitations — savio.design</title>
+  <meta name="description" content="Beautiful digital invitations for quinceañeras and weddings. Shareable via link, no app needed." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='16' y='2' width='20' height='20' rx='1.5' transform='rotate(45 16 2)' fill='none' stroke='%23c9a96e' stroke-width='1.5'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #0a0a0a;
+      --surface:     #111111;
+      --surface-2:   #1a1a1a;
+      --border:      rgba(255,255,255,0.07);
+      --gold:        #c9a96e;
+      --gold-light:  #e8c98a;
+      --gold-dim:    rgba(201,169,110,0.15);
+      --text:        #f0ece4;
+      --text-muted:  #7a7570;
+      --text-soft:   #b0a99f;
+    }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-weight: 300;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 2rem;
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .wordmark {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.15rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .wordmark span { color: var(--gold); }
+
+    .nav-back {
+      font-size: 0.75rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: color 0.2s;
+    }
+
+    .nav-back:hover { color: var(--gold); }
+
+    .nav-back svg { width: 12px; height: 12px; }
+
+    /* ─── HERO ─── */
+    .hero {
+      padding: 5rem 2rem 3.5rem;
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .hero-label {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2.4rem, 5vw, 3.6rem);
+      font-weight: 300;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .hero-sub {
+      font-size: 0.9rem;
+      color: var(--text-soft);
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    /* ─── DIVIDER ─── */
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: var(--gold);
+      opacity: 0.4;
+      margin: 2rem auto;
+    }
+
+    /* ─── FILTER TABS ─── */
+    .filters {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0 2rem 3rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.45rem 1rem;
+      border-radius: 100px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .filter-btn.active {
+      background: var(--gold-dim);
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    /* ─── GRID ─── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      padding: 0 2rem 6rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* ─── CARD ─── */
+    .card {
+      display: block;
+      text-decoration: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.35s cubic-bezier(.22,.68,0,1.2),
+                  border-color 0.25s,
+                  box-shadow 0.35s;
+      animation: fadeUp 0.5s both;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(201,169,110,0.35);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,169,110,0.1);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* stagger */
+    .card:nth-child(1) { animation-delay: 0.05s; }
+    .card:nth-child(2) { animation-delay: 0.10s; }
+    .card:nth-child(3) { animation-delay: 0.15s; }
+    .card:nth-child(4) { animation-delay: 0.20s; }
+    .card:nth-child(5) { animation-delay: 0.25s; }
+    .card:nth-child(6) { animation-delay: 0.30s; }
+    .card:nth-child(7) { animation-delay: 0.35s; }
+    .card:nth-child(8) { animation-delay: 0.40s; }
+
+    /* image */
+    .card-img-wrap {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      overflow: hidden;
+      background: var(--surface-2);
+    }
+
+    .card-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      transition: transform 0.6s cubic-bezier(.22,.68,0,1.2);
+    }
+
+    .card:hover .card-img-wrap img {
+      transform: scale(1.04);
+    }
+
+    /* theme pill on image */
+    .theme-pill {
+      position: absolute;
+      top: 0.85rem;
+      right: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(10,10,10,0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 0.3rem 0.65rem 0.3rem 0.5rem;
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+    }
+
+    .theme-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .theme-dot.dark  { background: #3a3a3a; border: 1px solid #666; }
+    .theme-dot.light { background: #e8e0d4; border: 1px solid #ccc; }
+
+    /* card body */
+    .card-body {
+      padding: 1.1rem 1.25rem 1.25rem;
+    }
+
+    .card-type {
+      font-size: 0.62rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.35rem;
+    }
+
+    .card-name {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.35rem;
+      font-weight: 400;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .card-cta {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 0.85rem;
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      transition: color 0.2s;
+    }
+
+    .card:hover .card-cta { color: var(--gold); }
+
+    .card-cta svg {
+      width: 12px;
+      height: 12px;
+      transition: transform 0.2s;
+    }
+
+    .card:hover .card-cta svg { transform: translate(2px, -2px); }
+
+    /* hidden when filtered */
+    .card.hidden {
+      display: none;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: var(--gold);
+      text-decoration: none;
+    }
+
+    footer a:hover { text-decoration: underline; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 600px) {
+      nav { padding: 1rem 1.25rem; }
+      .hero { padding: 3.5rem 1.25rem 2.5rem; }
+      .filters { padding: 0 1.25rem 2.5rem; }
+      .grid { padding: 0 1.25rem 4rem; gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="wordmark" href="/">savio<span>.</span>design</a>
+    <a class="nav-back" href="/">
+      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M8 2L4 6l4 4"/>
+      </svg>
+      Back
+    </a>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <span class="hero-label">Portfolio</span>
+    <h1 class="hero-title">Digital<br><em>Invitations</em></h1>
+    <div class="divider"></div>
+    <p class="hero-sub">Each invitation is a unique link — shareable via iMessage, WhatsApp, or Instagram. No app needed.</p>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="xv">Quinceañera</button>
+    <button class="filter-btn" data-filter="wedding">Wedding</button>
+    <button class="filter-btn" data-filter="dark">Dark theme</button>
+    <button class="filter-btn" data-filter="light">Light theme</button>
+  </div>
+
+  <!-- GRID -->
+  <div class="grid" id="grid"></div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>Want an invitation like this? <a href="/">savio.design</a></p>
+  </footer>
+
+  <script>
+    const INVITATIONS = [
+      {
+        name:  "Silvia 2026",
+        type:  "xv",
+        label: "Quinceañera",
+        theme: "dark",
+        url:   "/quincenera/Silvia2026/",
+        image: "https://savio.design/assets/images/Silvia2026images/quincePreview2.png",
+      },
+      {
+        name:  "Silvia 2026",
+        type:  "xv",
+        label: "Quinceañera",
+        theme: "light",
+        url:   "/quincenera/Silvia2026-light/",
+        image: "https://savio.design/assets/images/Silvia2026images/quincePreview.jpeg",
+      },
+      {
+        name:  "Camila Perea",
+        type:  "xv",
+        label: "Quinceañera",
+        theme: "dark",
+        url:   "/quincenera/Camila_7_26_2026/",
+        image: "https://savio.design/assets/images/Camila_7_26_2026/XV1.jpg",
+      },
+      {
+        name:  "Camila Perea",
+        type:  "xv",
+        label: "Quinceañera",
+        theme: "light",
+        url:   "/quincenera/Camila_7_26_2026-light/",
+        image: "https://savio.design/assets/images/Camila_7_26_2026/XV1.jpg",
+      },
+      {
+        name:  "Camila 2.0",
+        type:  "xv",
+        label: "Quinceañera",
+        theme: "dark",
+        url:   "/quincenera/Camila2.0/",
+        image: "https://savio.design/assets/images/Camila_7_26_2026/XV2.jpg",
+      },
+      {
+        name:  "Camila 2.0",
+        type:  "xv",
+        label: "Quinceañera",
+        theme: "light",
+        url:   "/quincenera/Camila2.0-light/",
+        image: "https://savio.design/assets/images/Camila_7_26_2026/XV2.jpg",
+      },
+      {
+        name:  "Uriel & Nayely",
+        type:  "wedding",
+        label: "Wedding",
+        theme: "dark",
+        url:   "/weddings/UrielYNayely/",
+        image: "https://savio.design/assets/images/UrielYNayely/B1.jpg",
+      },
+      {
+        name:  "Uriel & Nayely",
+        type:  "wedding",
+        label: "Wedding",
+        theme: "light",
+        url:   "/weddings/UrielYNayely-light/",
+        image: "https://savio.design/assets/images/UrielYNayely/B1.jpg",
+      },
+    ];
+
+    const arrowSVG = `<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10L10 2M10 2H5M10 2v5"/></svg>`;
+
+    function renderCards(filter) {
+      const grid = document.getElementById('grid');
+      grid.innerHTML = '';
+
+      INVITATIONS.forEach((inv, i) => {
+        const matches =
+          filter === 'all' ||
+          filter === inv.type ||
+          filter === inv.theme;
+
+        if (!matches) return;
+
+        const a = document.createElement('a');
+        a.className = 'card';
+        a.href = inv.url;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.style.animationDelay = `${0.04 + i * 0.05}s`;
+
+        a.innerHTML = `
+          <div class="card-img-wrap">
+            <img src="${inv.image}" alt="${inv.name} — ${inv.label} invitation" loading="lazy" />
+            <div class="theme-pill">
+              <span class="theme-dot ${inv.theme}"></span>
+              ${inv.theme === 'dark' ? 'Dark' : 'Light'}
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-type">${inv.label}</div>
+            <div class="card-name">${inv.name}</div>
+            <div class="card-cta">View invitation ${arrowSVG}</div>
+          </div>
+        `;
+
+        grid.appendChild(a);
+      });
+    }
+
+    // filters
+    let active = 'all';
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        active = btn.dataset.filter;
+        renderCards(active);
+      });
+    });
+
+    renderCards('all');
+  </script>
+
+</body>
+</html>
