@@ -895,6 +895,7 @@
     (function () {
       const hero = document.getElementById('hero');
       if (!hero || 'ontouchstart' in window) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
       const glow  = document.getElementById('hero-glow');
       const inner = hero.querySelector('.hero-inner');
