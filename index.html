@@ -21,15 +21,17 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:         #0a0a0a;
-      --surface:    #111111;
-      --surface-2:  #1a1a1a;
-      --gold:       #c9a96e;
-      --gold-light: #e8c98a;
-      --text:       #f0ece4;
-      --text-muted: #7a7570;
-      --text-soft:  #b0a99f;
-      --border:     rgba(255,255,255,0.08);
+      --bg:         #0b0c0b;
+      --surface:    #121412;
+      --surface-2:  #1a1c1a;
+      --gold:       #c9a84c;
+      --gold-light: #e8c96a;
+      --text:       #f4f3ee;
+      --text-muted: #7a7870;
+      --text-soft:  #b2afa8;
+      --border:     rgba(255,255,255,0.07);
+      --glass:      rgba(255,255,255,0.03);
+      --glass-border: rgba(255,255,255,0.06);
     }
 
     html {
@@ -114,10 +116,10 @@
     }
 
     nav.scrolled {
-      background: rgba(10,10,10,0.88);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
+      background: rgba(11,12,11,0.72);
+      backdrop-filter: blur(28px) saturate(160%);
+      -webkit-backdrop-filter: blur(28px) saturate(160%);
+      border-bottom: 1px solid var(--glass-border);
     }
 
     .nav-wordmark {
@@ -512,6 +514,11 @@
     .service-item {
       padding: 2.5rem 0;
       border-bottom: 1px solid var(--border);
+      transition: padding-left 0.3s ease;
+    }
+
+    .service-item:hover {
+      padding-left: 0.75rem;
     }
 
     .service-item:first-child {
@@ -582,17 +589,20 @@
     }
 
     .stat-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--glass);
+      backdrop-filter: blur(16px) saturate(140%);
+      -webkit-backdrop-filter: blur(16px) saturate(140%);
+      border: 1px solid var(--glass-border);
       border-radius: 12px;
       padding: 2rem 1.5rem;
       text-align: center;
-      transition: border-color 0.3s ease, background 0.3s ease;
+      transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
     }
 
     .stat-card:hover {
-      border-color: color-mix(in srgb, var(--gold) 20%, transparent);
-      background: var(--surface-2);
+      border-color: color-mix(in srgb, var(--gold) 25%, transparent);
+      background: rgba(255,255,255,0.05);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06);
     }
 
     .stat-number {
