@@ -21,15 +21,17 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:         #0a0a0a;
-      --surface:    #111111;
-      --surface-2:  #1a1a1a;
-      --gold:       #c9a96e;
-      --gold-light: #e8c98a;
-      --text:       #f0ece4;
-      --text-muted: #7a7570;
-      --text-soft:  #b0a99f;
-      --border:     rgba(255,255,255,0.08);
+      --bg:         #0b0c0b;
+      --surface:    #121412;
+      --surface-2:  #1a1c1a;
+      --gold:       #c9a84c;
+      --gold-light: #e8c96a;
+      --text:       #f4f3ee;
+      --text-muted: #7a7870;
+      --text-soft:  #b2afa8;
+      --border:     rgba(255,255,255,0.07);
+      --glass:      rgba(255,255,255,0.03);
+      --glass-border: rgba(255,255,255,0.06);
     }
 
     html {
@@ -114,10 +116,10 @@
     }
 
     nav.scrolled {
-      background: rgba(10,10,10,0.88);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
+      background: rgba(11,12,11,0.72);
+      backdrop-filter: blur(28px) saturate(160%);
+      -webkit-backdrop-filter: blur(28px) saturate(160%);
+      border-bottom: 1px solid var(--glass-border);
     }
 
     .nav-wordmark {
@@ -512,6 +514,11 @@
     .service-item {
       padding: 2.5rem 0;
       border-bottom: 1px solid var(--border);
+      transition: padding-left 0.3s ease;
+    }
+
+    .service-item:hover {
+      padding-left: 0.75rem;
     }
 
     .service-item:first-child {
@@ -555,6 +562,107 @@
       color: var(--text-muted);
     }
 
+    /* ─── INVITATION ACCORDION ─── */
+    .inv-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: none;
+      border: none;
+      padding: 0;
+      margin-top: 1rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .inv-toggle:hover { color: var(--gold); }
+
+    .inv-toggle svg {
+      width: 12px;
+      height: 12px;
+      transition: transform 0.3s ease;
+    }
+
+    .inv-toggle.open svg { transform: rotate(90deg); }
+
+    .inv-panel {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .inv-panel.open { max-height: 600px; }
+
+    .inv-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+
+    .inv-card {
+      display: block;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--surface-2);
+      transition: border-color 0.25s, transform 0.3s cubic-bezier(.22,.68,0,1.2);
+    }
+
+    .inv-card:hover {
+      border-color: rgba(201,169,110,0.4);
+      transform: translateY(-3px);
+    }
+
+    .inv-card img {
+      width: 100%;
+      aspect-ratio: 1.91 / 1;
+      object-fit: contain;
+      background: #000;
+      display: block;
+    }
+
+    .inv-card-label {
+      padding: 0.5rem 0.65rem;
+      font-size: 0.65rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .inv-view-all {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 1rem;
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .inv-view-all:hover { opacity: 0.75; }
+
+    .inv-view-all svg {
+      width: 11px;
+      height: 11px;
+    }
+
+    @media (max-width: 600px) {
+      .inv-grid { grid-template-columns: 1fr 1fr; }
+    }
+
     /* ============================================================
        ABOUT
        ============================================================ */
@@ -582,17 +690,20 @@
     }
 
     .stat-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--glass);
+      backdrop-filter: blur(16px) saturate(140%);
+      -webkit-backdrop-filter: blur(16px) saturate(140%);
+      border: 1px solid var(--glass-border);
       border-radius: 12px;
       padding: 2rem 1.5rem;
       text-align: center;
-      transition: border-color 0.3s ease, background 0.3s ease;
+      transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
     }
 
     .stat-card:hover {
-      border-color: color-mix(in srgb, var(--gold) 20%, transparent);
-      background: var(--surface-2);
+      border-color: color-mix(in srgb, var(--gold) 25%, transparent);
+      background: rgba(255,255,255,0.05);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06);
     }
 
     .stat-number {
@@ -841,60 +952,6 @@
   </section>
 
   <!-- ============================================================
-       FEATURED WORK
-       ============================================================ -->
-  <div class="section-divider"></div>
-  <section id="work">
-    <div class="container">
-      <div class="section-label">Featured Work</div>
-      <div class="work-grid">
-
-        <a class="work-card" href="/quincenera/Camila_7_26_2026/" target="_blank" rel="noopener noreferrer">
-          <div class="work-card-img">
-            <img src="/assets/images/Camila_7_26_2026/XV1.jpg" alt="Camila Perea XV Quinceañera digital invitation" loading="lazy" />
-          </div>
-          <div class="work-card-overlay">
-            <span class="work-card-type">Quinceañera</span>
-            <span class="work-card-name">Camila Perea</span>
-            <span class="work-card-cta">View invitation →</span>
-          </div>
-        </a>
-
-        <a class="work-card" href="/weddings/UrielYNayely/" target="_blank" rel="noopener noreferrer">
-          <div class="work-card-img">
-            <img src="/assets/images/UrielYNayely/B1.jpg" alt="Uriel & Nayely wedding digital invitation" loading="lazy" />
-          </div>
-          <div class="work-card-overlay">
-            <span class="work-card-type">Wedding</span>
-            <span class="work-card-name">Uriel &amp; Nayely</span>
-            <span class="work-card-cta">View invitation →</span>
-          </div>
-        </a>
-
-        <a class="work-card" href="/quincenera/Silvia2026/" target="_blank" rel="noopener noreferrer">
-          <div class="work-card-img">
-            <img src="/assets/images/Silvia2026images/quincePreview2.png" alt="Silvia 2026 Quinceañera digital invitation" loading="lazy" />
-          </div>
-          <div class="work-card-overlay">
-            <span class="work-card-type">Quinceañera</span>
-            <span class="work-card-name">Silvia 2026</span>
-            <span class="work-card-cta">View invitation →</span>
-          </div>
-        </a>
-
-      </div>
-      <div class="work-footer">
-        <a href="/invitations/" class="work-all-link">
-          View all invitations
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-            <path d="M3 8h10M9 4l4 4-4 4"/>
-          </svg>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
        SERVICES
        ============================================================ -->
   <div class="section-divider"></div>
@@ -925,6 +982,30 @@
             <span class="service-number">&#10022;</span>
             <h3 class="service-name">Digital Invitations</h3>
             <p class="service-desc">Beautiful digital invitations for quincea&ntilde;eras and weddings — shareable via link, no app needed.</p>
+            <button class="inv-toggle" id="inv-toggle" aria-expanded="false" aria-controls="inv-panel">
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 2l4 4-4 4"/></svg>
+              See examples
+            </button>
+            <div class="inv-panel" id="inv-panel" role="region" aria-labelledby="inv-toggle">
+              <div class="inv-grid">
+                <a class="inv-card" href="/quincenera/Camila_7_26_2026/" target="_blank" rel="noopener">
+                  <img src="https://savio.design/assets/images/Camila_7_26_2026/XV1.jpg" alt="Camila Perea XV invitation" loading="lazy" />
+                  <div class="inv-card-label">Camila — XV</div>
+                </a>
+                <a class="inv-card" href="/weddings/UrielYNayely/" target="_blank" rel="noopener">
+                  <img src="https://savio.design/assets/images/UrielYNayely/B1.jpg" alt="Uriel &amp; Nayely wedding invitation" loading="lazy" />
+                  <div class="inv-card-label">Uriel &amp; Nayely — Wedding</div>
+                </a>
+                <a class="inv-card" href="/quincenera/Silvia2026/" target="_blank" rel="noopener">
+                  <img src="https://savio.design/assets/images/Silvia2026images/quincePreview2.png" alt="Silvia 2026 XV invitation" loading="lazy" />
+                  <div class="inv-card-label">Silvia — XV</div>
+                </a>
+              </div>
+              <a class="inv-view-all" href="/invitations/">
+                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10L10 2M10 2H5M10 2v5"/></svg>
+                View all invitations
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -1155,6 +1236,17 @@
 
     const yearEl = document.querySelector('.footer-copy');
     if (yearEl) yearEl.innerHTML = yearEl.innerHTML.replace('2025', new Date().getFullYear());
+
+    // ─── INVITATION ACCORDION ───
+    const invToggle = document.getElementById('inv-toggle');
+    const invPanel  = document.getElementById('inv-panel');
+    if (invToggle && invPanel) {
+      invToggle.addEventListener('click', () => {
+        const open = invPanel.classList.toggle('open');
+        invToggle.classList.toggle('open', open);
+        invToggle.setAttribute('aria-expanded', open);
+      });
+    }
   </script>
 
 </body>

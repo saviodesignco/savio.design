@@ -1850,9 +1850,20 @@
       // Pause on hover
       hero.addEventListener('mouseenter', stopTimer);
       hero.addEventListener('mouseleave', startTimer);
-      // Pause on touch (mobile tap)
-      hero.addEventListener('touchstart', stopTimer, { passive: true });
-      hero.addEventListener('touchend',   () => setTimeout(startTimer, 3000), { passive: true });
+
+      // Swipe to navigate on touch devices
+      let swipeTouchStartX = 0;
+      hero.addEventListener('touchstart', e => {
+        swipeTouchStartX = e.touches[0].clientX;
+        stopTimer();
+      }, { passive: true });
+      hero.addEventListener('touchend', e => {
+        const delta = e.changedTouches[0].clientX - swipeTouchStartX;
+        if (Math.abs(delta) > 40) {
+          slideStep(delta < 0 ? 1 : -1);
+        }
+        setTimeout(startTimer, 3000);
+      }, { passive: true });
     }
 
     function goToSlide(n) {
